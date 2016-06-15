@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QQuickView *window = new QQuickView();
-    TaskNerd *windowBehavior = new TaskNerd(window);
+    new TaskNerd(window);
 
     return a.exec();
 }

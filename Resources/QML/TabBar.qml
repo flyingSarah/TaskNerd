@@ -23,7 +23,7 @@ Item
             anchors.fill: parent
             spacing: 10
 
-            property var tabNames: [ "All Tasks", "Daily Tasks", "Weekly Tasks", "One Off Tasks" ]
+            property var tabNames: [ "One Off Tasks", "Weekly Tasks" ]
             property real numOfTabs: tabNames.length
 
             RadioGroup

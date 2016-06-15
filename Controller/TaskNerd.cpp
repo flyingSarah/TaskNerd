@@ -8,13 +8,20 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
 
     QQmlContext *context = window->rootContext();
 
-    qmlRegisterType<TaskModel>("org.qtproject.models", 1, 0, "Task");
-    Models::ListModel *taskModel = new Models::ListModel(new TaskModel());
-    this->setModel(taskModel);
-
+    //set one off tasks model for qml window
+    qmlRegisterType<TaskModel>("org.qtproject.models", 1, 0, "OneOffTask");
+    taskModel = new Models::ListModel(new TaskModel());
+    this->setTaskModel(taskModel);
     context->setContextProperty("taskModel", taskModel);
-    window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
 
+    //set weekly tasks model for qml window
+    qmlRegisterType<RepeatingTaskModel>("org.qtproject.models", 1, 0, "WeeklyTask");
+    weeklyTaskModel = new Models::ListModel(new RepeatingTaskModel());
+    this->setWeeklyTaskModel(weeklyTaskModel);
+    context->setContextProperty("weeklyTaskModel", weeklyTaskModel);
+
+    //set and show the qml window
+    window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
     window->show();
 
     //QObject *object = window->rootObject();
@@ -22,11 +29,19 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     //connect(object, SIGNAL(taskCheckedChanged(QString,int,bool)), this, SLOT(slot_receiveData(QString,int,bool)));
 }
 
-void TaskNerd::setModel(Models::ListModel *model)
+void TaskNerd::setTaskModel(Models::ListModel *model)
 {
     for(int i = 0; i < 30; ++i)
     {
-        model->appendRow(new TaskModel(0, true, "test"));
+        model->appendRow(new TaskModel(i, true, "test"));
+    }
+}
+
+void TaskNerd::setWeeklyTaskModel(Models::ListModel *model)
+{
+    for(int i = 0; i < 10; ++i)
+    {
+        model->appendRow(new RepeatingTaskModel(i, false, "repeating task", "weekly", 4, 3, 5, QVariant()));
     }
 }
 

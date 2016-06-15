@@ -10,6 +10,7 @@
 
 #include "Model/ListModel.h"
 #include "Model/TaskModel.h"
+#include "Model/RepeatingTaskModel.h"
 
 class TaskNerd : public QObject
 {
@@ -19,8 +20,10 @@ public:
     TaskNerd(QQuickView *window, QObject *parent = 0);
 
 private:
-    TaskModel *model;
-    void setModel(Models::ListModel *model);
+    Models::ListModel *taskModel;
+    Models::ListModel *weeklyTaskModel;
+    void setTaskModel(Models::ListModel *model);
+    void setWeeklyTaskModel(Models::ListModel *model);
 
 private slots:
     //void slot_receiveData(QString tabName,int index, bool taskIsChecked);

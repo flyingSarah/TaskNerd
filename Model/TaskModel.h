@@ -52,7 +52,7 @@ class TaskModel : public Models::ListItem
 
 public:
     explicit TaskModel(QObject *parent = NULL);
-    explicit TaskModel(const int &id, const bool &a_isChecked, const QString &a_label, QObject *parent = NULL);
+    explicit TaskModel(const int &id, const bool &isChecked, const QString &label, QObject *parent = NULL);
 
     enum TaskEnum
     {
@@ -62,14 +62,14 @@ public:
     };
 
     int id() const;
-    QVariant data(int role) const;
-    bool setData(int role, const QVariant &value);
-    QHash<int, QByteArray> roleNames() const;
+    virtual QVariant data(int role) const;
+    virtual bool setData(int role, const QVariant &value);
+    virtual QHash<int, QByteArray> roleNames() const;
 
     void setIsChecked(const bool &isChecked);
     void setLabel(const QString &label);
 
-private:
+protected:
     int taskId;
     bool isChecked;
     QString label;

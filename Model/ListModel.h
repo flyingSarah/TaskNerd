@@ -58,6 +58,7 @@ protected:
     bool                    sortEnabled;
 
 private:
+    using                   QAbstractListModel::sort;
     void                    sort();
 
 private slots :

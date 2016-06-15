@@ -66,9 +66,9 @@ QVariant TaskModel::data(int role) const
     case LabelRole:
         return this->label;
     case IdRole:
-        return this->id();
+        return this->taskId;
     default:
-        QVariant();
+        return QVariant();
     }
 }
 
@@ -78,15 +78,16 @@ bool TaskModel::setData(int role, const QVariant &value)
     {
     case IsCheckedRole:
         this->isChecked = value.toBool();
-        this->triggerItemUpdate();
-        return true;
+        break;
     case LabelRole:
         this->label = value.toString();
-        this->triggerItemUpdate();
-        return true;
+        break;
     default :
         return false;
     }
+
+    this->triggerItemUpdate();
+    return true;
 }
 
 // ASSIGN THE NAME TO USE FROM QML SIDE TO ACCESS VALUES

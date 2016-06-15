@@ -15,13 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
     Controller/TaskNerd.cpp \
     Model/ListModel.cpp \
-    Model/TaskModel.cpp
+    Model/TaskModel.cpp \
+    Model/RepeatingTaskModel.cpp
 
 HEADERS  += \
     Controller/TaskNerd.h \
     Model/ListItem.h \
     Model/ListModel.h \
-    Model/TaskModel.h
+    Model/TaskModel.h \
+    Model/RepeatingTaskModel.h
 
 OTHER_FILES += \
     Resources/QML/TaskNerd.qml \

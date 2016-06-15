@@ -8,9 +8,6 @@ Item
 {
     id: item
 
-    property var tabNames: ["TaskRow", "TaskRow", "TaskRow", "TaskRow"]
-    property var currentTab: tabNames[0]
-
     //signal taskCheckedChanged(string tabName, int index, bool taskIsChecked)
 
     Layout.fillHeight: true
@@ -70,11 +67,11 @@ Item
                     scrollLoader.visible = false;
                     if(tabIndex % 2)
                     {
-                        scrollLoader.sourceComponent = regularTasks
+                        scrollLoader.sourceComponent = weeklyTasks
                     }
                     else
                     {
-                        scrollLoader.sourceComponent = weeklyTasks
+                        scrollLoader.sourceComponent = regularTasks
                     }
 
                     scrollLoader.visible = true
@@ -87,7 +84,7 @@ Item
                 TaskListView
                 {
                     tabModel: taskModel
-                    tabDelegate: tabNames[0]
+                    tabDelegate: "TaskRow"
                     //onTabTaskCheckChanged: taskCheckedChanged(tab, task, checkBoxState)
                 }
             }
@@ -97,8 +94,8 @@ Item
                 id: weeklyTasks
                 TaskListView
                 {
-                    tabModel: taskModel
-                    tabDelegate: tabNames[1]
+                    tabModel: weeklyTaskModel
+                    tabDelegate: "TaskRow"
                     //onTabTaskCheckChanged: taskCheckedChanged(tab, task, checkBoxState)
                 }
             }
