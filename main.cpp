@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QGuiApplication>
 
 #include <qqmlengine.h>
 #include <qqmlcontext.h>
@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QGuiApplication a(argc, argv);
 
     QQuickView *window = new QQuickView();
     new TaskNerd(window);

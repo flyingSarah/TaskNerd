@@ -66,7 +66,7 @@ QHash<int, QByteArray> RepeatingTaskModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    //TODO: assign the TaskModel role names to this QHash without manually adding them here (currently this breaks OCP)
+    //TODO: do this next: assign the TaskModel role names to this QHash without manually adding them here (currently this breaks OCP)
 
     roles[IsCheckedRole] = "isChecked";
     roles[LabelRole] = "label";

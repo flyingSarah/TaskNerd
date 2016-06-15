@@ -23,6 +23,9 @@ ScrollView
         transientScrollBars: true
         handle: Item {
             //scroll bar handle size & appearance
+            //TODO: figure out how to set scroll bar positions and have them appear at the correct
+            // .... positions when loaded from the main view (when the app starts they can all start
+            // .... from the top position
             implicitWidth: 10
             implicitHeight: 26
             Rectangle {

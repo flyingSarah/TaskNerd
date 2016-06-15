@@ -8,6 +8,8 @@ Item
 {
     id: item
 
+    //TODO: set up a definitions file to import that would allow me to get rid of the most likely to change "magic numbers" in the GUI
+
     //signal taskCheckedChanged(string tabName, int index, bool taskIsChecked)
 
     Layout.fillHeight: true
@@ -95,7 +97,7 @@ Item
                 TaskListView
                 {
                     tabModel: weeklyTaskModel
-                    tabDelegate: "TaskRow"
+                    tabDelegate: "TaskRow" //TODO: make a new row type for repeating tasks
                     //onTabTaskCheckChanged: taskCheckedChanged(tab, task, checkBoxState)
                 }
             }

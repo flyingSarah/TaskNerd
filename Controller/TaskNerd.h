@@ -11,6 +11,7 @@
 #include "Model/ListModel.h"
 #include "Model/TaskModel.h"
 #include "Model/RepeatingTaskModel.h"
+#include "Model/SaveModelDataHandler.h"
 
 class TaskNerd : public QObject
 {
@@ -18,6 +19,9 @@ class TaskNerd : public QObject
 
 public:
     TaskNerd(QQuickView *window, QObject *parent = 0);
+
+protected:
+    bool eventFilter(QObject *, QEvent *);
 
 private:
     Models::ListModel *taskModel;
