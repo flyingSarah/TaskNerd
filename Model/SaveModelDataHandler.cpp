@@ -3,6 +3,7 @@
 SaveModelDataHandler::SaveModelDataHandler(Models::ListModel *model)
 {
     //TODO: do this next: figure out if I should make the model reference a const & ??
+    //TODO: get this saving into an SQL database file
     modelMap = saveModelData(model);
     qDebug() << modelMap;
 }

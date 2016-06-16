@@ -33,4 +33,5 @@ OTHER_FILES += \
     Resources/QML/RadioGroup.qml \
     Resources/QML/TabBar.qml \
     Resources/QML/TaskRow.qml \
-    Resources/QML/TaskListView.qml
+    Resources/QML/TaskListView.qml \
+    Resources/QML/Constants.js

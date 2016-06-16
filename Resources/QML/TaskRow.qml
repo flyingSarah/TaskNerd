@@ -1,39 +1,41 @@
 import QtQuick 2.3
 import QtQuick.Layouts 1.1
 
+import "Constants.js" as Constants
+
 Item
 {
     id: taskItem
 
     implicitWidth: parent.width
-    implicitHeight: 31
+    implicitHeight: Constants.taskRowHeight
 
     //signal checkBoxIsChecked(int taskIndex, bool taskChecked)
 
     RowLayout
     {
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 3
+        spacing: Constants.taskRowSpacing
 
         width: parent.width
         height: parent.height
 
         Item
         {
-            width: 0
-            height: 26
+            width: Constants.taskRowLeftSpacing
+            height: Constants.buttonHeight
         }
 
         Rectangle
         {
             //property bool checkBoxChecked: isChecked
 
-            Layout.preferredWidth: 26
-            Layout.preferredHeight: 26
+            Layout.preferredWidth: Constants.buttonHeight
+            Layout.preferredHeight: Constants.buttonHeight
 
-            border.color: 'gray'
-            border.width: 2
-            color: isChecked ? 'gray' : 'transparent'
+            border.color: Constants.taskItemBorderColor
+            border.width: Constants.taskItemBorderWidth
+            color: isChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
 
             MouseArea
             {
@@ -47,12 +49,12 @@ Item
             Layout.fillWidth: true
             Layout.minimumWidth: 100
             Layout.maximumWidth: 16000
-            Layout.preferredHeight: 26
+            Layout.preferredHeight: Constants.buttonHeight
 
-            color: 'white'
+            color: Constants.taskLabelBgColor
 
-            border.color: 'gray'
-            border.width: 2
+            border.color: Constants.taskItemBorderColor
+            border.width: Constants.taskItemBorderWidth
 
             Text
             {
@@ -60,19 +62,18 @@ Item
                 anchors.leftMargin: 5
                 verticalAlignment: Text.AlignVCenter
 
-                color: 'gray'
+                color: Constants.taskLabelTextColor
 
                 text: label
-                font.family: 'Avenir'
-                font.bold: true
-                font.pixelSize: 14
+                font.family: Constants.appFont
+                font.pixelSize: Constants.appFontSize
             }
         }
 
         Item
         {
-            width: 7
-            height: 26
+            width: Constants.taskRowRightSpacing
+            height: Constants.buttonHeight
         }
     }
 }

@@ -64,18 +64,12 @@ bool RepeatingTaskModel::setData(int role, const QVariant &value)
 
 QHash<int, QByteArray> RepeatingTaskModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-
-    //TODO: do this next: assign the TaskModel role names to this QHash without manually adding them here (currently this breaks OCP)
-
-    roles[IsCheckedRole] = "isChecked";
-    roles[LabelRole] = "label";
-    roles[IdRole] = "id";
-    roles[TypeRole] = "type";
-    roles[RepeatCountRole] = "repeatCount";
-    roles[RepeatsCheckedRole] = "repeatsChecked";
-    roles[StreakCountRole] = "streakCount";
-    roles[HistoryRole] = "history";
+    QHash<int, QByteArray> roles = TaskModel::roleNames();
+    roles.insert(TypeRole, "type");
+    roles.insert(RepeatCountRole, "repeatCount");
+    roles.insert(RepeatsCheckedRole, "repeatsChecked");
+    roles.insert(StreakCountRole, "streakCount");
+    roles.insert(HistoryRole, "history");
     return roles;
 }
 

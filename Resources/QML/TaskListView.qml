@@ -4,6 +4,8 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
 
+import "Constants.js" as Constants
+
 ScrollView
 {
     id: scrollView
@@ -26,19 +28,19 @@ ScrollView
             //TODO: figure out how to set scroll bar positions and have them appear at the correct
             // .... positions when loaded from the main view (when the app starts they can all start
             // .... from the top position
-            implicitWidth: 10
-            implicitHeight: 26
+            implicitWidth: Constants.scrollBarWidth
+            implicitHeight: Constants.scrollBarHeight
             Rectangle {
-                color: 'transparent'
-                border.color: 'gray'
-                border.width: 1
+                color: Constants.scrollBarColor
+                border.color: Constants.scrollBarBC
+                border.width: Constants.scrollBarBW
                 anchors.fill: parent
                 anchors.margins: 2
             }
         }
         scrollBarBackground: Item {
-            implicitWidth: 10
-            implicitHeight: 26
+            implicitWidth: Constants.scrollBarWidth
+            implicitHeight: Constants.scrollBarHeight
         }
     }
 

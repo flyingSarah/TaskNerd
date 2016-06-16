@@ -4,11 +4,11 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
 
+import "Constants.js" as Constants
+
 Item
 {
     id: item
-
-    //TODO: set up a definitions file to import that would allow me to get rid of the most likely to change "magic numbers" in the GUI
 
     //signal taskCheckedChanged(string tabName, int index, bool taskIsChecked)
 
@@ -20,14 +20,14 @@ Item
 
         id: background
 
-        color: 'lightgray' //mainwindow bg color
+        color: Constants.windowBgColor
         anchors.fill: parent
 
         ColumnLayout
         {
             anchors.fill: parent
-            anchors.margins: 5 //margins around mainwindow
-            spacing: 5 //spacing between mainwindow pannels
+            anchors.margins: Constants.windowMargins
+            spacing: Constants.windowMargins
 
 
             //a stackoverflow thread helped me put this together:
@@ -61,7 +61,7 @@ Item
             {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignBottom
-                height: 26
+                height: Constants.buttonHeight
 
                 onSelectedTabButton: {
 

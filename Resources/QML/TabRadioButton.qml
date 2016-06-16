@@ -1,5 +1,7 @@
 import QtQuick 2.3
 
+import "Constants.js" as Constants
+
 Rectangle
 {
 	id: radioButton
@@ -10,18 +12,17 @@ Rectangle
 	
 	signal selected(int tabIndex)
 			
-	border.color: 'gray'
-	border.width: 2
-	color: radioGroup.selected === radioButton ? 'gray' : 'transparent'
+    border.color: Constants.tabButtonBC
+    border.width: Constants.tabButtonBW
+    color: radioGroup.selected === radioButton ? Constants.tabButtonSC : Constants.tabButtonUC
 			
 	Text
 	{
 		id: radioButtonLabel
 		text: radioButton.text
-		font.family: 'Avenir'
-		font.bold: true
-		font.pixelSize: 14
-		color: radioGroup.selected === radioButton ? 'lightgray' : 'gray'
+        font.family: Constants.appFont
+        font.pixelSize: Constants.appFontSize
+        color: radioGroup.selected === radioButton ? Constants.tabButtonSTC : Constants.tabButtonUTC
 		anchors.centerIn: parent
 	}
 	
@@ -29,6 +30,6 @@ Rectangle
 	{
 		id: radioButtonMouseArea
 		anchors.fill: parent
-		onClicked: radioButton.radioGroup.selected = radioButton, radioButton.selected(radioButton.buttonIndex)
+        onClicked: radioButton.radioGroup.selected = radioButton, radioButton.selected(radioButton.buttonIndex)
 	}
 }

@@ -2,6 +2,8 @@ import QtQuick 2.3
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.1
 
+import "Constants.js" as Constants
+
 Item
 {
     id: item
@@ -13,7 +15,7 @@ Item
         Layout.fillHeight: true
         Layout.fillWidth: true
         anchors.fill: parent
-        color: 'lightgray'
+        color: Constants.windowBgColor
 
         RowLayout
         {
@@ -21,9 +23,9 @@ Item
             Layout.fillHeight: true
             Layout.fillWidth: true
             anchors.fill: parent
-            spacing: 10
+            spacing: Constants.tabBarSpacing
 
-            property var tabNames: [ "One Off Tasks", "Weekly Tasks" ]
+            property var tabNames: [ Constants.tabName1, Constants.tabName2 ]
             property real numOfTabs: tabNames.length
 
             RadioGroup
@@ -41,7 +43,7 @@ Item
                     radioGroup: tabBarGroup
                     buttonIndex: index
 
-                    height: 22
+                    height: Constants.buttonHeight
                     Layout.minimumWidth: 100
                     Layout.maximumWidth: 400
                     Layout.alignment: Qt.AlignCenter
