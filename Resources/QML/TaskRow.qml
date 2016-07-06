@@ -47,7 +47,7 @@ Item
         Rectangle
         {
             Layout.fillWidth: true
-            Layout.minimumWidth: 100
+            Layout.minimumWidth: 50
             Layout.maximumWidth: 16000
             Layout.preferredHeight: Constants.buttonHeight
 

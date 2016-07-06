@@ -32,10 +32,10 @@ var tabName2        = "Weekly Tasks";
 
 // ------------------------------------------------------------------ Task Row
 
-var taskRowHeight       = 31;
+var taskRowHeight       = 29;
 var taskRowSpacing      = 3;
-var taskRowRightSpacing = 0;
-var taskRowLeftSpacing  = 7;
+var taskRowRightSpacing = 7;
+var taskRowLeftSpacing  = 0;
 var taskItemBorderWidth = 2; //for any item in the task row
 
 var taskItemBorderColor = 'gray'; //for any item in the task row
