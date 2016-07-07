@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui quick qml
+QT       += core gui quick qml sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,18 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     Controller/TaskNerd.cpp \
-    Model/ListModel.cpp \
-    Model/TaskModel.cpp \
-    Model/RepeatingTaskModel.cpp \
-    Model/SaveModelDataHandler.cpp
+    Model/TaskSqlModel.cpp
 
 HEADERS  += \
     Controller/TaskNerd.h \
-    Model/ListItem.h \
-    Model/ListModel.h \
-    Model/TaskModel.h \
-    Model/RepeatingTaskModel.h \
-    Model/SaveModelDataHandler.h
+    Model/TaskSqlModel.h
 
 OTHER_FILES += \
     Resources/QML/TaskNerd.qml \

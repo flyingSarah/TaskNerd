@@ -3,15 +3,11 @@
 
 #include <QObject>
 #include <QQuickView>
-#include <qqmlengine.h>
-#include <qqmlcontext.h>
-#include <qqml.h>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <QtQuick/qquickitem.h>
 
-#include "Model/ListModel.h"
-#include "Model/TaskModel.h"
-#include "Model/RepeatingTaskModel.h"
-#include "Model/SaveModelDataHandler.h"
+#include "Model/TaskSqlModel.h"
 
 class TaskNerd : public QObject
 {
@@ -24,10 +20,9 @@ protected:
     bool eventFilter(QObject *, QEvent *);
 
 private:
-    Models::ListModel *taskModel;
-    Models::ListModel *weeklyTaskModel;
-    void setTaskModel(Models::ListModel *model);
-    void setWeeklyTaskModel(Models::ListModel *model);
+    TaskSqlModel *taskModel;
+
+    QSqlError initDb();
 
 private slots:
     //void slot_receiveData(QString tabName,int index, bool taskIsChecked);

@@ -10,19 +10,21 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
 
     QQmlContext *context = window->rootContext();
 
-    //TODO: set up a class to populate the model data from a source file (should work with models interchangeably)
-
-    //set one off tasks model for qml window
-    qmlRegisterType<TaskModel>("org.qtproject.models", 1, 0, "OneOffTask");
-    taskModel = new Models::ListModel(new TaskModel(this));
-    this->setTaskModel(taskModel);
-    context->setContextProperty("taskModel", taskModel);
-
-    //set weekly tasks model for qml window
-    qmlRegisterType<RepeatingTaskModel>("org.qtproject.models", 1, 0, "WeeklyTask");
-    weeklyTaskModel = new Models::ListModel(new RepeatingTaskModel(this));
-    this->setWeeklyTaskModel(weeklyTaskModel);
-    context->setContextProperty("weeklyTaskModel", weeklyTaskModel);
+    QSqlError err = initDb();
+    if(err.type() != QSqlError::NoError)
+    {
+        qCritical() << err.text();
+        qDebug() << "error initializing database";
+    }
+    else
+    {
+        taskModel = new TaskSqlModel();
+        taskModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        taskModel->setTable("tasks");
+        taskModel->applyRoles();
+        taskModel->select();
+        context->setContextProperty("taskModel", taskModel);
+    }
 
     //set and show the qml window
     window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
@@ -42,37 +44,45 @@ bool TaskNerd::eventFilter(QObject *obj, QEvent *event)
 
         if(keyEvent->key() == Qt::Key_S && keyEvent->modifiers().testFlag(Qt::ControlModifier))
         {
-            //save model here!
+            //TODO: save the sql database here -- but make it so it only saves when you want it to
             qDebug() << "save model:";
-
-            new SaveModelDataHandler(taskModel);
-
-            qDebug() << "save weekly model";
-            new SaveModelDataHandler(weeklyTaskModel);
         }
     }
 
     return QObject::eventFilter(obj, event);
 }
 
-void TaskNerd::setTaskModel(Models::ListModel *model)
+QSqlError TaskNerd::initDb()
 {
-    for(int i = 0; i < 30; ++i)
-    {
-        model->appendRow(new TaskModel(i, true, "test"));
-    }
-}
+    QSqlDatabase taskDb = QSqlDatabase::addDatabase("QSQLITE");
+    taskDb.setDatabaseName("Resources/TaskDatabase.sqlite");
 
-void TaskNerd::setWeeklyTaskModel(Models::ListModel *model)
-{
-    for(int i = 0; i < 10; ++i)
+    if(!taskDb.open())
     {
-        model->appendRow(new RepeatingTaskModel(i, false, "repeating task", "weekly", 4, 3, 5, QVariant()));
+        qDebug() << "Database: connection error";
+        return taskDb.lastError();
     }
-}
 
-/*void TaskNerd::slot_receiveData(QString tabName, int index, bool taskIsChecked)
-{
-    qDebug() << "receiving data:" << tabName << index << taskIsChecked;
-    model->setData(model->, taskIsChecked, NerdTaskModel::IsCheckedRole);
-}*/
+    QStringList tables = taskDb.tables();
+    if(tables.contains("tasks", Qt::CaseInsensitive))
+    {
+        //database has already been populated
+        return QSqlError();
+    }
+
+    QSqlQuery query;
+    if(!query.exec("CREATE TABLE tasks" "(id INTEGER PRIMARY KEY AUTOINCREMENT, isChecked INTEGER, label VARCHAR)"))
+    {
+        return query.lastError();
+    }
+
+    for(int i = 0; i < 30; i++)
+    {
+        if(!query.exec(QString("INSERT INTO tasks (id, isChecked, label)" "VALUES (%1, 0, 'Test Label %1')").arg(i)))
+        {
+            return query.lastError();
+        }
+    }
+
+    return QSqlError();
+}

@@ -28,7 +28,7 @@ Item
 
         Rectangle
         {
-            //property bool checkBoxChecked: isChecked
+            property bool checkBoxChecked: isChecked
 
             Layout.preferredWidth: Constants.buttonHeight
             Layout.preferredHeight: Constants.buttonHeight
@@ -40,7 +40,7 @@ Item
             MouseArea
             {
                 anchors.fill: parent
-                onClicked: isChecked = !isChecked//, taskItem.checkBoxIsChecked(i, parent.checkBoxChecked)
+                onClicked: isChecked = !isChecked //, taskItem.checkBoxIsChecked(i, parent.checkBoxChecked)
             }
         }
 
