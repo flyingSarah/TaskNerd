@@ -4,7 +4,9 @@
 #include <QSqlTableModel>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QDebug>
+#include <QKeyEvent>
 
 class TaskSqlModel : public QSqlTableModel
 {
@@ -12,10 +14,12 @@ class TaskSqlModel : public QSqlTableModel
     Q_PROPERTY(int count READ rowCount() NOTIFY countChanged())
 
 public:
-    TaskSqlModel(QObject *parent = 0) : QSqlTableModel(parent) {}
+    TaskSqlModel(QObject *parent = 0);
 
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
-    Q_INVOKABLE bool setData(const QModelIndex &index, const QVariant &value, int role);
+    Q_INVOKABLE bool setRecord(int row, QString roleName, QVariant value);
+
+    Q_INVOKABLE void setupModel(const QString &table);
 
     void applyRoles();
 

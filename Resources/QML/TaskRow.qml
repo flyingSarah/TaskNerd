@@ -7,10 +7,10 @@ Item
 {
     id: taskItem
 
+    property var modelRef
+
     implicitWidth: parent.width
     implicitHeight: Constants.taskRowHeight
-
-    //signal checkBoxIsChecked(int taskIndex, bool taskChecked)
 
     RowLayout
     {
@@ -35,12 +35,15 @@ Item
 
             border.color: Constants.taskItemBorderColor
             border.width: Constants.taskItemBorderWidth
-            color: isChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
+            color: checkBoxChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
 
             MouseArea
             {
                 anchors.fill: parent
-                onClicked: isChecked = !isChecked //, taskItem.checkBoxIsChecked(i, parent.checkBoxChecked)
+                onClicked: {
+                    parent.checkBoxChecked = !parent.checkBoxChecked
+                    modelRef.setRecord(index, "isChecked", parent.checkBoxChecked)
+                }
             }
         }
 
@@ -56,17 +59,23 @@ Item
             border.color: Constants.taskItemBorderColor
             border.width: Constants.taskItemBorderWidth
 
-            Text
+            TextEdit
             {
+                property  string initialText: label
+
                 anchors.fill: parent
                 anchors.leftMargin: 5
                 verticalAlignment: Text.AlignVCenter
 
                 color: Constants.taskLabelTextColor
 
-                text: label
+                text: initialText
                 font.family: Constants.appFont
                 font.pixelSize: Constants.appFontSize
+
+                onTextChanged: {
+                    label = text
+                }
             }
         }
 

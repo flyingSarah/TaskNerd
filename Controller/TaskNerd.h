@@ -16,12 +16,7 @@ class TaskNerd : public QObject
 public:
     TaskNerd(QQuickView *window, QObject *parent = 0);
 
-protected:
-    bool eventFilter(QObject *, QEvent *);
-
 private:
-    TaskSqlModel *taskModel;
-
     QSqlError initDb();
 
 private slots:

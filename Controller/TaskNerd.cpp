@@ -6,25 +6,14 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     window->setMinimumSize(QSize(440, 250));
     window->setResizeMode(QQuickView::SizeRootObjectToView);
 
-    window->installEventFilter(this);
-
-    QQmlContext *context = window->rootContext();
-
     QSqlError err = initDb();
     if(err.type() != QSqlError::NoError)
     {
         qCritical() << err.text();
         qDebug() << "error initializing database";
     }
-    else
-    {
-        taskModel = new TaskSqlModel();
-        taskModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-        taskModel->setTable("tasks");
-        taskModel->applyRoles();
-        taskModel->select();
-        context->setContextProperty("taskModel", taskModel);
-    }
+
+    qmlRegisterType<TaskSqlModel>("com.swhitley.models", 1, 0, "TaskModel");
 
     //set and show the qml window
     window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
@@ -34,22 +23,6 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     //QObject *object = window->rootObject();
 
     //connect(object, SIGNAL(taskCheckedChanged(QString,int,bool)), this, SLOT(slot_receiveData(QString,int,bool)));
-}
-
-bool TaskNerd::eventFilter(QObject *obj, QEvent *event)
-{
-    if(event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *keyEvent = (QKeyEvent *)event;
-
-        if(keyEvent->key() == Qt::Key_S && keyEvent->modifiers().testFlag(Qt::ControlModifier))
-        {
-            //TODO: save the sql database here -- but make it so it only saves when you want it to
-            qDebug() << "save model:";
-        }
-    }
-
-    return QObject::eventFilter(obj, event);
 }
 
 QSqlError TaskNerd::initDb()
@@ -64,6 +37,7 @@ QSqlError TaskNerd::initDb()
     }
 
     QStringList tables = taskDb.tables();
+    //create or find regular tasks:
     if(tables.contains("tasks", Qt::CaseInsensitive))
     {
         //database has already been populated
@@ -78,7 +52,27 @@ QSqlError TaskNerd::initDb()
 
     for(int i = 0; i < 30; i++)
     {
-        if(!query.exec(QString("INSERT INTO tasks (id, isChecked, label)" "VALUES (%1, 0, 'Test Label %1')").arg(i)))
+        if(!query.exec(QString("INSERT INTO tasks (isChecked, label)" "VALUES (0, 'Test Label %1')").arg(i)))
+        {
+            return query.lastError();
+        }
+    }
+
+    //create or find weekly tasks
+    if(tables.contains("weeklyTasks", Qt::CaseInsensitive))
+    {
+        //database has already been populated
+        return QSqlError();
+    }
+
+    if(!query.exec("CREATE TABLE weeklyTasks" "(id INTEGER PRIMARY KEY AUTOINCREMENT, isChecked INTEGER, label VARCHAR)"))
+    {
+        return query.lastError();
+    }
+
+    for(int i = 0; i < 30; i++)
+    {
+        if(!query.exec(QString("INSERT INTO weeklyTasks (isChecked, label)" "VALUES (0, 'Weekly Test Label %1')").arg(i)))
         {
             return query.lastError();
         }

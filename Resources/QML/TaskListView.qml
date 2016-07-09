@@ -4,16 +4,17 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
 
+import com.swhitley.models 1.0
+
 import "Constants.js" as Constants
 
 ScrollView
 {
     id: scrollView
 
-    //signal tabTaskCheckChanged(string tab, int task, bool checkBoxState)
-
-    property var tabModel
+    //property var tabModel
     property string tabDelegate
+    property string tabTableName
 
     Layout.fillWidth: true
     Layout.fillHeight: true
@@ -56,19 +57,22 @@ ScrollView
             property int finCount: 0
 
             width: parent.width
-            model: tabModel
+            model: TaskModel {
+                id: taskModel
+            }
 
             delegate: Loader {
-
                 id: taskLoader
                 Layout.fillWidth: true
-                source: "%1.qml".arg(tabDelegate)
-
-                /*Connections
+                sourceComponent: TaskRow //having this in a loader prevents errors when saving
                 {
-                    target: taskLoader.item
-                    onCheckBoxIsChecked: tabTaskCheckChanged(scrollView.tabDelegate, taskIndex, taskChecked)
-                }*/
+                    Layout.fillWidth: true
+                    modelRef: taskModel
+                }
+            }
+
+            Component.onCompleted: {
+                taskModel.setupModel(tabTableName)
             }
         }
     }
@@ -87,5 +91,17 @@ ScrollView
 
     flickableItem.onContentYChanged: {
         //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
+    }
+
+    Keys.onPressed: {
+        if(event.key === Qt.Key_S && event.modifiers === Qt.ControlModifier)
+        {
+            taskModel.submitAll() //TODO: figure out how to also save the other tabs
+        }
+        if(event.key === Qt.Key_R && event.modifiers === Qt.ControlModifier)
+        {
+            taskModel.revertAll()
+            taskModel.select()
+        }
     }
 }

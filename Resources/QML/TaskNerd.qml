@@ -10,8 +10,6 @@ Item
 {
     id: item
 
-    //signal taskCheckedChanged(string tabName, int index, bool taskIsChecked)
-
     Layout.fillHeight: true
 	Layout.fillWidth: true
     anchors.fill: parent
@@ -29,31 +27,24 @@ Item
             anchors.margins: Constants.windowMargins
             spacing: Constants.windowMargins
 
-
-            //a stackoverflow thread helped me put this together:
-            //... http://stackoverflow.com/questions/13049896/qml-navigation-between-qml-pages-from-design-perception
-
-            //tab loader to show different views
-            Loader {
-                id: scrollLoader
-
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                active: false
-                asynchronous: true
+            TaskListView
+            {
+                id: regularTasks
                 visible: false
-                sourceComponent: regularTasks
-                onVisibleChanged: loadIfNotLoaded()
-                Component.onCompleted: loadIfNotLoaded()
+                focus: false
+                //tabModel: taskModel
+                tabDelegate: "TaskRow"
+                tabTableName: "tasks"
+            }
 
-                function loadIfNotLoaded()
-                {
-                    if(visible && !active)
-                    {
-                        active = true
-                    }
-                }
+            TaskListView
+            {
+                id: weeklyTasks
+                visible: false
+                focus: false
+                //tabModel: weeklyTaskModel
+                tabDelegate: "TaskRow"
+                tabTableName: "weeklyTasks"
             }
 
             //bottom tab bar with radio buttons for the different task lists
@@ -65,40 +56,20 @@ Item
 
                 onSelectedTabButton: {
 
-                    scrollLoader.active = false;
-                    scrollLoader.visible = false;
                     if(tabIndex % 2)
                     {
-                        scrollLoader.sourceComponent = weeklyTasks
+                        regularTasks.visible = false
+                        regularTasks.focus = false
+                        weeklyTasks.visible = true
+                        weeklyTasks.focus = true
                     }
                     else
                     {
-                        scrollLoader.sourceComponent = regularTasks
+                        weeklyTasks.visible = false
+                        weeklyTasks.focus = false
+                        regularTasks.visible = true
+                        regularTasks.focus = true
                     }
-
-                    scrollLoader.visible = true
-                }
-            }
-
-            Component
-            {
-                id: regularTasks
-                TaskListView
-                {
-                    tabModel: taskModel
-                    tabDelegate: "TaskRow"
-                    //onTabTaskCheckChanged: taskCheckedChanged(tab, task, checkBoxState)
-                }
-            }
-
-            Component
-            {
-                id: weeklyTasks
-                TaskListView
-                {
-                    tabModel: weeklyTaskModel
-                    tabDelegate: "TaskRow" //TODO: make a new row type for repeating tasks
-                    //onTabTaskCheckChanged: taskCheckedChanged(tab, task, checkBoxState)
                 }
             }
         }
