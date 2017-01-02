@@ -27,12 +27,71 @@ Item
             anchors.margins: Constants.windowMargins
             spacing: Constants.windowMargins
 
+            RowLayout
+            {
+                id: toolRow
+
+                spacing: Constants.taskRowSpacing
+
+                width: parent.width
+                height: Constants.taskRowHeight
+
+                Layout.alignment: Qt.AlignRight
+
+                Rectangle
+                {
+                    width: Constants.buttonHeight
+                    height: Constants.buttonHeight
+
+                    color: Constants.taskCheckBoxUC
+                    border.color: Constants.taskItemBorderColor
+                    border.width: Constants.taskItemBorderWidth
+
+                    Text
+                    {
+                        id: addButtonText
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                        text: "+"
+
+                        font.family: Constants.appFont
+                        font.pixelSize: Constants.appFontSize
+                        color: Constants.taskLabelTextColor
+                    }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(regularTasks.visible)
+                            {
+                                regularTasks.addTask()
+                            }
+                            else if(weeklyTasks.visible)
+                            {
+                                weeklyTasks.addTask()
+                            }
+                        }
+
+                        onPressed: {
+                            parent.color = Constants.taskCheckBoxCC
+                            addButtonText.color = Constants.taskCheckBoxUC
+                        }
+
+                        onReleased: {
+                            parent.color = Constants.taskCheckBoxUC
+                            addButtonText.color = Constants.taskLabelTextColor
+                        }
+                    }
+                }
+            }
+
             TaskListView
             {
                 id: regularTasks
                 visible: false
                 focus: false
-                //tabModel: taskModel
                 tabDelegate: "TaskRow"
                 tabTableName: "tasks"
             }
@@ -42,7 +101,6 @@ Item
                 id: weeklyTasks
                 visible: false
                 focus: false
-                //tabModel: weeklyTaskModel
                 tabDelegate: "TaskRow"
                 tabTableName: "weeklyTasks"
             }

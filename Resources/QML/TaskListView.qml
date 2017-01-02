@@ -12,7 +12,6 @@ ScrollView
 {
     id: scrollView
 
-    //property var tabModel
     property string tabDelegate
     property string tabTableName
 
@@ -21,6 +20,12 @@ ScrollView
 
     frameVisible: true
     highlightOnFocus: true
+
+    function addTask()
+    {
+        //TODO: add task to task model
+        console.log("add task to " + tabTableName, taskModel.count)
+    }
 
     style: ScrollViewStyle {
         transientScrollBars: true
