@@ -29,6 +29,8 @@ var tabButtonUTC    = 'gray'; //unselected text color of tab buttons
 var tabName1        = "One Off Tasks";
 var tabName2        = "Weekly Tasks";
 
+var tabInitIndex    = 0; //initial index of the task views that are shown on open
+
 
 // ------------------------------------------------------------------ Task Row
 

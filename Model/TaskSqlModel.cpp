@@ -35,6 +35,15 @@ bool TaskSqlModel::setRecord(int row, QString roleName, QVariant value)
     QSqlTableModel::setRecord(row, newRecord);
 }
 
+bool TaskSqlModel::insertNewRecord()
+{
+    QSqlRecord newRecord = this->record(this->count-1);
+    newRecord.setValue("isChecked", false);
+    newRecord.setValue("label", "");
+
+    QSqlTableModel::insertRecord(this->count, newRecord);
+}
+
 QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
 {
     if(role < Qt::UserRole)

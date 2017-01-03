@@ -19,9 +19,7 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
     window->show();
 
-    //TODO: set the selected tab radio button at the start of the application
     //QObject *object = window->rootObject();
-
     //connect(object, SIGNAL(taskCheckedChanged(QString,int,bool)), this, SLOT(slot_receiveData(QString,int,bool)));
 }
 

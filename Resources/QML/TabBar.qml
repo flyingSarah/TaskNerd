@@ -39,6 +39,7 @@ Item
 
                 TabRadioButton
                 {
+                    id: radioButton
                     text: layout.tabNames[index]
                     radioGroup: tabBarGroup
                     buttonIndex: index
@@ -50,6 +51,15 @@ Item
                     Layout.fillWidth: true
 
                     onSelected: item.selectedTabButton(tabIndex)
+
+                    Component.onCompleted: {
+                        //this is where the first tab in the view is initialized
+                        //TODO: instead of this being a constant, I should make this a persistent value
+                        if(index == Constants.tabInitIndex)
+                        {
+                            radioGroup.selected = radioButton, selected(index)
+                        }
+                    }
                 }
             }
         }

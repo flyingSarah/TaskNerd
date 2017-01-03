@@ -18,6 +18,7 @@ public:
 
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE bool setRecord(int row, QString roleName, QVariant value);
+    Q_INVOKABLE bool insertNewRecord();
 
     Q_INVOKABLE void setupModel(const QString &table);
 

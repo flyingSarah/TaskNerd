@@ -23,8 +23,7 @@ ScrollView
 
     function addTask()
     {
-        //TODO: add task to task model
-        console.log("add task to " + tabTableName, taskModel.count)
+        taskModel.insertNewRecord()
     }
 
     style: ScrollViewStyle {
