@@ -35,10 +35,11 @@ QSqlError TaskNerd::initDb()
     }
 
     QStringList tables = taskDb.tables();
+
     //create or find regular tasks:
     if(tables.contains("tasks", Qt::CaseInsensitive))
     {
-        //database has already been populated
+        //plain tasks table has already been populated
         return QSqlError();
     }
 
@@ -48,32 +49,16 @@ QSqlError TaskNerd::initDb()
         return query.lastError();
     }
 
-    for(int i = 0; i < 30; i++)
-    {
-        if(!query.exec(QString("INSERT INTO tasks (isChecked, label)" "VALUES (0, 'Test Label %1')").arg(i)))
-        {
-            return query.lastError();
-        }
-    }
-
     //create or find weekly tasks
     if(tables.contains("weeklyTasks", Qt::CaseInsensitive))
     {
-        //database has already been populated
+        //weekly tasks table has already been populated
         return QSqlError();
     }
 
     if(!query.exec("CREATE TABLE weeklyTasks" "(id INTEGER PRIMARY KEY AUTOINCREMENT, isChecked INTEGER, label VARCHAR)"))
     {
         return query.lastError();
-    }
-
-    for(int i = 0; i < 30; i++)
-    {
-        if(!query.exec(QString("INSERT INTO weeklyTasks (isChecked, label)" "VALUES (0, 'Weekly Test Label %1')").arg(i)))
-        {
-            return query.lastError();
-        }
     }
 
     return QSqlError();

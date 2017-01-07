@@ -23,7 +23,7 @@ ScrollView
 
     function addTask()
     {
-        taskModel.insertNewRecord()
+        taskModel.insertNewRecord(taskModel.count, Constants.defaultTaskMap)
     }
 
     style: ScrollViewStyle {
@@ -72,6 +72,8 @@ ScrollView
                 {
                     Layout.fillWidth: true
                     modelRef: taskModel
+
+                    onDealWithCache: scrollView.dealWithCache(keyEvent)
                 }
             }
 
@@ -98,12 +100,19 @@ ScrollView
     }
 
     Keys.onPressed: {
+        dealWithCache(event)
+    }
+
+    function dealWithCache(event)
+    {
         if(event.key === Qt.Key_S && event.modifiers === Qt.ControlModifier)
         {
+            console.log("submit")
             taskModel.submitAll() //TODO: figure out how to also save the other tabs
         }
         if(event.key === Qt.Key_R && event.modifiers === Qt.ControlModifier)
         {
+            console.log("revert")
             taskModel.revertAll()
             taskModel.select()
         }

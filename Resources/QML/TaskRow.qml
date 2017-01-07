@@ -8,6 +8,9 @@ Item
     id: taskItem
 
     property var modelRef
+    property var taskDataMap: {"isChecked": isChecked, "label": label}
+
+    signal dealWithCache(var keyEvent)
 
     implicitWidth: parent.width
     implicitHeight: Constants.taskRowHeight
@@ -28,6 +31,8 @@ Item
 
         Rectangle
         {
+            id: checkBox
+
             property bool checkBoxChecked: isChecked
 
             Layout.preferredWidth: Constants.buttonHeight
@@ -41,8 +46,10 @@ Item
             {
                 anchors.fill: parent
                 onClicked: {
-                    parent.checkBoxChecked = !parent.checkBoxChecked
-                    modelRef.setRecord(index, "isChecked", parent.checkBoxChecked)
+                    checkBox.checkBoxChecked = !checkBox.checkBoxChecked
+                    checkBox.focus = true
+                    taskDataMap["isChecked"] = checkBox.checkBoxChecked
+                    modelRef.setRecord(index, taskDataMap)
                 }
             }
         }
@@ -59,8 +66,10 @@ Item
             border.color: Constants.taskItemBorderColor
             border.width: Constants.taskItemBorderWidth
 
-            TextEdit
+            TextInput
             {
+                id: textBox
+
                 property  string initialText: label
 
                 anchors.fill: parent
@@ -73,8 +82,29 @@ Item
                 font.family: Constants.appFont
                 font.pixelSize: Constants.appFontSize
 
+                selectByMouse: true
+                maximumLength: 75
+
                 onTextChanged: {
-                    label = text
+                    if(text != label)
+                    {
+                        taskDataMap["label"] = text
+                        modelRef.setRecord(index, taskDataMap)
+                    }
+                }
+
+                onEditingFinished: {
+                    textBox.focus = false
+                }
+
+                Keys.onPressed: {
+                    if(event.key == Qt.Key_Tab)
+                    {
+                        editingFinished()
+                    }
+
+                    //saves or reverts on cmd-s or cmd-r
+                    dealWithCache(event)
                 }
             }
         }

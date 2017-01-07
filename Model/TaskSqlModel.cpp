@@ -25,23 +25,35 @@ void TaskSqlModel::setupModel(const QString &table)
     this->select();
 }
 
-bool TaskSqlModel::setRecord(int row, QString roleName, QVariant value)
+bool TaskSqlModel::setRecord(int row, QVariantMap taskDataMap)
 {
-    qDebug() << row << roleName << value;
+    QSqlRecord record = recordFromMap(row, taskDataMap);
+    bool success = QSqlTableModel::setRecord(row, record);
 
-    QSqlRecord newRecord = this->record(row);
-    newRecord.setValue(roleName, value);
-
-    QSqlTableModel::setRecord(row, newRecord);
+    return success;
 }
 
-bool TaskSqlModel::insertNewRecord()
+bool TaskSqlModel::insertNewRecord(int row, QVariantMap defaultTaskMap)
 {
-    QSqlRecord newRecord = this->record(this->count-1);
-    newRecord.setValue("isChecked", false);
-    newRecord.setValue("label", "");
+    QSqlRecord newRecord = recordFromMap(row-1, defaultTaskMap);
+    bool success = QSqlTableModel::insertRecord(row, newRecord);
 
-    QSqlTableModel::insertRecord(this->count, newRecord);
+    return success;
+}
+
+QSqlRecord TaskSqlModel::recordFromMap(int row, QVariantMap dataMap)
+{
+    QSqlRecord record = this->record(row);
+    QMapIterator<QString, QVariant> i(dataMap);
+
+    while(i.hasNext())
+    {
+        i.next();
+        record.setValue(i.key(), i.value());
+        record.setGenerated(i.key(), true);
+    }
+
+    return record;
 }
 
 QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
