@@ -11,12 +11,66 @@ Item
     id: item
 
     Layout.fillHeight: true
-	Layout.fillWidth: true
+    Layout.fillWidth: true
     anchors.fill: parent
+
+    // ---------------------------------------------------------------- Menu Stuff
+
+    MenuBar
+    {
+        Menu
+        {
+            title: "File"
+
+            MenuItem
+            {
+                text: "Save"
+                action: saveAction
+            }
+
+            MenuItem
+            {
+                text: "Revert"
+                action: revertAction
+            }
+        }
+    }
+
+    Action
+    {
+        id: saveAction
+
+        text: "Save"
+        shortcut: StandardKey.Save
+        onTriggered: {
+            console.log("submit")
+            regularTasks.save()
+            weeklyTasks.save()
+            setCurrentTabToVisible(background.currentTabIndex)
+        }
+    }
+
+    Action
+    {
+        id: revertAction
+
+        text: "Revert"
+        shortcut: "Ctrl+R"
+        onTriggered: {
+            console.log("revert")
+            regularTasks.revert()
+            weeklyTasks.revert()
+            setCurrentTabToVisible(background.currentTabIndex)
+        }
+    }
+
+    // ---------------------------------------------------------------- UI Stuff
 
     Rectangle {
 
         id: background
+
+        property int currentTabIndex
 
         color: Constants.windowBgColor
         anchors.fill: parent
@@ -114,22 +168,26 @@ Item
 
                 onSelectedTabButton: {
 
-                    if(tabIndex % 2)
-                    {
-                        regularTasks.visible = false
-                        regularTasks.focus = false
-                        weeklyTasks.visible = true
-                        weeklyTasks.focus = true
-                    }
-                    else
-                    {
-                        weeklyTasks.visible = false
-                        weeklyTasks.focus = false
-                        regularTasks.visible = true
-                        regularTasks.focus = true
-                    }
+                    background.currentTabIndex = tabIndex
+                    setCurrentTabToVisible(tabIndex)
                 }
             }
+        }
+    }
+
+    // ---------------------------------------------------------------- Helper functions
+
+    function setCurrentTabToVisible(index)
+    {
+        if(index === 0)
+        {
+            weeklyTasks.visible = false
+            regularTasks.visible = true
+        }
+        else
+        {
+            regularTasks.visible = false
+            weeklyTasks.visible = true
         }
     }
 }

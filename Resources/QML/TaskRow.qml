@@ -10,8 +10,6 @@ Item
     property var modelRef
     property var taskDataMap: {"isChecked": isChecked, "label": label}
 
-    signal dealWithCache(var keyEvent)
-
     implicitWidth: parent.width
     implicitHeight: Constants.taskRowHeight
 
@@ -98,13 +96,10 @@ Item
                 }
 
                 Keys.onPressed: {
-                    if(event.key == Qt.Key_Tab)
+                    if(event.key === Qt.Key_Tab)
                     {
                         editingFinished()
                     }
-
-                    //saves or reverts on cmd-s or cmd-r
-                    dealWithCache(event)
                 }
             }
         }

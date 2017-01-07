@@ -72,8 +72,6 @@ ScrollView
                 {
                     Layout.fillWidth: true
                     modelRef: taskModel
-
-                    onDealWithCache: scrollView.dealWithCache(keyEvent)
                 }
             }
 
@@ -99,22 +97,16 @@ ScrollView
         //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
     }
 
-    Keys.onPressed: {
-        dealWithCache(event)
+    function save()
+    {
+        visible = true
+        taskModel.submitAll()
     }
 
-    function dealWithCache(event)
+    function revert()
     {
-        if(event.key === Qt.Key_S && event.modifiers === Qt.ControlModifier)
-        {
-            console.log("submit")
-            taskModel.submitAll() //TODO: figure out how to also save the other tabs
-        }
-        if(event.key === Qt.Key_R && event.modifiers === Qt.ControlModifier)
-        {
-            console.log("revert")
-            taskModel.revertAll()
-            taskModel.select()
-        }
+        visible = true
+        taskModel.revertAll()
+        taskModel.select()
     }
 }
