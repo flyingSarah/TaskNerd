@@ -1,6 +1,8 @@
 import QtQuick 2.3
 import QtQuick.Layouts 1.1
 
+import com.swhitley.models 1.0
+
 import "Constants.js" as Constants
 
 Item
@@ -110,4 +112,6 @@ Item
             height: Constants.buttonHeight
         }
     }
+
+    Component.onCompleted: textBox.forceActiveFocus()
 }

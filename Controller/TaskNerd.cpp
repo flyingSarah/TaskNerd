@@ -14,6 +14,7 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     }
 
     qmlRegisterType<TaskSqlModel>("com.swhitley.models", 1, 0, "TaskModel");
+    qmlRegisterType<DBData>("com.swhitley.models", 1, 0, "TaskTabInfo");
 
     //set and show the qml window
     window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
@@ -34,31 +35,29 @@ QSqlError TaskNerd::initDb()
         return taskDb.lastError();
     }
 
+    QSqlQuery query;
+
     QStringList tables = taskDb.tables();
 
-    //create or find regular tasks:
-    if(tables.contains("tasks", Qt::CaseInsensitive))
+    for(int i = 0; i < DBData::countTables(); i++)
     {
-        //plain tasks table has already been populated
-        return QSqlError();
-    }
+        //create or find task table in database
+        if(tables.contains(DBData::dbNames().at(i).toString(), Qt::CaseInsensitive))
+        {
+            //table has already been populated
+            return QSqlError();
+        }
 
-    QSqlQuery query;
-    if(!query.exec("CREATE TABLE tasks" "(id INTEGER PRIMARY KEY AUTOINCREMENT, isChecked INTEGER, label VARCHAR)"))
-    {
-        return query.lastError();
-    }
+        QString createTableString = QString("CREATE TABLE %1" "(id INTEGER PRIMARY KEY AUTOINCREMENT, %2)")
+                .arg(DBData::dbNames().at(i).toString())
+                .arg(DBData::createDbStr.at(i).toString());
 
-    //create or find weekly tasks
-    if(tables.contains("weeklyTasks", Qt::CaseInsensitive))
-    {
-        //weekly tasks table has already been populated
-        return QSqlError();
-    }
+        //qDebug() << "initDB:" << createTableString;
 
-    if(!query.exec("CREATE TABLE weeklyTasks" "(id INTEGER PRIMARY KEY AUTOINCREMENT, isChecked INTEGER, label VARCHAR)"))
-    {
-        return query.lastError();
+        if(!query.exec(createTableString))
+        {
+            return query.lastError();
+        }
     }
 
     return QSqlError();

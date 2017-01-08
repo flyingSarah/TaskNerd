@@ -8,6 +8,7 @@
 #include <QtQuick/qquickitem.h>
 
 #include "Model/TaskSqlModel.h"
+#include "Model/DBData.h"
 
 class TaskNerd : public QObject
 {
@@ -20,7 +21,7 @@ private:
     QSqlError initDb();
 
 private slots:
-    //void slot_receiveData(QString tabName,int index, bool taskIsChecked);
+
 };
 
 #endif // TASKNERD_H

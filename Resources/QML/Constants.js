@@ -26,9 +26,6 @@ var tabButtonBC     = 'gray'; //border color of tab buttons
 var tabButtonSTC    = 'lightgray'; //selected text color of tab buttons
 var tabButtonUTC    = 'gray'; //unselected text color of tab buttons
 
-var tabName1        = "One Off Tasks";
-var tabName2        = "Weekly Tasks";
-
 var tabInitIndex    = 0; //initial index of the task views that are shown on open
 
 
@@ -45,7 +42,3 @@ var taskCheckBoxCC      = 'gray'; //checked color of task checkbox
 var taskCheckBoxUC      = 'transparent'; //unchecked color of task checkbox
 var taskLabelBgColor    = 'white'; //background color of task label
 var taskLabelTextColor  = 'gray';
-
-// ------------------------------------------------------------------ Defaults
-
-var defaultTaskMap      = {"isChecked": false, "label": ""}

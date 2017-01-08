@@ -2,6 +2,8 @@ import QtQuick 2.3
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.1
 
+import com.swhitley.models 1.0
+
 import "Constants.js" as Constants
 
 Item
@@ -25,8 +27,12 @@ Item
             anchors.fill: parent
             spacing: Constants.tabBarSpacing
 
-            property var tabNames: [ Constants.tabName1, Constants.tabName2 ]
-            property real numOfTabs: tabNames.length
+            TaskTabInfo
+            {
+                id: taskTabInfo
+            }
+
+            property int numOfTabs: taskTabInfo.countTables()
 
             RadioGroup
             {
@@ -40,7 +46,7 @@ Item
                 TabRadioButton
                 {
                     id: radioButton
-                    text: layout.tabNames[index]
+                    text: taskTabInfo.titles()[index]
                     radioGroup: tabBarGroup
                     buttonIndex: index
 

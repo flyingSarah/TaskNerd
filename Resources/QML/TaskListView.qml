@@ -14,6 +14,7 @@ ScrollView
 
     property string tabDelegate
     property string tabTableName
+    property string tabIndex
 
     Layout.fillWidth: true
     Layout.fillHeight: true
@@ -23,7 +24,13 @@ ScrollView
 
     function addTask()
     {
-        taskModel.insertNewRecord(taskModel.count, Constants.defaultTaskMap)
+        taskModel.insertNewRecord(taskModel.count, taskTabInfo.paramDefaultMaps()[tabIndex])
+        //when adding a task adjust the scroll area so you can see the added task at the bottom
+        var pos = flickableItem.contentHeight - flickableItem.height
+        if(pos > 0)
+        {
+            flickableItem.contentY = flickableItem.contentHeight - flickableItem.height
+        }
     }
 
     style: ScrollViewStyle {
@@ -62,6 +69,7 @@ ScrollView
 
             width: parent.width
             model: TaskModel {
+
                 id: taskModel
             }
 

@@ -4,6 +4,8 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
 
+import com.swhitley.models 1.0
+
 import "Constants.js" as Constants
 
 Item
@@ -43,9 +45,10 @@ Item
         text: "Save"
         shortcut: StandardKey.Save
         onTriggered: {
-            console.log("submit")
-            regularTasks.save()
-            weeklyTasks.save()
+            for(var i = 0; i < taskTabInfo.countTables(); i++)
+            {
+                taskViewRepeater.itemAt(i).save()
+            }
             setCurrentTabToVisible(background.currentTabIndex)
         }
     }
@@ -57,9 +60,10 @@ Item
         text: "Revert"
         shortcut: "Ctrl+R"
         onTriggered: {
-            console.log("revert")
-            regularTasks.revert()
-            weeklyTasks.revert()
+            for(var i = 0; i < taskTabInfo.countTables(); i++)
+            {
+                taskViewRepeater.itemAt(i).revert()
+            }
             setCurrentTabToVisible(background.currentTabIndex)
         }
     }
@@ -118,14 +122,7 @@ Item
                     {
                         anchors.fill: parent
                         onClicked: {
-                            if(regularTasks.visible)
-                            {
-                                regularTasks.addTask()
-                            }
-                            else if(weeklyTasks.visible)
-                            {
-                                weeklyTasks.addTask()
-                            }
+                            taskViewRepeater.itemAt(background.currentTabIndex).addTask()
                         }
 
                         onPressed: {
@@ -141,22 +138,33 @@ Item
                 }
             }
 
-            TaskListView
+            TaskTabInfo
             {
-                id: regularTasks
-                visible: false
-                focus: false
-                tabDelegate: "TaskRow"
-                tabTableName: "tasks"
+                id: taskTabInfo
             }
 
-            TaskListView
+            Repeater
             {
-                id: weeklyTasks
-                visible: false
-                focus: false
-                tabDelegate: "TaskRow"
-                tabTableName: "weeklyTasks"
+                id: taskViewRepeater
+
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                model: taskTabInfo.countTables()
+
+                TaskListView
+                {
+                    visible: false
+                    tabDelegate: "TaskRow"
+                    tabTableName: taskTabInfo.dbNames()[index]
+                    tabIndex: index
+                }
+
+                Component.onCompleted: {
+
+                    taskViewRepeater.itemAt(Constants.tabInitIndex).visible = true
+                    background.currentTabIndex = Constants.tabInitIndex
+                }
             }
 
             //bottom tab bar with radio buttons for the different task lists
@@ -179,15 +187,16 @@ Item
 
     function setCurrentTabToVisible(index)
     {
-        if(index === 0)
+        for(var i = 0; i < taskViewRepeater.count; i++)
         {
-            weeklyTasks.visible = false
-            regularTasks.visible = true
-        }
-        else
-        {
-            regularTasks.visible = false
-            weeklyTasks.visible = true
+            if(i !== index)
+            {
+                taskViewRepeater.itemAt(i).visible = false
+            }
+            else
+            {
+                taskViewRepeater.itemAt(i).visible = true
+            }
         }
     }
 }

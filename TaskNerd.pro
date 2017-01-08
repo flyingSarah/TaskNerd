@@ -14,11 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     Controller/TaskNerd.cpp \
-    Model/TaskSqlModel.cpp
+    Model/TaskSqlModel.cpp \
+    Model/DBData.cpp
 
 HEADERS  += \
     Controller/TaskNerd.h \
-    Model/TaskSqlModel.h
+    Model/TaskSqlModel.h \
+    Model/DBData.h
 
 OTHER_FILES += \
     Resources/QML/TaskNerd.qml \
