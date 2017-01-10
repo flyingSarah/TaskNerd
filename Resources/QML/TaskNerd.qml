@@ -89,51 +89,33 @@ Item
             {
                 id: toolRow
 
-                spacing: Constants.taskRowSpacing
+                spacing: Constants.tabBarSpacing
 
                 width: parent.width
                 height: Constants.taskRowHeight
 
                 Layout.alignment: Qt.AlignRight
 
-                Rectangle
+                //TODO: I probably need a special mode button for the delete button so that it can stay selected for delete mode
+                //...and then be intentionally exited
+                ToolBarButton
                 {
-                    width: Constants.buttonHeight
-                    height: Constants.buttonHeight
+                    charForIcon: "-"
 
-                    color: Constants.taskCheckBoxUC
-                    border.color: Constants.taskItemBorderColor
-                    border.width: Constants.taskItemBorderWidth
-
-                    Text
-                    {
-                        id: addButtonText
-                        anchors.fill: parent
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                        text: "+"
-
-                        font.family: Constants.appFont
-                        font.pixelSize: Constants.appFontSize
-                        color: Constants.taskLabelTextColor
+                    onButtonClick: {
+                        for(var i = 0; i < taskViewRepeater.count; i++)
+                        {
+                            taskViewRepeater.itemAt(i).deleteTask()
+                        }
                     }
+                }
 
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        onClicked: {
-                            taskViewRepeater.itemAt(background.currentTabIndex).addTask()
-                        }
+                ToolBarButton
+                {
+                    charForIcon: "+"
 
-                        onPressed: {
-                            parent.color = Constants.taskCheckBoxCC
-                            addButtonText.color = Constants.taskCheckBoxUC
-                        }
-
-                        onReleased: {
-                            parent.color = Constants.taskCheckBoxUC
-                            addButtonText.color = Constants.taskLabelTextColor
-                        }
+                    onButtonClick: {
+                        taskViewRepeater.itemAt(background.currentTabIndex).addTask()
                     }
                 }
             }

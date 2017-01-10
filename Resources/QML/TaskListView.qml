@@ -29,7 +29,15 @@ ScrollView
         var pos = flickableItem.contentHeight - flickableItem.height
         if(pos > 0)
         {
-            flickableItem.contentY = flickableItem.contentHeight - flickableItem.height
+            flickableItem.contentY = pos
+        }
+    }
+
+    function deleteTask()
+    {
+        for(var i = 0; i < taskRepeater.count; i++)
+        {
+            taskRepeater.itemAt(i).enterDeleteMode()
         }
     }
 
@@ -73,14 +81,10 @@ ScrollView
                 id: taskModel
             }
 
-            delegate: Loader {
-                id: taskLoader
+            TaskRow
+            {
                 Layout.fillWidth: true
-                sourceComponent: TaskRow //having this in a loader prevents errors when saving
-                {
-                    Layout.fillWidth: true
-                    modelRef: taskModel
-                }
+                modelRef: taskModel
             }
 
             Component.onCompleted: {

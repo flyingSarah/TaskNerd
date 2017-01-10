@@ -36,7 +36,7 @@ bool TaskSqlModel::setRecord(int row, QVariantMap taskDataMap)
 bool TaskSqlModel::insertNewRecord(int row, QVariantMap defaultTaskMap)
 {
     QSqlRecord newRecord = recordFromMap(row-1, defaultTaskMap);
-    bool success = QSqlTableModel::insertRecord(row, newRecord);
+    bool success = QSqlTableModel::insertRecord(-1, newRecord);
 
     return success;
 }

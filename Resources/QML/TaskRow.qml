@@ -12,8 +12,13 @@ Item
     property var modelRef
     property var taskDataMap: {"isChecked": isChecked, "label": label}
 
-    implicitWidth: parent.width
     implicitHeight: Constants.taskRowHeight
+
+    function enterDeleteMode()
+    {
+        //TODO: turn task check box into a circle with an x and make it so on click, that task is deleted
+        console.log("enter delete mode:", index)
+    }
 
     RowLayout
     {
