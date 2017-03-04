@@ -10,16 +10,11 @@ Item
     id: taskItem
 
     property var modelRef
-    property var taskDataMap: {"isChecked": isChecked, "label": label}
+    property var taskDataMap: ({})
 
     implicitHeight: Constants.taskRowHeight
 
-    function enterDeleteMode()
-    {
-        //TODO: turn task check box into a circle with an x and make it so on click, that task is deleted
-        console.log("enter delete mode:", index)
-    }
-
+    //--------------------------------------------------------------- Main Task Row
     RowLayout
     {
         anchors.verticalCenter: parent.verticalCenter
@@ -28,89 +23,69 @@ Item
         width: parent.width
         height: parent.height
 
+        //--------------------------------------------------------------- Left Spacing
+
         Item
         {
             width: Constants.taskRowLeftSpacing
             height: Constants.buttonHeight
         }
 
-        Rectangle
+        //--------------------------------------------------------------- Check Box
+        Loader
         {
-            id: checkBox
-
-            property bool checkBoxChecked: isChecked
+            id: checkBoxLoader
 
             Layout.preferredWidth: Constants.buttonHeight
             Layout.preferredHeight: Constants.buttonHeight
+        }
 
-            border.color: Constants.taskItemBorderColor
-            border.width: Constants.taskItemBorderWidth
-            color: checkBoxChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
+        Component
+        {
+            id: checkBoxComponent
 
-            MouseArea
+            TaskCheckBox
             {
-                anchors.fill: parent
-                onClicked: {
-                    checkBox.checkBoxChecked = !checkBox.checkBoxChecked
-                    checkBox.focus = true
-                    taskDataMap["isChecked"] = checkBox.checkBoxChecked
+                _taskDataMap: taskDataMap
+
+                anchors.fill: checkBoxLoader
+
+                onUpdateTaskDataMap: {
+                    taskDataMap = taskDataMap_
                     modelRef.setRecord(index, taskDataMap)
                 }
             }
         }
 
-        Rectangle
+        //--------------------------------------------------------------- Task Label
+        Loader
         {
+            id: labelLoader
+
             Layout.fillWidth: true
             Layout.minimumWidth: 50
-            Layout.maximumWidth: 16000
+            Layout.maximumWidth: 1600
             Layout.preferredHeight: Constants.buttonHeight
+        }
 
-            color: Constants.taskLabelBgColor
+        Component
+        {
+            id: labelComponent
 
-            border.color: Constants.taskItemBorderColor
-            border.width: Constants.taskItemBorderWidth
-
-            TextInput
+            TaskLabel
             {
-                id: textBox
+                _taskDataMap: taskDataMap
 
-                property  string initialText: label
+                anchors.fill: labelLoader
 
-                anchors.fill: parent
-                anchors.leftMargin: 5
-                verticalAlignment: Text.AlignVCenter
-
-                color: Constants.taskLabelTextColor
-
-                text: initialText
-                font.family: Constants.appFont
-                font.pixelSize: Constants.appFontSize
-
-                selectByMouse: true
-                maximumLength: 75
-
-                onTextChanged: {
-                    if(text != label)
-                    {
-                        taskDataMap["label"] = text
-                        modelRef.setRecord(index, taskDataMap)
-                    }
-                }
-
-                onEditingFinished: {
-                    textBox.focus = false
-                }
-
-                Keys.onPressed: {
-                    if(event.key === Qt.Key_Tab)
-                    {
-                        editingFinished()
-                    }
+                onUpdateTaskDataMap: {
+                    taskDataMap = taskDataMap_
+                    modelRef.setRecord(index, taskDataMap)
                 }
             }
         }
 
+        //--------------------------------------------------------------- Right Spacing
         Item
         {
             width: Constants.taskRowRightSpacing
@@ -118,5 +93,34 @@ Item
         }
     }
 
-    Component.onCompleted: textBox.forceActiveFocus()
+
+    //--------------------------------------------------------------- Helper Functions
+
+    Component.onCompleted: {
+        //get starting map for task data -- this map gets updated and sent back to the model for saving
+        var data = modelRef.getDataMap(index);
+        for (var k in data)
+        {
+            if(data.hasOwnProperty(k) && k !== 'id')
+            {
+                taskDataMap[k] = data[k]
+            }
+        }
+
+        //determine which task elements to load
+        if(taskDataMap.hasOwnProperty('isChecked'))
+        {
+            checkBoxLoader.sourceComponent = checkBoxComponent
+        }
+        if(taskDataMap.hasOwnProperty('label'))
+        {
+            labelLoader.sourceComponent = labelComponent
+        }
+    }
+
+    function enterDeleteMode()
+    {
+        //TODO: turn task check box into a circle with an x and make it so on click, that task is deleted
+        console.log("enter delete mode:", index)
+    }
 }

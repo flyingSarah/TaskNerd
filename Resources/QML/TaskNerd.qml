@@ -144,6 +144,7 @@ Item
 
                 Component.onCompleted: {
 
+                    //this shows the first view (should show the last view from the previous session)
                     taskViewRepeater.itemAt(Constants.tabInitIndex).visible = true
                     background.currentTabIndex = Constants.tabInitIndex
                 }

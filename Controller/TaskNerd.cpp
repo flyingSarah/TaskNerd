@@ -42,21 +42,18 @@ QSqlError TaskNerd::initDb()
     for(int i = 0; i < DBData::countTables(); i++)
     {
         //create or find task table in database
-        if(tables.contains(DBData::dbNames().at(i).toString(), Qt::CaseInsensitive))
+        if(!tables.contains(DBData::dbNames().at(i).toString(), Qt::CaseInsensitive))
         {
-            //table has already been populated
-            return QSqlError();
-        }
+            QString createTableString = QString("CREATE TABLE %1" "(id INTEGER PRIMARY KEY AUTOINCREMENT, %2)")
+                    .arg(DBData::dbNames().at(i).toString())
+                    .arg(DBData::createDbStr.at(i).toString());
 
-        QString createTableString = QString("CREATE TABLE %1" "(id INTEGER PRIMARY KEY AUTOINCREMENT, %2)")
-                .arg(DBData::dbNames().at(i).toString())
-                .arg(DBData::createDbStr.at(i).toString());
+            qDebug() << "initDB:" << createTableString;
 
-        //qDebug() << "initDB:" << createTableString;
-
-        if(!query.exec(createTableString))
-        {
-            return query.lastError();
+            if(!query.exec(createTableString))
+            {
+                return query.lastError();
+            }
         }
     }
 

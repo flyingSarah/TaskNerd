@@ -51,7 +51,7 @@ Item
                     buttonIndex: index
 
                     height: Constants.buttonHeight
-                    Layout.minimumWidth: 100
+                    Layout.minimumWidth: 70
                     Layout.maximumWidth: 400
                     Layout.alignment: Qt.AlignCenter
                     Layout.fillWidth: true

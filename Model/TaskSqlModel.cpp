@@ -65,5 +65,20 @@ QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
 
     int colIndex = role - Qt::UserRole - 1;
     QModelIndex modelIndex = this->index(index.row(), colIndex);
-    return QSqlTableModel::data(modelIndex, Qt::DisplayRole);
+    QVariant value = QSqlTableModel::data(modelIndex, Qt::DisplayRole);
+    return value;
+}
+
+QVariantMap TaskSqlModel::getDataMap(int index) const
+{
+    QModelIndex ind = this->index(index, 0);
+    QVariantMap dataMap;
+
+    for(int i = 0; i < this->columnCount(); i++)
+    {
+        int role = Qt::UserRole + i + 1;
+        dataMap.insert(this->headerData(i, Qt::Horizontal).toString(), this->data(ind, role));
+    }
+
+    return dataMap;
 }

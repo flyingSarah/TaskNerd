@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QVariantMap>
 #include <QDebug>
+#include <QDate>
 
 class DBData : public QObject
 {
@@ -12,14 +13,9 @@ class DBData : public QObject
 public:
     explicit DBData(QObject *parent = 0);
 
-    //Q_INVOKABLE static QVariantList initTables();
-
-    //static QVariantMap getDefaultMapForTable(int tableIndex);
-
     Q_INVOKABLE static int countTables();
     Q_INVOKABLE static QVariantList dbNames();
     Q_INVOKABLE static QVariantList titles();
-    Q_INVOKABLE static QVariantList canRepeat();
     Q_INVOKABLE static QVariantList paramDefaultMaps();
     static QVariantList createDbStr;
 
@@ -27,9 +23,11 @@ private:
 
     static QVariantMap repeatDefaults();
     static QVariantMap nonRepeatDefaults();
+    static QVariantMap checklistDefaults();
 
-    static QString nonRepeatingCreateTableDBString;
-    static QString repeatingCreateTableDBString;
+    static QString repeatCreateDBString;
+    static QString nonRepeatCreateDBString;
+    static QString checklistCreateDBString;
 };
 
 #endif // DBDATA_H

@@ -22,25 +22,32 @@ QVariantMap DBData::nonRepeatDefaults()
     return defaultMap;
 }
 
-QString repeatCreateDbString = "isChecked INTEGER, label VARCHAR";
-QString noRepeatCreateDbString = "isChecked INTEGER, label VARCHAR";
+QVariantMap DBData::checklistDefaults()
+{
+    QVariantMap defaultMap;
+    defaultMap.insert("isChecked", QVariant(0));
+    defaultMap.insert("label", "");
+    defaultMap.insert("date", QDate());
+    return defaultMap;
+}
+
+QString DBData::repeatCreateDBString = "isChecked INTEGER, label VARCHAR";
+QString DBData::nonRepeatCreateDBString = "isChecked INTEGER, label VARCHAR";
+QString DBData::checklistCreateDBString = "isChecked INTEGER, label VARCHAR, date DATE";
 
 int DBData::countTables()
 {
-    return 4;
+    return 5;
 }
 
 QVariantList DBData::dbNames() {
-    return QVariantList() << "regularTasks"         << "dailyTasks"         << "weeklyTasks"        << "monthlyTasks";
+    return QVariantList() << "dailyTasks"           << "weeklyTasks"        << "monthlyTasks"       << "regularTasks"           << "checklistTasks";
 }
 QVariantList DBData::titles() {
-    return QVariantList() << "One Off Tasks"        << "Daily Tasks"        << "Weekly Tasks"       << "Monthly Tasks";
-}
-QVariantList DBData::canRepeat() {
-    return QVariantList() << false                  << true                 << true                 << true;
+    return QVariantList() << "Daily"                << "Weekly"             << "Monthly"            << "One Off"                << "Checklists";
 }
 QVariantList DBData::paramDefaultMaps() {
-    return QVariantList() << nonRepeatDefaults()    << repeatDefaults()     << repeatDefaults()     << repeatDefaults();
+    return QVariantList() << repeatDefaults()       << repeatDefaults()     << repeatDefaults()     << nonRepeatDefaults()      << checklistDefaults();
 }
 QVariantList DBData::createDbStr =
-           QVariantList() << noRepeatCreateDbString << repeatCreateDbString << repeatCreateDbString << repeatCreateDbString;
+           QVariantList() << repeatCreateDBString   << repeatCreateDBString << repeatCreateDBString << nonRepeatCreateDBString  << checklistCreateDBString;

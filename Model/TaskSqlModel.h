@@ -17,9 +17,12 @@ public:
     TaskSqlModel(QObject *parent = 0);
 
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
+    Q_INVOKABLE QVariantMap getDataMap(int index) const;
     Q_INVOKABLE void setupModel(const QString &table);
     Q_INVOKABLE bool setRecord(int row, QVariantMap taskDataMap);
     Q_INVOKABLE bool insertNewRecord(int row, QVariantMap defaultTaskMap);
+
+    //Q_INVOKABLE QMap<int, QVariantMap> taskDataMap;
 
     void applyRoles();
 
@@ -33,6 +36,7 @@ private:
     QHash<int, QByteArray> roles;
 
     QSqlRecord recordFromMap(int row, QVariantMap dataMap);
+    void createTaskDataMap(int index, QString name, QVariant value);
 };
 
 #endif // TASKSQLMODEL_H

@@ -16,6 +16,9 @@ ScrollView
     property string tabTableName
     property string tabIndex
 
+    //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
+    //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
+
     Layout.fillWidth: true
     Layout.fillHeight: true
 

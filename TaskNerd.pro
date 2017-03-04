@@ -30,4 +30,6 @@ OTHER_FILES += \
     Resources/QML/TaskRow.qml \
     Resources/QML/TaskListView.qml \
     Resources/QML/Constants.js \
-    Resources/QML/ToolBarButton.qml
+    Resources/QML/ToolBarButton.qml \
+    Resources/QML/TaskCheckBox.qml \
+    Resources/QML/TaskLabel.qml
