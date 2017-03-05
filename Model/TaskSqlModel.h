@@ -22,8 +22,6 @@ public:
     Q_INVOKABLE bool setRecord(int row, QVariantMap taskDataMap);
     Q_INVOKABLE bool insertNewRecord(int row, QVariantMap defaultTaskMap);
 
-    //Q_INVOKABLE QMap<int, QVariantMap> taskDataMap;
-
     void applyRoles();
 
     virtual QHash<int, QByteArray> roleNames() const { return roles; }

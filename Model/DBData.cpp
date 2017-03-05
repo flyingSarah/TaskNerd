@@ -9,31 +9,37 @@ QVariantMap DBData::repeatDefaults()
 {
     //TODO:: add repeat-specific parameters
     QVariantMap defaultMap;
-    defaultMap.insert("isChecked", QVariant(0));
+    defaultMap.insert("isChecked", 0);
     defaultMap.insert("label", "");
+    defaultMap.insert("priority", 2);
+    defaultMap.insert("difficulty", 1);
     return defaultMap;
 }
 
 QVariantMap DBData::nonRepeatDefaults()
 {
     QVariantMap defaultMap;
-    defaultMap.insert("isChecked", QVariant(0));
+    defaultMap.insert("isChecked", 0);
     defaultMap.insert("label", "");
+    defaultMap.insert("priority", 2);
+    defaultMap.insert("difficulty", 1);
     return defaultMap;
 }
 
 QVariantMap DBData::checklistDefaults()
 {
     QVariantMap defaultMap;
-    defaultMap.insert("isChecked", QVariant(0));
+    defaultMap.insert("isChecked", 0);
     defaultMap.insert("label", "");
+    defaultMap.insert("priority", 2);
+    defaultMap.insert("difficulty", 1);
     defaultMap.insert("date", QDate());
     return defaultMap;
 }
 
-QString DBData::repeatCreateDBString = "isChecked INTEGER, label VARCHAR";
-QString DBData::nonRepeatCreateDBString = "isChecked INTEGER, label VARCHAR";
-QString DBData::checklistCreateDBString = "isChecked INTEGER, label VARCHAR, date DATE";
+QString DBData::repeatCreateDBString = "isChecked INTEGER, label VARCHAR, priority INTEGER, difficulty INTEGER";
+QString DBData::nonRepeatCreateDBString = "isChecked INTEGER, label VARCHAR, priority INTEGER, difficulty INTEGER";
+QString DBData::checklistCreateDBString = "isChecked INTEGER, label VARCHAR, priority INTEGER, difficulty INTEGER, date DATE";
 
 int DBData::countTables()
 {

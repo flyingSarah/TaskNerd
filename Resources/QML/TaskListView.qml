@@ -25,25 +25,6 @@ ScrollView
     frameVisible: true
     highlightOnFocus: true
 
-    function addTask()
-    {
-        taskModel.insertNewRecord(taskModel.count, taskTabInfo.paramDefaultMaps()[tabIndex])
-        //when adding a task adjust the scroll area so you can see the added task at the bottom
-        var pos = flickableItem.contentHeight - flickableItem.height
-        if(pos > 0)
-        {
-            flickableItem.contentY = pos
-        }
-    }
-
-    function deleteTask()
-    {
-        for(var i = 0; i < taskRepeater.count; i++)
-        {
-            taskRepeater.itemAt(i).enterDeleteMode()
-        }
-    }
-
     style: ScrollViewStyle {
         transientScrollBars: true
         handle: Item {
@@ -92,6 +73,7 @@ ScrollView
 
             Component.onCompleted: {
                 taskModel.setupModel(tabTableName)
+                refreshTasks()
             }
         }
     }
@@ -112,10 +94,43 @@ ScrollView
         //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
     }
 
+    // ---------------------------------------------------------------- Helper functions
+
+    function refreshTasks()
+    {
+        for(var i = 0; i < taskRepeater.count; i++)
+        {
+            taskRepeater.itemAt(i).initTaskMap()
+            taskRepeater.itemAt(i).loadTaskElements()
+        }
+    }
+
+    function addTask()
+    {
+        taskModel.insertNewRecord(taskModel.count, taskTabInfo.paramDefaultMaps()[tabIndex])
+        save()
+
+        //when adding a task adjust the scroll area so you can see the added task at the bottom
+        var pos = flickableItem.contentHeight - flickableItem.height
+        if(pos > 0)
+        {
+            flickableItem.contentY = pos
+        }
+    }
+
+    function deleteTask()
+    {
+        for(var i = 0; i < taskRepeater.count; i++)
+        {
+            taskRepeater.itemAt(i).enterDeleteMode()
+        }
+    }
+
     function save()
     {
         visible = true
         taskModel.submitAll()
+        refreshTasks()
     }
 
     function revert()
@@ -123,5 +138,6 @@ ScrollView
         visible = true
         taskModel.revertAll()
         taskModel.select()
+        refreshTasks()
     }
 }

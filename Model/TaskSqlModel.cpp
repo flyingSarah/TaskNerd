@@ -35,8 +35,8 @@ bool TaskSqlModel::setRecord(int row, QVariantMap taskDataMap)
 
 bool TaskSqlModel::insertNewRecord(int row, QVariantMap defaultTaskMap)
 {
-    QSqlRecord newRecord = recordFromMap(row-1, defaultTaskMap);
-    bool success = QSqlTableModel::insertRecord(-1, newRecord);
+    QSqlRecord newRecord = recordFromMap(row, defaultTaskMap);
+    bool success = QSqlTableModel::insertRecord(row, newRecord);
 
     return success;
 }
@@ -71,11 +71,11 @@ QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
 
 QVariantMap TaskSqlModel::getDataMap(int index) const
 {
-    QModelIndex ind = this->index(index, 0);
     QVariantMap dataMap;
 
     for(int i = 0; i < this->columnCount(); i++)
     {
+        QModelIndex ind = this->index(index, i);
         int role = Qt::UserRole + i + 1;
         dataMap.insert(this->headerData(i, Qt::Horizontal).toString(), this->data(ind, role));
     }

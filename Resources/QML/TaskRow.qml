@@ -23,12 +23,16 @@ Item
         width: parent.width
         height: parent.height
 
-        //--------------------------------------------------------------- Left Spacing
+        //--------------------------------------------------------------- Task Color (priority / difficulty)
 
-        Item
+        Rectangle
         {
-            width: Constants.taskRowLeftSpacing
-            height: Constants.buttonHeight
+            id: taskColor
+
+            width: Constants.taskColorWidth
+            height: Constants.taskColorHeight
+
+            color: Constants.windowBgColor
         }
 
         //--------------------------------------------------------------- Check Box
@@ -93,10 +97,13 @@ Item
         }
     }
 
+    //Component.onCompleted: console.log("task completed")
+
 
     //--------------------------------------------------------------- Helper Functions
 
-    Component.onCompleted: {
+    function initTaskMap()
+    {
         //get starting map for task data -- this map gets updated and sent back to the model for saving
         var data = modelRef.getDataMap(index);
         for (var k in data)
@@ -104,10 +111,18 @@ Item
             if(data.hasOwnProperty(k) && k !== 'id')
             {
                 taskDataMap[k] = data[k]
+                //console.log("init task data orig / new", k, data[k])
             }
         }
+    }
 
+    function loadTaskElements()
+    {
         //determine which task elements to load
+        if(taskDataMap.hasOwnProperty('priority') && taskDataMap.hasOwnProperty('difficulty'))
+        {
+            taskColor.color = Constants.taskColors[priority][difficulty]
+        }
         if(taskDataMap.hasOwnProperty('isChecked'))
         {
             checkBoxLoader.sourceComponent = checkBoxComponent
