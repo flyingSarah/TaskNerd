@@ -14,7 +14,7 @@ Rectangle
     property int fontSize: Constants.appFontSize
     property bool isMomentary: true
 
-    signal buttonClick()
+    signal buttonClick(bool isChecked)
 
     Layout.minimumWidth: Constants.buttonHeight
     height: Constants.buttonHeight
@@ -44,7 +44,7 @@ Rectangle
 
         anchors.fill: parent
 
-        onClicked: buttonClick()
+        onClicked: buttonClick(checked)
         onPressed: isMomentary ? checked = true : checked = !checked
         onReleased: if(isMomentary) checked = false
 

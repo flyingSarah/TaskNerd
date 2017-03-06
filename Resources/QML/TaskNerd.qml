@@ -3,6 +3,7 @@ import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
+import QtQuick.Dialogs 1.2
 
 import com.swhitley.models 1.0
 
@@ -52,17 +53,24 @@ Item
                 {
                     charForIcon: "-"
                     isMomentary: false
-                    onButtonClick: taskViewRepeater.itemAt(background.currentTabIndex).deleteTask()
+                    onButtonClick: {
+                        addTaskButton.enabled = !addTaskButton.enabled
+                        toolMenuButton.enabled = !toolMenuButton.enabled
+                        tabBar.visible = !tabBar.visible
+                        taskViewRepeater.itemAt(background.currentTabIndex).deleteMode(isChecked)
+                    }
                 }
 
                 ToolBarButton
                 {
+                    id: addTaskButton
                     charForIcon: "+"
                     onButtonClick: taskViewRepeater.itemAt(background.currentTabIndex).addTask()
                 }
 
                 ToolBarButton
                 {
+                    id: toolMenuButton
                     charForIcon: "..."
                     isMomentary: false
                     onButtonClick: toolBarMenu.visible = !toolBarMenu.visible
@@ -105,6 +113,7 @@ Item
 
             TabBar
             {
+                id: tabBar
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignBottom
                 height: Constants.buttonHeight

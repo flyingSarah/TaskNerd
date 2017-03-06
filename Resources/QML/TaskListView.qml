@@ -3,6 +3,7 @@ import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
+import QtQuick.Dialogs 1.2
 
 import com.swhitley.models 1.0
 
@@ -16,6 +17,8 @@ ScrollView
     property string tabTableName
     property string tabIndex
 
+    property var rowsToDelete: []
+
     //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
     //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
 
@@ -25,6 +28,7 @@ ScrollView
     frameVisible: true
     highlightOnFocus: true
 
+    // ---------------------------------------------------------------- Scroll Bar
     style: ScrollViewStyle {
         transientScrollBars: true
         handle: Item {
@@ -45,6 +49,21 @@ ScrollView
         }
     }
 
+    //TODO: set scroll bar positions and have them appear at the correct positions when loaded
+    // .... from the main view (when the app starts they can all start from the top position
+    flickableItem.onContentHeightChanged: {
+        //console.log("flickable item content height changed", taskRepeater.finCount, taskRepeater.count)
+        if(taskRepeater.finCount == taskRepeater.count)
+        {
+            //flickableItem.contentY = 300
+        }
+        taskRepeater.finCount++
+    }
+
+    flickableItem.onContentYChanged: {
+        //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
+    }
+
     ColumnLayout
     {
         id: taskList
@@ -53,6 +72,7 @@ ScrollView
         Layout.fillWidth: true
         spacing: 0
 
+        // ---------------------------------------------------------------- List of Tasks
         Repeater
         {
             id: taskRepeater
@@ -69,6 +89,8 @@ ScrollView
             {
                 Layout.fillWidth: true
                 modelRef: taskModel
+
+                onDeleteThisRow: doDelete ? rowsToDelete.push(row) : rowsToDelete.splice(rowsToDelete.lastIndexOf(row), 1)
             }
 
             Component.onCompleted: {
@@ -76,22 +98,23 @@ ScrollView
                 refreshTasks()
             }
         }
-    }
 
-    //TODO: set scroll bar positions and have them appear at the correct positions when loaded
-    // .... from the main view (when the app starts they can all start from the top position
-
-    flickableItem.onContentHeightChanged: {
-        //console.log("flickable item content height changed", taskRepeater.finCount, taskRepeater.count)
-        if(taskRepeater.finCount == taskRepeater.count)
+        // ---------------------------------------------------------------- Delete Alert Message
+        Item
         {
-            //flickableItem.contentY = 300
-        }
-        taskRepeater.finCount++
-    }
+            MessageDialog
+            {
+                id: deleteMessage
 
-    flickableItem.onContentYChanged: {
-        //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
+                property var numItems
+
+                title: "Delete Tasks"
+                text: "Are you sure you want to delete " + numItems + " tasks?"
+                standardButtons: StandardButton.Yes | StandardButton.No
+                onYes: deleteTasks(rowsToDelete)
+                onNo: resetAfterDelete()
+            }
+        }
     }
 
     // ---------------------------------------------------------------- Helper functions
@@ -119,11 +142,47 @@ ScrollView
         }
     }
 
-    function deleteTask()
+    function deleteMode(isChecked)
     {
-        for(var i = 0; i < taskRepeater.count; i++)
+        if(isChecked)
         {
-            taskRepeater.itemAt(i).enterDeleteMode()
+            //go into delete mode
+            for(var i = 0; i < taskRepeater.count; i++)
+            {
+                taskRepeater.itemAt(i).enterDeleteMode()
+            }
         }
+        else
+        {
+            //delete the tasks
+            if(rowsToDelete.length > 1)
+            {
+                deleteMessage.numItems = rowsToDelete.length
+                deleteMessage.open()
+            }
+            else
+            {
+                deleteTasks(rowsToDelete)
+            }
+        }
+    }
+
+    function deleteTasks(rows)
+    {
+        rows = rows.sort(function(a,b){return b-a})
+
+        for(var row in rows)
+        {
+            taskModel.removeRows(rows[row], 1)
+        }
+
+        taskModel.select()
+        resetAfterDelete()
+    }
+
+    function resetAfterDelete()
+    {
+        rowsToDelete = []
+        refreshTasks()
     }
 }

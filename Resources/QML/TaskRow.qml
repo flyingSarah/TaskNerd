@@ -12,6 +12,8 @@ Item
     property var modelRef
     property var taskDataMap: ({})
 
+    signal deleteThisRow(int row, bool doDelete)
+
     implicitHeight: Constants.taskRowHeight
 
     //--------------------------------------------------------------- Main Task Row
@@ -58,6 +60,19 @@ Item
                     taskDataMap = taskDataMap_
                     modelRef.setRecord(index, taskDataMap)
                 }
+            }
+        }
+
+        //--------------------------------------------------------------- Delete & Edit Mode Components)
+        Component
+        {
+            id: deleteModeComponent
+
+            ToolBarButton
+            {
+                charForIcon: "X"
+                isMomentary: false
+                onButtonClick: isChecked ? deleteThisRow(index, true) : deleteThisRow(index, false)
             }
         }
 
@@ -131,7 +146,7 @@ Item
 
     function enterDeleteMode()
     {
-        //TODO: turn task check box into a circle with an x and make it so on click, that task is deleted
-        console.log("enter delete mode:", index)
+        checkBoxLoader.sourceComponent = deleteModeComponent
+        labelLoader.enabled = false
     }
 }

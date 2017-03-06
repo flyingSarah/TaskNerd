@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE void setupModel(const QString &table);
     Q_INVOKABLE bool setRecord(int row, QVariantMap taskDataMap);
     Q_INVOKABLE bool insertNewRecord(int row, QVariantMap defaultTaskMap);
+    Q_INVOKABLE bool removeRows(int row, int count);
 
     void applyRoles();
 

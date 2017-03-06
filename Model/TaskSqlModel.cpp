@@ -41,6 +41,11 @@ bool TaskSqlModel::insertNewRecord(int row, QVariantMap defaultTaskMap)
     return success;
 }
 
+bool TaskSqlModel::removeRows(int row, int count)
+{
+    return QSqlTableModel::removeRows(row, count);
+}
+
 QSqlRecord TaskSqlModel::recordFromMap(int row, QVariantMap dataMap)
 {
     QSqlRecord record = this->record(row);
