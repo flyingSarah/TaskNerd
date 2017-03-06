@@ -16,58 +16,6 @@ Item
     Layout.fillWidth: true
     anchors.fill: parent
 
-    // ---------------------------------------------------------------- Menu Stuff
-
-    MenuBar
-    {
-        Menu
-        {
-            title: "File"
-
-            MenuItem
-            {
-                text: "Save"
-                action: saveAction
-            }
-
-            MenuItem
-            {
-                text: "Revert"
-                action: revertAction
-            }
-        }
-    }
-
-    Action
-    {
-        id: saveAction
-
-        text: "Save"
-        shortcut: StandardKey.Save
-        onTriggered: {
-            for(var i = 0; i < taskTabInfo.countTables(); i++)
-            {
-                taskViewRepeater.itemAt(i).save()
-            }
-            setCurrentTabToVisible(background.currentTabIndex)
-        }
-    }
-
-    Action
-    {
-        id: revertAction
-
-        text: "Revert"
-        shortcut: "Ctrl+R"
-        onTriggered: {
-            for(var i = 0; i < taskTabInfo.countTables(); i++)
-            {
-                taskViewRepeater.itemAt(i).revert()
-            }
-            setCurrentTabToVisible(background.currentTabIndex)
-        }
-    }
-
     // ---------------------------------------------------------------- UI Stuff
 
     Rectangle {

@@ -3,7 +3,7 @@
 //used stackoverflow for some guidance with this class http://stackoverflow.com/questions/14613824/qsqltablemodel-inheritor-and-qtableview
 TaskSqlModel::TaskSqlModel(QObject *parent) : QSqlTableModel(parent)
 {
-    this->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    this->setEditStrategy(QSqlTableModel::OnFieldChange);
 }
 
 void TaskSqlModel::applyRoles()
@@ -65,7 +65,7 @@ QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
 
     int colIndex = role - Qt::UserRole - 1;
     QModelIndex modelIndex = this->index(index.row(), colIndex);
-    QVariant value = QSqlTableModel::data(modelIndex, Qt::DisplayRole);
+    QVariant value = QSqlTableModel::data(modelIndex);
     return value;
 }
 

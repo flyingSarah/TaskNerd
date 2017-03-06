@@ -108,7 +108,8 @@ ScrollView
     function addTask()
     {
         taskModel.insertNewRecord(taskModel.count, taskTabInfo.paramDefaultMaps()[tabIndex])
-        save()
+        taskModel.select()
+        refreshTasks()
 
         //when adding a task adjust the scroll area so you can see the added task at the bottom
         var pos = flickableItem.contentHeight - flickableItem.height
@@ -124,20 +125,5 @@ ScrollView
         {
             taskRepeater.itemAt(i).enterDeleteMode()
         }
-    }
-
-    function save()
-    {
-        visible = true
-        taskModel.submitAll()
-        refreshTasks()
-    }
-
-    function revert()
-    {
-        visible = true
-        taskModel.revertAll()
-        taskModel.select()
-        refreshTasks()
     }
 }

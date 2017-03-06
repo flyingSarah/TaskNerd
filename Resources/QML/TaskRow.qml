@@ -97,9 +97,6 @@ Item
         }
     }
 
-    //Component.onCompleted: console.log("task completed")
-
-
     //--------------------------------------------------------------- Helper Functions
 
     function initTaskMap()
@@ -111,7 +108,6 @@ Item
             if(data.hasOwnProperty(k) && k !== 'id')
             {
                 taskDataMap[k] = data[k]
-                //console.log("init task data orig / new", k, data[k])
             }
         }
     }
@@ -121,7 +117,7 @@ Item
         //determine which task elements to load
         if(taskDataMap.hasOwnProperty('priority') && taskDataMap.hasOwnProperty('difficulty'))
         {
-            taskColor.color = Constants.taskColors[priority][difficulty]
+            taskColor.color = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
         }
         if(taskDataMap.hasOwnProperty('isChecked'))
         {
