@@ -33,6 +33,8 @@ Item
             anchors.margins: Constants.windowMargins
             spacing: Constants.windowMargins
 
+            // ---------------------------------------------------------------- Tool Bar
+
             RowLayout
             {
                 id: toolRow
@@ -49,24 +51,25 @@ Item
                 ToolBarButton
                 {
                     charForIcon: "-"
-
-                    onButtonClick: {
-                        for(var i = 0; i < taskViewRepeater.count; i++)
-                        {
-                            taskViewRepeater.itemAt(i).deleteTask()
-                        }
-                    }
+                    isMomentary: false
+                    onButtonClick: taskViewRepeater.itemAt(background.currentTabIndex).deleteTask()
                 }
 
                 ToolBarButton
                 {
                     charForIcon: "+"
+                    onButtonClick: taskViewRepeater.itemAt(background.currentTabIndex).addTask()
+                }
 
-                    onButtonClick: {
-                        taskViewRepeater.itemAt(background.currentTabIndex).addTask()
-                    }
+                ToolBarButton
+                {
+                    charForIcon: "..."
+                    isMomentary: false
+                    onButtonClick: toolBarMenu.visible = !toolBarMenu.visible
                 }
             }
+
+            // ---------------------------------------------------------------- Task Type Tabs
 
             TaskTabInfo
             {
@@ -98,7 +101,8 @@ Item
                 }
             }
 
-            //bottom tab bar with radio buttons for the different task lists
+            // ---------------------------------------------------------------- Tab Bar
+
             TabBar
             {
                 Layout.fillWidth: true
@@ -112,6 +116,16 @@ Item
                 }
             }
         }
+    }
+
+    // ---------------------------------------------------------------- Tool Bar Menu
+
+    ToolBarMenu
+    {
+        id: toolBarMenu
+
+        y: Constants.windowMargins + (Constants.buttonHeight * 0.75)
+        x: parent.width - Constants.windowMargins - (Constants.buttonHeight / 4) - width
     }
 
     // ---------------------------------------------------------------- Helper functions

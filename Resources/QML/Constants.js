@@ -15,6 +15,15 @@ var scrollBarBC     = 'gray'; //border color of scroll bar
 var appFont         = 'Futura Medium';
 var appFontSize     = 14;
 
+// ------------------------------------------------------------------ Tool Bar
+
+var toolBarButtonC  = windowBgColor; // color of the tool bar buttons
+
+var menuWidth       = 80;
+var menuColor       = windowBgColor
+var menuBC          = '#bbbbbb'
+var menuFontSize    = 11;
+var menuItems       = ['archive view'];
 
 // ------------------------------------------------------------------ Tab Bar
 var tabBarSpacing   = 5; //spacing between buttons in the tab bar
@@ -27,7 +36,6 @@ var tabButtonSTC    = 'lightgray'; //selected text color of tab buttons
 var tabButtonUTC    = 'gray'; //unselected text color of tab buttons
 
 var tabInitIndex    = 0; //initial index of the task views that are shown on open
-
 
 // ------------------------------------------------------------------ Task Row
 

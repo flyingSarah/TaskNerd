@@ -32,4 +32,5 @@ OTHER_FILES += \
     Resources/QML/Constants.js \
     Resources/QML/ToolBarButton.qml \
     Resources/QML/TaskCheckBox.qml \
-    Resources/QML/TaskLabel.qml
+    Resources/QML/TaskLabel.qml \
+    Resources/QML/ToolBarMenu.qml
