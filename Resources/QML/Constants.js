@@ -7,6 +7,7 @@ var buttonHeight    = 26;  //height of generic buttons throughout app
 var scrollBarWidth  = 10;
 var scrollBarHeight = 26;
 var scrollBarBW     = 1; //border width of scroll bar
+var scrollBarMargin = 2;
 
 var windowBgColor   = 'white';    //mainwindow bg color
 var scrollBarColor  = 'transparent';
@@ -15,12 +16,14 @@ var scrollBarBC     = 'gray'; //border color of scroll bar
 var appFont         = 'Futura Medium';
 var appFontSize     = 14;
 
+var viewModes   = ['taskList', 'delete']
+
 // ------------------------------------------------------------------ Tool Bar
 
 var toolBarButtonC  = windowBgColor; // color of the tool bar buttons
 
 var menuWidth       = 80;
-var menuColor       = windowBgColor
+var menuColor       = '#f5f5f5'
 var menuBC          = '#bbbbbb'
 var menuFontSize    = 11;
 var menuItems       = ['archive view'];
@@ -42,9 +45,11 @@ var tabInitIndex    = 0; //initial index of the task views that are shown on ope
 var taskRowHeight       = 29;
 var taskRowSpacing      = 3;
 var taskRowRightSpacing = 7;
-var taskColorWidth      = 3; //task color is the color on the left that is determined from the priority and difficulty
+var taskColorWidth      = 7; //task color is the color on the left that is determined from the priority and difficulty
 var taskColorHeight     = taskRowHeight - 2;
 var taskItemBorderWidth = 1; //for any item in the task row
+var taskLabelLeftMargin = 5;
+var taskLabelMaxChars   = 75;
 
 var taskItemBorderColor = 'gray'; //for any item in the task row
 var taskCheckBoxCC      = 'gray'; //checked color of task checkbox

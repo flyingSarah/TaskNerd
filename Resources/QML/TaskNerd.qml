@@ -13,6 +13,8 @@ Item
 {
     id: item
 
+    property int currentTabIndex
+
     Layout.fillHeight: true
     Layout.fillWidth: true
     anchors.fill: parent
@@ -22,8 +24,6 @@ Item
     Rectangle {
 
         id: background
-
-        property int currentTabIndex
 
         color: Constants.windowBgColor
         anchors.fill: parent
@@ -36,44 +36,19 @@ Item
 
             // ---------------------------------------------------------------- Tool Bar
 
-            RowLayout
+            TaskToolBar
             {
-                id: toolRow
+                id: taskToolBar
 
-                spacing: Constants.tabBarSpacing
-
-                width: parent.width
-                height: Constants.taskRowHeight
-
-                Layout.alignment: Qt.AlignRight
-
-                //TODO: I probably need a special mode button for the delete button so that it can stay selected for delete mode
-                //...and then be intentionally exited
-                ToolBarButton
-                {
-                    charForIcon: "-"
-                    isMomentary: false
-                    onButtonClick: {
-                        addTaskButton.enabled = !addTaskButton.enabled
-                        toolMenuButton.enabled = !toolMenuButton.enabled
-                        tabBar.visible = !tabBar.visible
-                        taskViewRepeater.itemAt(background.currentTabIndex).deleteMode(isChecked)
-                    }
+                onDeleteButtonClicked: {
+                    taskViewRepeater.itemAt(currentTabIndex).enterDeleteMode()
+                    setViewMode(Constants.viewModes[1])
                 }
-
-                ToolBarButton
-                {
-                    id: addTaskButton
-                    charForIcon: "+"
-                    onButtonClick: taskViewRepeater.itemAt(background.currentTabIndex).addTask()
-                }
-
-                ToolBarButton
-                {
-                    id: toolMenuButton
-                    charForIcon: "..."
-                    isMomentary: false
-                    onButtonClick: toolBarMenu.visible = !toolBarMenu.visible
+                onAddButtonClicked: taskViewRepeater.itemAt(currentTabIndex).addTask()
+                onMenuButtonClicked: toolBarMenu.visible = isChecked
+                onCancelButtonClicked: {
+                    setViewMode(Constants.viewModes[0])
+                    taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
                 }
             }
 
@@ -84,28 +59,45 @@ Item
                 id: taskTabInfo
             }
 
-            Repeater
+            RowLayout
             {
-                id: taskViewRepeater
-
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                spacing: Constants.windowMargins/-2
 
-                model: taskTabInfo.countTables()
-
-                TaskListView
+                Repeater
                 {
-                    visible: false
-                    tabDelegate: "TaskRow"
-                    tabTableName: taskTabInfo.dbNames()[index]
-                    tabIndex: index
+                    id: taskViewRepeater
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    model: taskTabInfo.countTables()
+
+                    TaskListView
+                    {
+                        //anchors.fill: parent
+                        visible: false
+                        tabDelegate: "TaskRow"
+                        tabTableName: taskTabInfo.dbNames()[index]
+                        tabIndex: index
+                        onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
+                    }
+
+                    Component.onCompleted: {
+                        //this shows the first view (should show the last view from the previous session)
+                        currentTabIndex = Constants.tabInitIndex
+                        taskViewRepeater.itemAt(currentTabIndex).visible = true
+                    }
                 }
 
-                Component.onCompleted: {
+                // ---------------------------------------------------------------- Tool Bar Menu
 
-                    //this shows the first view (should show the last view from the previous session)
-                    taskViewRepeater.itemAt(Constants.tabInitIndex).visible = true
-                    background.currentTabIndex = Constants.tabInitIndex
+                ToolBarMenu
+                {
+                    id: toolBarMenu
+                    Layout.fillHeight: true
+                    onVisibleChanged: visible ? parent.spacing = 1 : parent.spacing = Constants.windowMargins/-2
                 }
             }
 
@@ -114,27 +106,17 @@ Item
             TabBar
             {
                 id: tabBar
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignBottom
-                height: Constants.buttonHeight
 
-                onSelectedTabButton: {
-
-                    background.currentTabIndex = tabIndex
-                    setCurrentTabToVisible(tabIndex)
+                onSelectedTabIndexChanged: {
+                    currentTabIndex = selectedTabIndex
+                    setCurrentTabToVisible(currentTabIndex)
+                }
+                onDeleteButtonClicked: {
+                    taskViewRepeater.itemAt(currentTabIndex).deleteTasks()
+                    setViewMode(Constants.viewModes[0])
                 }
             }
         }
-    }
-
-    // ---------------------------------------------------------------- Tool Bar Menu
-
-    ToolBarMenu
-    {
-        id: toolBarMenu
-
-        y: Constants.windowMargins + (Constants.buttonHeight * 0.75)
-        x: parent.width - Constants.windowMargins - (Constants.buttonHeight / 4) - width
     }
 
     // ---------------------------------------------------------------- Helper functions
@@ -143,14 +125,13 @@ Item
     {
         for(var i = 0; i < taskViewRepeater.count; i++)
         {
-            if(i !== index)
-            {
-                taskViewRepeater.itemAt(i).visible = false
-            }
-            else
-            {
-                taskViewRepeater.itemAt(i).visible = true
-            }
+            taskViewRepeater.itemAt(i).visible = (i === index)
         }
+    }
+
+    function setViewMode(viewMode)
+    {
+        taskToolBar.state = viewMode
+        tabBar.state = viewMode
     }
 }

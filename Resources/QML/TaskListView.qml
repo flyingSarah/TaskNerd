@@ -19,6 +19,8 @@ ScrollView
 
     property var rowsToDelete: []
 
+    signal updateDeleteCount(int deleteCount)
+
     //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
     //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
 
@@ -40,7 +42,7 @@ ScrollView
                 border.color: Constants.scrollBarBC
                 border.width: Constants.scrollBarBW
                 anchors.fill: parent
-                anchors.margins: 2
+                anchors.margins: Constants.scrollBarMargin
             }
         }
         scrollBarBackground: Item {
@@ -90,29 +92,15 @@ ScrollView
                 Layout.fillWidth: true
                 modelRef: taskModel
 
-                onDeleteThisRow: doDelete ? rowsToDelete.push(row) : rowsToDelete.splice(rowsToDelete.lastIndexOf(row), 1)
+                onDeleteThisRow: {
+                    doDelete ? rowsToDelete.push(row) : rowsToDelete.splice(rowsToDelete.lastIndexOf(row), 1)
+                    updateDeleteCount(rowsToDelete.length)
+                }
             }
 
             Component.onCompleted: {
                 taskModel.setupModel(tabTableName)
                 refreshTasks()
-            }
-        }
-
-        // ---------------------------------------------------------------- Delete Alert Message
-        Item
-        {
-            MessageDialog
-            {
-                id: deleteMessage
-
-                property var numItems
-
-                title: "Delete Tasks"
-                text: "Are you sure you want to delete " + numItems + " tasks?"
-                standardButtons: StandardButton.Yes | StandardButton.No
-                onYes: deleteTasks(rowsToDelete)
-                onNo: resetAfterDelete()
             }
         }
     }
@@ -121,10 +109,12 @@ ScrollView
 
     function refreshTasks()
     {
+        rowsToDelete = []
+        updateDeleteCount(0)
+
         for(var i = 0; i < taskRepeater.count; i++)
         {
-            taskRepeater.itemAt(i).initTaskMap()
-            taskRepeater.itemAt(i).loadTaskElements()
+            taskRepeater.itemAt(i).refreshTask()
         }
     }
 
@@ -142,47 +132,24 @@ ScrollView
         }
     }
 
-    function deleteMode(isChecked)
+    function enterDeleteMode()
     {
-        if(isChecked)
+        for(var i = 0; i < taskRepeater.count; i++)
         {
-            //go into delete mode
-            for(var i = 0; i < taskRepeater.count; i++)
-            {
-                taskRepeater.itemAt(i).enterDeleteMode()
-            }
-        }
-        else
-        {
-            //delete the tasks
-            if(rowsToDelete.length > 1)
-            {
-                deleteMessage.numItems = rowsToDelete.length
-                deleteMessage.open()
-            }
-            else
-            {
-                deleteTasks(rowsToDelete)
-            }
+            taskRepeater.itemAt(i).enterDeleteMode()
         }
     }
 
-    function deleteTasks(rows)
+    function deleteTasks()
     {
-        rows = rows.sort(function(a,b){return b-a})
+        rowsToDelete = rowsToDelete.sort(function(a,b){return b-a})
 
-        for(var row in rows)
+        for(var row in rowsToDelete)
         {
-            taskModel.removeRows(rows[row], 1)
+            taskModel.removeRows(rowsToDelete[row], 1)
         }
 
         taskModel.select()
-        resetAfterDelete()
-    }
-
-    function resetAfterDelete()
-    {
-        rowsToDelete = []
         refreshTasks()
     }
 }

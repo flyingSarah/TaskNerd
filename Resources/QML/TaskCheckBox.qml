@@ -6,27 +6,26 @@ import com.swhitley.models 1.0
 
 import "Constants.js" as Constants
 
+//TODO: this will need to change into some sort of check box icon eventually
 Rectangle
 {
     id: checkBox
 
-    property var _taskDataMap
-    property bool checkBoxChecked: _taskDataMap['isChecked']
+    property bool isChecked
 
-    signal updateTaskDataMap(var taskDataMap_)
+    width: Constants.buttonHeight
+    height: Constants.buttonHeight
 
     border.color: Constants.taskItemBorderColor
     border.width: Constants.taskItemBorderWidth
-    color: checkBoxChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
+    color: isChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
 
     MouseArea
     {
         anchors.fill: parent
         onClicked: {
-            checkBox.checkBoxChecked = !checkBox.checkBoxChecked
+            isChecked = !isChecked
             checkBox.focus = true
-            _taskDataMap['isChecked'] = checkBox.checkBoxChecked
-            updateTaskDataMap(_taskDataMap)
         }
     }
 }

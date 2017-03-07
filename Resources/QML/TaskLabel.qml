@@ -7,9 +7,7 @@ import "Constants.js" as Constants
 
 Rectangle
 {
-    property var _taskDataMap
-
-    signal updateTaskDataMap(var taskDataMap_)
+    property string labelText
 
     color: Constants.taskLabelBgColor
 
@@ -20,32 +18,21 @@ Rectangle
     {
         id: textBox
 
-        property string initialText: _taskDataMap['label']
-
         anchors.fill: parent
-        anchors.leftMargin: 5
+        anchors.leftMargin: Constants.taskLabelLeftMargin
         verticalAlignment: Text.AlignVCenter
 
         color: Constants.taskLabelTextColor
 
-        text: initialText
+        text: labelText
         font.family: Constants.appFont
         font.pixelSize: Constants.appFontSize
 
         selectByMouse: true
-        maximumLength: 75
+        maximumLength: Constants.taskLabelMaxChars
 
-        onTextChanged: {
-            if(text != label)
-            {
-                _taskDataMap['label'] = text
-                updateTaskDataMap(_taskDataMap)
-            }
-        }
-
-        onEditingFinished: {
-            textBox.focus = false
-        }
+        onTextChanged: labelText = text
+        onEditingFinished: textBox.focus = false
 
         Keys.onPressed: {
             if(event.key === Qt.Key_Tab)

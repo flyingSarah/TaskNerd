@@ -1,20 +1,18 @@
 import QtQuick 2.3
-//import QtQuick.Controls 1.1
-//import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 
 import "Constants.js" as Constants
 
 Rectangle
 {
-    //TODO: this should be changed into icon images instead of characters
-    property string charForIcon
+    //TODO: should aslo allow icon images instead of characters
+    property string buttonText
 
     property string bgColor: Constants.toolBarButtonC
     property int fontSize: Constants.appFontSize
     property bool isMomentary: true
 
-    signal buttonClick(bool isChecked)
+    signal buttonClick(bool isChecked) //momentary buttons can ignore the isChecked parameter when using this signal
 
     Layout.minimumWidth: Constants.buttonHeight
     height: Constants.buttonHeight
@@ -29,7 +27,7 @@ Rectangle
         anchors.fill: parent
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
-        text: charForIcon
+        text: buttonText
 
         font.family: Constants.appFont
         font.pixelSize: fontSize
@@ -44,9 +42,10 @@ Rectangle
 
         anchors.fill: parent
 
-        onClicked: buttonClick(checked)
+        //these three signals are listed here in the order they are executed
         onPressed: isMomentary ? checked = true : checked = !checked
         onReleased: if(isMomentary) checked = false
+        onClicked: buttonClick(checked)
 
         onCheckedChanged: {
             if(checked)
@@ -62,8 +61,8 @@ Rectangle
         }
     }
 
-    function setChecked(isChecked)
+    function reset()
     {
-        toolBarBehavior.checked = isChecked
+        toolBarBehavior.checked = false
     }
 }

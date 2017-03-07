@@ -19,17 +19,53 @@ Item
     //--------------------------------------------------------------- Main Task Row
     RowLayout
     {
-        anchors.verticalCenter: parent.verticalCenter
+        //anchors.verticalCenter: parent.verticalCenter
         spacing: Constants.taskRowSpacing
 
         width: parent.width
         height: parent.height
 
-        //--------------------------------------------------------------- Task Color (priority / difficulty)
+        //--------------------------------------------------------------- Delete & Edit Mode Components
+
+        RowLayout
+        {
+            id: deleteMode
+
+            visible: false
+            onVisibleChanged: {
+                if(!visible)
+                {
+                    deleteButton.reset()
+                    archiveButton.reset()
+                }
+            }
+
+            Item
+            {
+                width: Constants.taskRowSpacing
+            }
+
+            ToolBarButton
+            {
+                id: deleteButton
+                buttonText: "x"
+                isMomentary: false
+                onButtonClick: deleteThisRow(index, isChecked)
+            }
+
+            ToolBarButton
+            {
+                id: archiveButton
+                buttonText: "a"
+                isMomentary: false
+            }
+        }
+
+        //--------------------------------------------------------------- Priority / Difficulty Indicator
 
         Rectangle
         {
-            id: taskColor
+            id: taskColorLeft
 
             width: Constants.taskColorWidth
             height: Constants.taskColorHeight
@@ -38,42 +74,17 @@ Item
         }
 
         //--------------------------------------------------------------- Check Box
-        Loader
+
+        TaskCheckBox
         {
-            id: checkBoxLoader
-
-            Layout.preferredWidth: Constants.buttonHeight
-            Layout.preferredHeight: Constants.buttonHeight
-        }
-
-        Component
-        {
-            id: checkBoxComponent
-
-            TaskCheckBox
-            {
-                _taskDataMap: taskDataMap
-
-                anchors.fill: checkBoxLoader
-
-                onUpdateTaskDataMap: {
-                    taskDataMap = taskDataMap_
-                    modelRef.setRecord(index, taskDataMap)
-                }
+            id: checkBox
+            visible: false
+            onVisibleChanged: if(visible) isChecked = taskDataMap['isChecked']
+            onIsCheckedChanged: {
+                taskDataMap['isChecked'] = isChecked
+                modelRef.setRecord(index, taskDataMap)
             }
-        }
 
-        //--------------------------------------------------------------- Delete & Edit Mode Components)
-        Component
-        {
-            id: deleteModeComponent
-
-            ToolBarButton
-            {
-                charForIcon: "X"
-                isMomentary: false
-                onButtonClick: isChecked ? deleteThisRow(index, true) : deleteThisRow(index, false)
-            }
         }
 
         //--------------------------------------------------------------- Task Label
@@ -83,36 +94,46 @@ Item
 
             Layout.fillWidth: true
             Layout.minimumWidth: 50
-            Layout.maximumWidth: 1600
             Layout.preferredHeight: Constants.buttonHeight
         }
 
         Component
         {
-            id: labelComponent
+            id: label
 
             TaskLabel
             {
-                _taskDataMap: taskDataMap
-
-                anchors.fill: labelLoader
-
-                onUpdateTaskDataMap: {
-                    taskDataMap = taskDataMap_
+                labelText: taskDataMap['label']
+                onLabelTextChanged: {
+                    taskDataMap['label'] = labelText
                     modelRef.setRecord(index, taskDataMap)
                 }
             }
+
         }
 
-        //--------------------------------------------------------------- Right Spacing
-        Item
+        //--------------------------------------------------------------- Priority / Difficulty Indicator
+        Rectangle
         {
-            width: Constants.taskRowRightSpacing
-            height: Constants.buttonHeight
+            id: taskColorRight
+
+            width: Constants.taskColorWidth
+            height: Constants.taskColorHeight
+
+            color: Constants.windowBgColor
         }
     }
 
     //--------------------------------------------------------------- Helper Functions
+
+    function refreshTask()
+    {
+        deleteMode.visible = false
+        initTaskMap()
+        loadTaskElements()
+        labelLoader.enabled = true
+        checkBox.enabled = true
+    }
 
     function initTaskMap()
     {
@@ -129,24 +150,23 @@ Item
 
     function loadTaskElements()
     {
-        //determine which task elements to load
-        if(taskDataMap.hasOwnProperty('priority') && taskDataMap.hasOwnProperty('difficulty'))
-        {
-            taskColor.color = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
-        }
+        //always load these elements
+        var taskColor = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
+        taskColorRight.color = taskColor
+        taskColorLeft.color = taskColor
+        labelLoader.sourceComponent = label
+
+        //determine which dynamic task elements to load
         if(taskDataMap.hasOwnProperty('isChecked'))
         {
-            checkBoxLoader.sourceComponent = checkBoxComponent
-        }
-        if(taskDataMap.hasOwnProperty('label'))
-        {
-            labelLoader.sourceComponent = labelComponent
+            checkBox.visible = true
         }
     }
 
     function enterDeleteMode()
     {
-        checkBoxLoader.sourceComponent = deleteModeComponent
+        deleteMode.visible = true
         labelLoader.enabled = false
+        checkBox.enabled = false
     }
 }

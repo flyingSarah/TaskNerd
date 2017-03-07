@@ -33,4 +33,5 @@ OTHER_FILES += \
     Resources/QML/ToolBarButton.qml \
     Resources/QML/TaskCheckBox.qml \
     Resources/QML/TaskLabel.qml \
-    Resources/QML/ToolBarMenu.qml
+    Resources/QML/ToolBarMenu.qml \
+    Resources/QML/TaskToolBar.qml
