@@ -103,9 +103,9 @@ Item
 
             TaskLabel
             {
-                labelText: taskDataMap['label']
-                onLabelTextChanged: {
-                    taskDataMap['label'] = labelText
+                text: taskDataMap['label']
+                onTextChanged: {
+                    taskDataMap['label'] = text
                     modelRef.setRecord(index, taskDataMap)
                 }
             }

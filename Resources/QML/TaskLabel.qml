@@ -1,44 +1,43 @@
 import QtQuick 2.3
+import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.1
+import QtQuick.Controls.Styles 1.2
 
 import com.swhitley.models 1.0
 
 import "Constants.js" as Constants
 
-Rectangle
+TextField
 {
-    property string labelText
+    id: textBox
 
-    color: Constants.taskLabelBgColor
+    anchors.fill: parent
 
-    border.color: Constants.taskItemBorderColor
-    border.width: Constants.taskItemBorderWidth
+    style: TextFieldStyle {
+        background: Rectangle {
+            color: Constants.taskLabelBgColor
+            border.color: Constants.taskItemBorderColor
+            border.width: Constants.taskItemBorderWidth
+        }
+    }
 
-    TextInput
-    {
-        id: textBox
+    verticalAlignment: Text.AlignVCenter
 
-        anchors.fill: parent
-        anchors.leftMargin: Constants.taskLabelLeftMargin
-        verticalAlignment: Text.AlignVCenter
+    font.family: Constants.appFont
+    font.pixelSize: Constants.appFontSize
 
-        color: Constants.taskLabelTextColor
+    //selectByMouse: true
+    maximumLength: Constants.taskLabelMaxChars
 
-        text: labelText
-        font.family: Constants.appFont
-        font.pixelSize: Constants.appFontSize
+    //onTextChanged: labelText = text
+    onEditingFinished: textBox.focus = false
 
-        selectByMouse: true
-        maximumLength: Constants.taskLabelMaxChars
+    placeholderText: 'enter task title here...'
 
-        onTextChanged: labelText = text
-        onEditingFinished: textBox.focus = false
-
-        Keys.onPressed: {
-            if(event.key === Qt.Key_Tab)
-            {
-                editingFinished()
-            }
+    Keys.onPressed: {
+        if(event.key === Qt.Key_Tab)
+        {
+            editingFinished()
         }
     }
 
@@ -46,7 +45,7 @@ Rectangle
     Component.onCompleted: {
         if(visible)
         {
-            textBox.forceActiveFocus()
+            forceActiveFocus()
         }
     }
 
@@ -54,7 +53,7 @@ Rectangle
     onVisibleChanged: {
         if(!visible)
         {
-            textBox.focus = false
+            focus = false
         }
     }
 }
