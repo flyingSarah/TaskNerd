@@ -35,4 +35,5 @@ OTHER_FILES += \
     Resources/QML/TaskLabel.qml \
     Resources/QML/ToolBarMenu.qml \
     Resources/QML/TaskToolBar.qml \
-    Resources/QML/EditModeRow.qml
+    Resources/QML/EditModeRow.qml \
+    Resources/QML/TaskEditView.qml

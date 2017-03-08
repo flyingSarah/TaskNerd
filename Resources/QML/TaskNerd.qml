@@ -46,13 +46,25 @@ Item
                 }
                 onAddButtonClicked: taskViewRepeater.itemAt(currentTabIndex).addTask()
                 onMenuButtonClicked: toolBarMenu.visible = isChecked
-                onCancelButtonClicked: {
+                onEditModeCancelClicked: {
                     setViewMode(Constants.viewModes[0])
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
+                }
+                onEditViewCancelClicked: {
+                    setViewMode(Constants.viewModes[1])
+                    hideEditView()
                 }
             }
 
             // ---------------------------------------------------------------- Task Type Tabs
+
+
+            TaskEditView
+            {
+                id: editView
+                visible: false
+                //onTaskMapChanged: console.log('on task map changed')
+            }
 
             TaskTabInfo
             {
@@ -61,6 +73,7 @@ Item
 
             RowLayout
             {
+                id: taskView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: Constants.windowMargins/-2
@@ -83,6 +96,10 @@ Item
                         tabIndex: index
                         onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
                         onUpdateArchiveCount: tabBar.numOfItemsToArchive = archiveCount
+                        onEditRow: {
+                            setViewMode(Constants.viewModes[2])
+                            showEditView(row, taskMap)
+                        }
                     }
 
                     Component.onCompleted: {
@@ -120,6 +137,13 @@ Item
                     taskViewRepeater.itemAt(currentTabIndex).archiveTasks()
                     setViewMode(Constants.viewModes[0])
                 }
+                onSaveButtonClicked: {
+                    taskViewRepeater.itemAt(currentTabIndex).saveTasks(editView.taskRow, editView.taskMap)
+                    taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
+                    taskViewRepeater.itemAt(currentTabIndex).editMode(true)
+                    setViewMode(Constants.viewModes[1])
+                    hideEditView()
+                }
             }
         }
     }
@@ -138,5 +162,19 @@ Item
     {
         taskToolBar.state = viewMode
         tabBar.state = viewMode
+    }
+
+    function showEditView(row, taskMap)
+    {
+        editView.taskRow = row
+        editView.taskMap = taskMap
+        taskView.visible = false
+        editView.visible = true
+    }
+
+    function hideEditView()
+    {
+        editView.visible = false
+        taskView.visible = true
     }
 }

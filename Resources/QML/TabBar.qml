@@ -16,6 +16,7 @@ Item
 
     signal deleteButtonClicked()
     signal archiveButtonClicked()
+    signal saveButtonClicked()
 
     Layout.fillWidth: true
     height: Constants.buttonHeight
@@ -46,7 +47,18 @@ Item
                 sourceComponent: editModeButtons
                 anchors.fill: bottomRow
             }
+        },
+        State
+        {
+            name: Constants.viewModes[2]
+            PropertyChanges
+            {
+                target: tabBarLoader
+                sourceComponent: saveButton
+                anchors.fill: bottomRow
+            }
         }
+
     ]
 
     // ---------------------------------------------------------------- Tab Bar
@@ -61,7 +73,6 @@ Item
 
             RowLayout
             {
-                id: layout
                 anchors.fill: parent
                 spacing: Constants.tabBarSpacing
 
@@ -70,8 +81,6 @@ Item
                     id: taskTabInfo
                 }
 
-                property int numOfTabs: taskTabInfo.countTables()
-
                 RadioGroup
                 {
                     id: tabBarGroup
@@ -79,13 +88,13 @@ Item
 
                 Repeater
                 {
-                    model: layout.numOfTabs
+                    model: taskTabInfo.titles()
 
                     // ---------------------------------------------------------------- Task Type Buttons
                     TabRadioButton
                     {
                         id: radioButton
-                        text: taskTabInfo.titles()[index]
+                        text: modelData
                         radioGroup: tabBarGroup
                         buttonIndex: index
 
@@ -111,7 +120,7 @@ Item
         }
     }
 
-    // ---------------------------------------------------------------- Delete Button for Delete Mode
+    // ---------------------------------------------------------------- Delete & Archive Buttons for Edit Mode
     Component
     {
         id: editModeButtons
@@ -136,8 +145,20 @@ Item
                 onButtonClick: archiveButtonClicked()
             }
         }
+    }
 
+    // ---------------------------------------------------------------- Save Button for Edit View
 
+    Component
+    {
+        id: saveButton
+
+        ToolBarButton
+        {
+            buttonText: 'Save'
+            bgColor: Constants.menuColor
+            onButtonClick: saveButtonClicked()
+        }
     }
 
     Component.onCompleted: state = Constants.viewModes[0]

@@ -9,6 +9,7 @@ Item
 {
     signal deleteThisRow(bool doDelete)
     signal archiveThisRow(bool doArchive)
+    signal editThisRow()
 
     Layout.fillHeight: true
     width: (editModeRow.children.length) * (Constants.editModeButtonWidth + editModeRow.spacing)
@@ -37,6 +38,7 @@ Item
             bgColor: Constants.menuColor
             buttonText: 'e'
             border.width: Constants.editModeBorderWidth
+            onButtonClick: editThisRow()
         }
 
         ToolBarButton

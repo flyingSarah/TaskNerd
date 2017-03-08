@@ -3,7 +3,6 @@ import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
-import QtQuick.Dialogs 1.2
 
 import com.swhitley.models 1.0
 
@@ -22,6 +21,7 @@ ScrollView
 
     signal updateDeleteCount(int deleteCount)
     signal updateArchiveCount(int archiveCount)
+    signal editRow(int row, var taskMap)
 
     //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
     //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
@@ -95,6 +95,7 @@ ScrollView
                 {
                     id: taskRow
                     modelRef: taskModel
+                    onUpdateRow: saveTasks(index, taskMap)
                 }
 
                 EditModeRow
@@ -108,6 +109,9 @@ ScrollView
                     onArchiveThisRow: {
                         doArchive ? rowsToArchive.push(index) : rowsToArchive.splice(rowsToArchive.lastIndexOf(index), 1)
                         updateArchiveCount(rowsToArchive.length)
+                    }
+                    onEditThisRow: {
+                        editRow(index, taskRow.taskDataMap)
                     }
                 }
 
@@ -197,5 +201,10 @@ ScrollView
         }
 
         refreshTasks()
+    }
+
+    function saveTasks(row, taskMap)
+    {
+        taskModel.setRecord(row, taskMap)
     }
 }

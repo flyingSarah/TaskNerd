@@ -12,16 +12,18 @@ Item
     property var modelRef
     property var taskDataMap: ({})
 
-    implicitHeight: Constants.taskRowHeight
+    signal updateRow(var taskMap)
+
+    Layout.minimumHeight: Constants.taskRowHeight
     Layout.fillWidth: true
 
     //--------------------------------------------------------------- Main Task Row
+
     RowLayout
     {
         spacing: Constants.taskRowSpacing
 
         width: parent.width
-        height: parent.height
 
         //--------------------------------------------------------------- Priority / Difficulty Indicator
 
@@ -44,7 +46,7 @@ Item
             onVisibleChanged: if(visible) isChecked = taskDataMap['isChecked']
             onIsCheckedChanged: {
                 taskDataMap['isChecked'] = isChecked
-                modelRef.setRecord(index, taskDataMap)
+                updateRow(taskDataMap)
             }
 
         }
@@ -61,15 +63,38 @@ Item
 
         Component
         {
-            id: label
+            id: labelComponent
 
             TaskLabel
             {
                 text: taskDataMap['label']
+                onVisibleChanged: if(visible) text = taskDataMap['label']
                 onTextChanged: {
                     taskDataMap['label'] = text
-                    modelRef.setRecord(index, taskDataMap)
+                    updateRow(taskDataMap)
                 }
+            }
+        }
+
+        //--------------------------------------------------------------- Repeat Indicator
+        Loader
+        {
+            id: repeatLoader
+        }
+
+        Component
+        {
+            id: repeatComponent
+
+            Text
+            {
+                text: '0/'+taskDataMap['repeat'] //TODO: replace the '0' with repeatCount
+                onVisibleChanged: if(visible) text = '0/'+taskDataMap['repeat']
+                font.family: Constants.appFont
+                font.pixelSize: 8
+                color: Constants.taskCheckBoxCC
+                Layout.preferredHeight: Constants.buttonHeight
+                horizontalAlignment: Text.AlignHCenter
             }
         }
     }
@@ -99,12 +124,16 @@ Item
     {
         //always load these elements
         taskColor.color = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
-        labelLoader.sourceComponent = label
+        labelLoader.sourceComponent = labelComponent
 
         //determine which dynamic task elements to load
         if(taskDataMap.hasOwnProperty('isChecked'))
         {
             checkBox.visible = true
+        }
+        if(taskDataMap.hasOwnProperty('repeat') && taskDataMap['repeat'] > 1)
+        {
+            repeatLoader.sourceComponent = repeatComponent
         }
     }
 }

@@ -16,7 +16,7 @@ var scrollBarBC     = 'gray'; //border color of scroll bar
 var appFont         = 'Futura Medium';
 var appFontSize     = 14;
 
-var viewModes   = ['taskList', 'delete']
+var viewModes   = ['taskList', 'editMode', 'editView']
 
 // ------------------------------------------------------------------ Tool Bar
 
@@ -53,7 +53,7 @@ var taskLabelMaxChars   = 75;
 
 var taskItemBorderColor = 'gray'; //for any item in the task row
 var taskCheckBoxCC      = 'gray'; //checked color of task checkbox
-var taskCheckBoxUC      = 'transparent'; //unchecked color of task checkbox
+var taskCheckBoxUC      = 'white'; //unchecked color of task checkbox
 var taskLabelBgColor    = 'white'; //background color of task label
 var taskLabelTextColor  = 'gray';
 
@@ -62,9 +62,18 @@ var editModeButtonHeight= taskRowHeight-2
 var editModeSpacing     = 2
 var editModeBorderWidth = 0
 
+// ------------------------------------------------------------------ Edit View
+
+var editViewRowHeight   = 18
+
+// ------------------------------------------------------------------ Task Parameters
+
 //task colors - outer list is priority, inner list is difficulty
-var taskColors = [['#ffb8c0', '#ff5266', '#ff001e'],
-                  ['#ffd1ad', '#ffab6d', '#ff8426'],
-                  ['#fff99e', '#fff566', '#fff029'],
+var taskColors = [['#ffb8c0', '#ff7286', '#ff001e'],
+                  ['#ffd1ad', '#ffaf72', '#ff8426'],
+                  ['#fff99e', '#fff771', '#fff029'],
                   ["#b2f0b4", '#5ce061', '#22b026'],
-                  ['#9ebdff', '#4782ff', '#004bea']]
+                  ['#9ebdff', '#5792ff', '#004bea']]
+
+var priorityOptions     = ['Highest', 'High', 'Medium', 'Low', 'Lowest']
+var difficultyOptions   = ['Easy', 'Medium', 'Hard']

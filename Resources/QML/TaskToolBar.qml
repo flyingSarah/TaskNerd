@@ -13,8 +13,9 @@ Item
     signal addButtonClicked()
     signal menuButtonClicked(bool isChecked)
 
-    //delete mode signals
-    signal cancelButtonClicked()
+    //edit mode signals
+    signal editModeCancelClicked()
+    signal editViewCancelClicked()
 
     height: Constants.buttonHeight
 
@@ -41,7 +42,16 @@ Item
             PropertyChanges
             {
                 target: toolBarLoader
-                sourceComponent: cancelButton
+                sourceComponent: editModeCancelButton
+            }
+        },
+        State
+        {
+            name: Constants.viewModes[2]
+            PropertyChanges
+            {
+                target: toolBarLoader
+                sourceComponent: editViewCancelButton
             }
         }
     ]
@@ -79,17 +89,32 @@ Item
         }
     }
 
-    // ---------------------------------------------------------------- Cancel Button for Delete Mode
+    // ---------------------------------------------------------------- Cancel Button for Edit Mode
     Component
     {
-        id: cancelButton
+        id: editModeCancelButton
 
         ToolBarButton
         {
             buttonText: 'cancel'
             bgColor: Constants.menuColor
             onButtonClick: {
-                cancelButtonClicked()
+                editModeCancelClicked()
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------- Cancel Button for Edit View
+    Component
+    {
+        id: editViewCancelButton
+
+        ToolBarButton
+        {
+            buttonText: 'cancel'
+            bgColor: Constants.menuColor
+            onButtonClick: {
+                editViewCancelClicked()
             }
         }
     }

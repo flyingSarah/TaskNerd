@@ -9,6 +9,7 @@ Rectangle
 	property string text: 'Button'
 	property int buttonIndex: -1
     property RadioGroup radioGroup
+    property int fontSize: Constants.appFontSize
 	
 	signal selected(int tabIndex)
 			
@@ -21,7 +22,7 @@ Rectangle
 		id: radioButtonLabel
 		text: radioButton.text
         font.family: Constants.appFont
-        font.pixelSize: Constants.appFontSize
+        font.pixelSize: fontSize
         color: radioGroup.selected === radioButton ? Constants.tabButtonSTC : Constants.tabButtonUTC
 		anchors.centerIn: parent
 	}

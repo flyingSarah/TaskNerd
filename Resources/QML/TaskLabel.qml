@@ -11,17 +11,35 @@ TextField
 {
     id: textBox
 
-    anchors.fill: parent
-
     style: TextFieldStyle {
         background: Rectangle {
             color: Constants.taskLabelBgColor
             border.color: Constants.taskItemBorderColor
             border.width: Constants.taskItemBorderWidth
+
+            //TODO: get the stuff below working with task data to show a progress bar
+            //... I've already got everything working visually, I just need data to play with
+            /*Row
+            {
+                property real modelCount: 17
+
+                anchors.fill: parent
+                anchors.margins: 3
+                spacing: 1
+
+                Repeater
+                {
+                    model: [1,0,0,1,1,1,0,1,1,0,1,1,0,0,0,0,1]
+                    Rectangle
+                    {
+                        color: Qt.rgba(0.3,0.3,0.3,0.3*modelData+0.2)
+                        width: (parent.width - (parent.spacing*parent.modelCount)) / parent.modelCount
+                        height: parent.height
+                    }
+                }
+            }*/
         }
     }
-
-    verticalAlignment: Text.AlignVCenter
 
     font.family: Constants.appFont
     font.pixelSize: Constants.appFontSize
