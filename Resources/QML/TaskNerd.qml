@@ -40,8 +40,8 @@ Item
             {
                 id: taskToolBar
 
-                onDeleteButtonClicked: {
-                    taskViewRepeater.itemAt(currentTabIndex).enterDeleteMode()
+                onEditButtonClicked: {
+                    taskViewRepeater.itemAt(currentTabIndex).editMode(true)
                     setViewMode(Constants.viewModes[1])
                 }
                 onAddButtonClicked: taskViewRepeater.itemAt(currentTabIndex).addTask()
@@ -82,6 +82,7 @@ Item
                         tabTableName: taskTabInfo.dbNames()[index]
                         tabIndex: index
                         onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
+                        onUpdateArchiveCount: tabBar.numOfItemsToArchive = archiveCount
                     }
 
                     Component.onCompleted: {
@@ -113,6 +114,10 @@ Item
                 }
                 onDeleteButtonClicked: {
                     taskViewRepeater.itemAt(currentTabIndex).deleteTasks()
+                    setViewMode(Constants.viewModes[0])
+                }
+                onArchiveButtonClicked: {
+                    taskViewRepeater.itemAt(currentTabIndex).archiveTasks()
                     setViewMode(Constants.viewModes[0])
                 }
             }

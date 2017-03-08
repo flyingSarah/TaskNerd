@@ -18,8 +18,10 @@ ScrollView
     property string tabIndex
 
     property var rowsToDelete: []
+    property var rowsToArchive: []
 
     signal updateDeleteCount(int deleteCount)
+    signal updateArchiveCount(int archiveCount)
 
     //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
     //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
@@ -87,14 +89,43 @@ ScrollView
                 id: taskModel
             }
 
-            TaskRow
+            RowLayout
             {
-                Layout.fillWidth: true
-                modelRef: taskModel
+                TaskRow
+                {
+                    id: taskRow
+                    modelRef: taskModel
+                }
 
-                onDeleteThisRow: {
-                    doDelete ? rowsToDelete.push(row) : rowsToDelete.splice(rowsToDelete.lastIndexOf(row), 1)
-                    updateDeleteCount(rowsToDelete.length)
+                EditModeRow
+                {
+                    id: editModeRow
+                    visible: false
+                    onDeleteThisRow: {
+                        doDelete ? rowsToDelete.push(index) : rowsToDelete.splice(rowsToDelete.lastIndexOf(index), 1)
+                        updateDeleteCount(rowsToDelete.length)
+                    }
+                    onArchiveThisRow: {
+                        doArchive ? rowsToArchive.push(index) : rowsToArchive.splice(rowsToArchive.lastIndexOf(index), 1)
+                        updateArchiveCount(rowsToArchive.length)
+                    }
+                }
+
+                Item
+                {
+                    width: Constants.taskRowRightSpacing
+                }
+
+                function editMode(enabled)
+                {
+                    editModeRow.visible = enabled
+                    taskRow.enabled = !enabled
+                }
+
+                function refreshTask()
+                {
+                    taskRow.refreshTask()
+                    editModeRow.reset()
                 }
             }
 
@@ -110,12 +141,15 @@ ScrollView
     function refreshTasks()
     {
         rowsToDelete = []
+        rowsToArchive = []
         updateDeleteCount(0)
+        updateArchiveCount(0)
 
         for(var i = 0; i < taskRepeater.count; i++)
         {
             taskRepeater.itemAt(i).refreshTask()
         }
+        editMode(false)
     }
 
     function addTask()
@@ -132,11 +166,11 @@ ScrollView
         }
     }
 
-    function enterDeleteMode()
+    function editMode(enabled)
     {
         for(var i = 0; i < taskRepeater.count; i++)
         {
-            taskRepeater.itemAt(i).enterDeleteMode()
+            taskRepeater.itemAt(i).editMode(enabled)
         }
     }
 
@@ -150,6 +184,18 @@ ScrollView
         }
 
         taskModel.select()
+        refreshTasks()
+    }
+
+    function archiveTasks()
+    {
+        rowsToArchive = rowsToArchive.sort(function(a,b){return b-a})
+
+        for(var row in rowsToArchive)
+        {
+            console.log("archive these rows", rowsToArchive)
+        }
+
         refreshTasks()
     }
 }

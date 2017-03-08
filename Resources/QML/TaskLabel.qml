@@ -25,14 +25,12 @@ TextField
 
     font.family: Constants.appFont
     font.pixelSize: Constants.appFontSize
+    textColor: Constants.taskCheckBoxCC
 
-    //selectByMouse: true
     maximumLength: Constants.taskLabelMaxChars
+    placeholderText: 'new task...'
 
-    //onTextChanged: labelText = text
     onEditingFinished: textBox.focus = false
-
-    placeholderText: 'enter task title here...'
 
     Keys.onPressed: {
         if(event.key === Qt.Key_Tab)

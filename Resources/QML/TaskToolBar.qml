@@ -9,7 +9,7 @@ import "Constants.js" as Constants
 Item
 {
     //regular tool bar signals
-    signal deleteButtonClicked()
+    signal editButtonClicked()
     signal addButtonClicked()
     signal menuButtonClicked(bool isChecked)
 
@@ -59,8 +59,8 @@ Item
             // ---------------------------------------------------------------- Tool Buttons
             ToolBarButton
             {
-                buttonText: "-"
-                onButtonClick: deleteButtonClicked()
+                buttonText: "e"
+                onButtonClick: editButtonClicked()
             }
 
             ToolBarButton

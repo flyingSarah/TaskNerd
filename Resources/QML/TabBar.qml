@@ -12,8 +12,10 @@ Item
 
     property int selectedTabIndex: Constants.tabInitIndex
     property int numOfItemsToDelete: 0
+    property int numOfItemsToArchive: 0
 
     signal deleteButtonClicked()
+    signal archiveButtonClicked()
 
     Layout.fillWidth: true
     height: Constants.buttonHeight
@@ -41,7 +43,7 @@ Item
             PropertyChanges
             {
                 target: tabBarLoader
-                sourceComponent: deleteButton
+                sourceComponent: editModeButtons
                 anchors.fill: bottomRow
             }
         }
@@ -112,14 +114,30 @@ Item
     // ---------------------------------------------------------------- Delete Button for Delete Mode
     Component
     {
-        id: deleteButton
+        id: editModeButtons
 
-        ToolBarButton
+        RowLayout
         {
-            buttonText: 'Delete ' + numOfItemsToDelete + ' / Archive 0'
-            bgColor: Constants.menuColor
-            onButtonClick: deleteButtonClicked()
+            spacing: Constants.tabBarSpacing
+
+            ToolBarButton
+            {
+                Layout.fillWidth: true
+                buttonText: 'Delete ' + numOfItemsToDelete + ' Tasks'
+                bgColor: Constants.menuColor
+                onButtonClick: deleteButtonClicked()
+            }
+
+            ToolBarButton
+            {
+                Layout.fillWidth: true
+                buttonText: 'Archive ' + numOfItemsToArchive + ' Tasks'
+                bgColor: Constants.menuColor
+                onButtonClick: archiveButtonClicked()
+            }
         }
+
+
     }
 
     Component.onCompleted: state = Constants.viewModes[0]

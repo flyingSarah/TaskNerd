@@ -12,60 +12,22 @@ Item
     property var modelRef
     property var taskDataMap: ({})
 
-    signal deleteThisRow(int row, bool doDelete)
-
     implicitHeight: Constants.taskRowHeight
+    Layout.fillWidth: true
 
     //--------------------------------------------------------------- Main Task Row
     RowLayout
     {
-        //anchors.verticalCenter: parent.verticalCenter
         spacing: Constants.taskRowSpacing
 
         width: parent.width
         height: parent.height
 
-        //--------------------------------------------------------------- Delete & Edit Mode Components
-
-        RowLayout
-        {
-            id: deleteMode
-
-            visible: false
-            onVisibleChanged: {
-                if(!visible)
-                {
-                    deleteButton.reset()
-                    archiveButton.reset()
-                }
-            }
-
-            Item
-            {
-                width: Constants.taskRowSpacing
-            }
-
-            ToolBarButton
-            {
-                id: deleteButton
-                buttonText: "x"
-                isMomentary: false
-                onButtonClick: deleteThisRow(index, isChecked)
-            }
-
-            ToolBarButton
-            {
-                id: archiveButton
-                buttonText: "a"
-                isMomentary: false
-            }
-        }
-
         //--------------------------------------------------------------- Priority / Difficulty Indicator
 
         Rectangle
         {
-            id: taskColorLeft
+            id: taskColor
 
             width: Constants.taskColorWidth
             height: Constants.taskColorHeight
@@ -109,18 +71,6 @@ Item
                     modelRef.setRecord(index, taskDataMap)
                 }
             }
-
-        }
-
-        //--------------------------------------------------------------- Priority / Difficulty Indicator
-        Rectangle
-        {
-            id: taskColorRight
-
-            width: Constants.taskColorWidth
-            height: Constants.taskColorHeight
-
-            color: Constants.windowBgColor
         }
     }
 
@@ -128,11 +78,8 @@ Item
 
     function refreshTask()
     {
-        deleteMode.visible = false
         initTaskMap()
         loadTaskElements()
-        labelLoader.enabled = true
-        checkBox.enabled = true
     }
 
     function initTaskMap()
@@ -151,9 +98,7 @@ Item
     function loadTaskElements()
     {
         //always load these elements
-        var taskColor = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
-        taskColorRight.color = taskColor
-        taskColorLeft.color = taskColor
+        taskColor.color = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
         labelLoader.sourceComponent = label
 
         //determine which dynamic task elements to load
@@ -161,12 +106,5 @@ Item
         {
             checkBox.visible = true
         }
-    }
-
-    function enterDeleteMode()
-    {
-        deleteMode.visible = true
-        labelLoader.enabled = false
-        checkBox.enabled = false
     }
 }
