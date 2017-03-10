@@ -11,20 +11,20 @@ Rectangle
 {
     id: checkBox
 
-    property bool isChecked
+    property bool checked
 
     width: Constants.buttonHeight
     height: Constants.buttonHeight
 
     border.color: Constants.taskItemBorderColor
     border.width: Constants.taskItemBorderWidth
-    color: isChecked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
+    color: checked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
 
     MouseArea
     {
         anchors.fill: parent
         onClicked: {
-            isChecked = !isChecked
+            checked = !checked
             checkBox.focus = true
         }
     }

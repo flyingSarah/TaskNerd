@@ -58,7 +58,7 @@ var taskLabelBgColor    = 'white'; //background color of task label
 var taskLabelTextColor  = 'gray';
 
 var editModeButtonWidth = 30
-var editModeButtonHeight= taskRowHeight-2
+var editModeButtonHeight= taskRowHeight-4
 var editModeSpacing     = 2
 var editModeBorderWidth = 0
 
@@ -77,3 +77,4 @@ var taskColors = [['#ffb8c0', '#ff7286', '#ff001e'],
 
 var priorityOptions     = ['Highest', 'High', 'Medium', 'Low', 'Lowest']
 var difficultyOptions   = ['Easy', 'Medium', 'Hard']
+

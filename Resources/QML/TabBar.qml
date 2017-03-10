@@ -88,7 +88,7 @@ Item
 
                 Repeater
                 {
-                    model: taskTabInfo.titles()
+                    model: taskTabInfo.taskTableTitles()
 
                     // ---------------------------------------------------------------- Task Type Buttons
                     TabRadioButton

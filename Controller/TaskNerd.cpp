@@ -35,20 +35,42 @@ QSqlError TaskNerd::initDb()
         return taskDb.lastError();
     }
 
-    QSqlQuery query;
+    QSqlError err;
 
     QStringList tables = taskDb.tables();
 
-    for(int i = 0; i < DBData::countTables(); i++)
+    //find task, parameter, and map tables in database - if one isn't there create it
+    err = initTables(tables, DBData::taskTableNames(), DBData::taskCreateStrings, DBData::taskDefaultMaps());
+    if(err.type() == QSqlError::NoError)
     {
-        //create or find task table in database
-        if(!tables.contains(DBData::dbNames().at(i).toString(), Qt::CaseInsensitive))
+        err = initTables(tables, DBData::parameterTableNames(), DBData::parameterCreateStrings, DBData::parameterDefaultMaps());
+        /*if(err.type() == QSqlError::NoError)
+        {
+            err = initTables(tables, DBData::mapTableNames(), DBData::mapCreateStrings, QVariantList());
+        }*/
+    }
+
+    return err;
+}
+
+QSqlError TaskNerd::initTables(const QStringList &tables, const QVariantList &tableNames,
+                               const QVariantList &createStrings, const QVariantList &defaultMaps)
+{
+    QSqlQuery query;
+
+    for(int i = 0; i < tableNames.count(); i++)
+    {
+        if(tables.contains(tableNames.at(i).toString()))
+        {
+            //TODO: check existing table data for missing columns based on the default maps
+        }
+        else
         {
             QString createTableString = QString("CREATE TABLE %1" "(id INTEGER PRIMARY KEY AUTOINCREMENT, %2)")
-                    .arg(DBData::dbNames().at(i).toString())
-                    .arg(DBData::createDbStr.at(i).toString());
+                    .arg(tableNames.at(i).toString())
+                    .arg(createStrings.at(i).toString());
 
-            qDebug() << "initDB:" << createTableString;
+            qDebug() << "initTable:" << createTableString;
 
             if(!query.exec(createTableString))
             {
@@ -56,6 +78,5 @@ QSqlError TaskNerd::initDb()
             }
         }
     }
-
     return QSqlError();
 }

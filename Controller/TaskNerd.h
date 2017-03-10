@@ -19,6 +19,8 @@ public:
 
 private:
     QSqlError initDb();
+    QSqlError initTables(const QStringList &tables, const QVariantList &tableNames, const QVariantList &createStrings, const QVariantList &defaultMaps);
+
 
 private slots:
 

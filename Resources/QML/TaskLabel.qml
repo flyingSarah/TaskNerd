@@ -11,6 +11,8 @@ TextField
 {
     id: textBox
 
+    signal triggerSetData()
+
     style: TextFieldStyle {
         background: Rectangle {
             color: Constants.taskLabelBgColor
@@ -48,6 +50,7 @@ TextField
     maximumLength: Constants.taskLabelMaxChars
     placeholderText: 'new task...'
 
+    onTextChanged: triggerSetData()
     onEditingFinished: textBox.focus = false
 
     Keys.onPressed: {

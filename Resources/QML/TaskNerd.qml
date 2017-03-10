@@ -63,7 +63,6 @@ Item
             {
                 id: editView
                 visible: false
-                //onTaskMapChanged: console.log('on task map changed')
             }
 
             TaskTabInfo
@@ -85,20 +84,18 @@ Item
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    model: taskTabInfo.countTables()
+                    model: taskTabInfo.taskTableNames()
 
                     TaskListView
                     {
-                        //anchors.fill: parent
                         visible: false
-                        tabDelegate: "TaskRow"
-                        tabTableName: taskTabInfo.dbNames()[index]
+                        tabTabelName: modelData
                         tabIndex: index
                         onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
                         onUpdateArchiveCount: tabBar.numOfItemsToArchive = archiveCount
                         onEditRow: {
                             setViewMode(Constants.viewModes[2])
-                            showEditView(row, taskMap)
+                            showEditView(row, tabelMap)
                         }
                     }
 
@@ -138,7 +135,7 @@ Item
                     setViewMode(Constants.viewModes[0])
                 }
                 onSaveButtonClicked: {
-                    taskViewRepeater.itemAt(currentTabIndex).saveTasks(editView.taskRow, editView.taskMap)
+                    taskViewRepeater.itemAt(currentTabIndex).saveTasks(editView.taskRow, editView.taskMap, editView.checklistMap)
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
                     taskViewRepeater.itemAt(currentTabIndex).editMode(true)
                     setViewMode(Constants.viewModes[1])
@@ -164,10 +161,10 @@ Item
         tabBar.state = viewMode
     }
 
-    function showEditView(row, taskMap)
+    function showEditView(row, tabelMap)
     {
         editView.taskRow = row
-        editView.taskMap = taskMap
+        editView.populateMaps(tabelMap)
         taskView.visible = false
         editView.visible = true
     }

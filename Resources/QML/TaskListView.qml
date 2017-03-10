@@ -12,8 +12,7 @@ ScrollView
 {
     id: scrollView
 
-    property string tabDelegate
-    property string tabTableName
+    property string tabTabelName
     property string tabIndex
 
     property var rowsToDelete: []
@@ -21,7 +20,7 @@ ScrollView
 
     signal updateDeleteCount(int deleteCount)
     signal updateArchiveCount(int archiveCount)
-    signal editRow(int row, var taskMap)
+    signal editRow(int row, var tabelMap)
 
     //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
     //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
@@ -94,8 +93,6 @@ ScrollView
                 TaskRow
                 {
                     id: taskRow
-                    modelRef: taskModel
-                    onUpdateRow: saveTasks(index, taskMap)
                 }
 
                 EditModeRow
@@ -111,7 +108,9 @@ ScrollView
                         updateArchiveCount(rowsToArchive.length)
                     }
                     onEditThisRow: {
-                        editRow(index, taskRow.taskDataMap)
+                        //TODO: get map of tasks so they can be sent to the edit view
+                        tabTabelName.search('checklist')+1 ? editRow(index, taskModel.getDataMap(index, 'count'))
+                                                           : editRow(index, taskModel.getDataMap(index, ''))
                     }
                 }
 
@@ -128,13 +127,16 @@ ScrollView
 
                 function refreshTask()
                 {
-                    taskRow.refreshTask()
+                    //taskRow.refreshTask()
                     editModeRow.reset()
                 }
             }
 
             Component.onCompleted: {
-                taskModel.setupModel(tabTableName)
+                //set up the model(s) - task, param, and map models all need to be referenced
+                var didSetupModel = false
+                tabTabelName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTabelName, 'checklistChecklistParams', 'checklistCount', 'count')
+                                                   : didSetupModel = taskModel.setupModel(tabTabelName)
                 refreshTasks()
             }
         }
@@ -149,16 +151,16 @@ ScrollView
         updateDeleteCount(0)
         updateArchiveCount(0)
 
-        for(var i = 0; i < taskRepeater.count; i++)
+        /*for(var i = 0; i < taskRepeater.count; i++)
         {
             taskRepeater.itemAt(i).refreshTask()
-        }
+        }*/
         editMode(false)
     }
 
     function addTask()
     {
-        taskModel.insertNewRecord(taskModel.count, taskTabInfo.paramDefaultMaps()[tabIndex])
+        taskModel.insertNewRecord(taskModel.count, taskTabInfo.taskDefaultMaps()[tabIndex])
         taskModel.select()
         refreshTasks()
 
@@ -203,8 +205,23 @@ ScrollView
         refreshTasks()
     }
 
-    function saveTasks(row, taskMap)
+    function saveTasks(row, taskMap, checklistMap)
     {
-        taskModel.setRecord(row, taskMap)
+        for(var k in taskMap)
+        {
+            if(taskMap.hasOwnProperty(k))
+            {
+                //console.log("  ", k, taskMap[k])
+                taskModel.setDataValue(row, k, taskMap[k])
+            }
+        }
+
+        for(k in checklistMap)
+        {
+            if(checklistMap.hasOwnProperty(k))
+            {
+                console.log("save checklist tasks", k, checklistMap[k])
+            }
+        }
     }
 }

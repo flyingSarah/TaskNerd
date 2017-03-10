@@ -9,11 +9,6 @@ Item
 {
     id: taskItem
 
-    property var modelRef
-    property var taskDataMap: ({})
-
-    signal updateRow(var taskMap)
-
     Layout.minimumHeight: Constants.taskRowHeight
     Layout.fillWidth: true
 
@@ -35,6 +30,7 @@ Item
             height: Constants.taskColorHeight
 
             color: Constants.windowBgColor
+            onVisibleChanged: if(visible) setTaskColor()
         }
 
         //--------------------------------------------------------------- Check Box
@@ -43,11 +39,8 @@ Item
         {
             id: checkBox
             visible: false
-            onVisibleChanged: if(visible) isChecked = taskDataMap['isChecked']
-            onIsCheckedChanged: {
-                taskDataMap['isChecked'] = isChecked
-                updateRow(taskDataMap)
-            }
+            onVisibleChanged: if(visible) checked = isChecked
+            onCheckedChanged: taskModel.setDataValue(index, 'isChecked', checked)
 
         }
 
@@ -67,12 +60,9 @@ Item
 
             TaskLabel
             {
-                text: taskDataMap['label']
-                onVisibleChanged: if(visible) text = taskDataMap['label']
-                onTextChanged: {
-                    taskDataMap['label'] = text
-                    updateRow(taskDataMap)
-                }
+                text: label
+                onVisibleChanged: if(visible) text = label
+                onTriggerSetData: taskModel.setDataValue(index, 'label', text)
             }
         }
 
@@ -88,8 +78,8 @@ Item
 
             Text
             {
-                text: '0/'+taskDataMap['repeat'] //TODO: replace the '0' with repeatCount
-                onVisibleChanged: if(visible) text = '0/'+taskDataMap['repeat']
+                text: '0/'+repeat //TODO: replace the '0' with repeatCount
+                onVisibleChanged: if(visible) text = '0/'+repeat
                 font.family: Constants.appFont
                 font.pixelSize: 8
                 color: Constants.taskCheckBoxCC
@@ -99,41 +89,22 @@ Item
         }
     }
 
-    //--------------------------------------------------------------- Helper Functions
-
-    function refreshTask()
-    {
-        initTaskMap()
-        loadTaskElements()
-    }
-
-    function initTaskMap()
-    {
-        //get starting map for task data -- this map gets updated and sent back to the model for saving
-        var data = modelRef.getDataMap(index);
-        for (var k in data)
-        {
-            if(data.hasOwnProperty(k) && k !== 'id')
-            {
-                taskDataMap[k] = data[k]
-            }
-        }
-    }
-
-    function loadTaskElements()
-    {
-        //always load these elements
-        taskColor.color = Constants.taskColors[taskDataMap['priority']][taskDataMap['difficulty']]
+    Component.onCompleted: {
         labelLoader.sourceComponent = labelComponent
 
-        //determine which dynamic task elements to load
-        if(taskDataMap.hasOwnProperty('isChecked'))
+        if(taskModel.parameterNames().indexOf('priority') > -1)
+        {
+            setTaskColor()
+        }
+
+        if(taskModel.parameterNames().indexOf('isChecked') > -1)
         {
             checkBox.visible = true
         }
-        if(taskDataMap.hasOwnProperty('repeat') && taskDataMap['repeat'] > 1)
-        {
-            repeatLoader.sourceComponent = repeatComponent
-        }
+    }
+
+    function setTaskColor()
+    {
+        taskColor.color = Constants.taskColors[priority][difficulty]
     }
 }
