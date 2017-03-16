@@ -7,12 +7,8 @@ import "Constants.js" as Constants
 
 Item
 {
-    property var taskMap
-    property var checklistMap: undefined
-    property int taskRow
-
-    Layout.fillHeight: true
-    Layout.fillWidth: true
+    property int row
+    property bool hasChecklist
 
     Loader
     {
@@ -36,15 +32,14 @@ Item
             ColumnLayout
             {
                 anchors.fill: parent
-                anchors.margins: 5
+                anchors.margins: Constants.windowMargins
                 spacing: 5
 
                 GridLayout
                 {
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignBottom
-                    columnSpacing: parent.anchors.margins
-                    rowSpacing: columnSpacing
+                    columnSpacing: parent.spacing
+                    rowSpacing: parent.spacing
                     columns: 2
 
                     // ---------------------------------------------------------------- Task Title
@@ -63,26 +58,79 @@ Item
                         Layout.fillWidth: true
                         Layout.minimumWidth: 50
                         Layout.preferredHeight: Constants.editViewRowHeight
-                        text: taskMap['label']
+                        text: label
                         font.pixelSize: Constants.menuFontSize - 2
-                        onTextChanged: taskMap['label'] = text
+                        onTriggerSetData: taskModel.setDataValue(row, 'label', text)
                     }
                 }
 
                 // ---------------------------------------------------------------- Checklist
 
-                Repeater
+                Text
                 {
-                    id: checklistRepeater
-                    Layout.alignment: Qt.AlignTop
-                    model: checklistMap
+                    id: checklistTitle
+                    text: "Checklist (click '+' to add items)"
+                    font.family: Constants.appFont
+                    font.pixelSize: Constants.menuFontSize
+                    color: Constants.taskCheckBoxCC
+                    Layout.fillWidth: true
                     visible: false
-                    Rectangle{visible: false; color: 'pink'; height: Constants.editViewRowHeight; Layout.fillWidth: true}
-                    onVisibleChanged: {
-                        for(var i = 0; i < checklistRepeater.count; i++)
-                        {
-                            checklistRepeater.itemAt(i).visible = visible
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.preferredHeight: Constants.editViewRowHeight
+                }
+
+                ScrollView
+                {
+                    id: checklistScrollView
+                    visible: false
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    frameVisible: true
+                    highlightOnFocus: true
+
+                    // ---------------------------------------------------------------- Scroll Bar
+                    style: ScrollViewStyle {
+                        transientScrollBars: true
+                        handle: Item {
+                            //scroll bar handle size & appearance
+                            implicitWidth: Constants.scrollBarWidth
+                            implicitHeight: Constants.scrollBarHeight
+                            Rectangle {
+                                color: Constants.scrollBarColor
+                                border.color: Constants.scrollBarBC
+                                border.width: Constants.scrollBarBW
+                                anchors.fill: parent
+                                anchors.margins: Constants.scrollBarMargin
+                            }
                         }
+                        scrollBarBackground: Item {
+                            implicitWidth: Constants.scrollBarWidth
+                            implicitHeight: Constants.scrollBarHeight
+                        }
+                    }
+
+                    ColumnLayout
+                    {
+                        id: checklistColumn
+                        anchors.top: parent.top
+                        Layout.fillWidth: true
+                        spacing: 2
+
+                        Repeater
+                        {
+                            id: checklistRepeater
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignCenter
+                            model: 20//checklistMap
+                            Rectangle
+                            {
+                                color: 'pink';
+                                Layout.preferredHeight: Constants.editViewRowHeight;
+                                Layout.preferredWidth: checklistScrollView.width - checklistColumn.spacing
+                            }
+                        }
+                        onVisibleChanged: checklistTitle.visible = visible
                     }
                 }
 
@@ -90,8 +138,8 @@ Item
                 {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop
-                    columnSpacing: parent.anchors.margins
-                    rowSpacing: columnSpacing
+                    columnSpacing: parent.spacing
+                    rowSpacing: parent.spacing
                     columns: 2
 
                     // ---------------------------------------------------------------- Priority Label
@@ -127,20 +175,20 @@ Item
                                 radioGroup: priorityGroup
                                 buttonIndex: index
 
-                                height: Constants.editViewRowHeight
+                                Layout.preferredHeight: Constants.editViewRowHeight
                                 Layout.minimumWidth: 10
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.fillWidth: true
 
                                 onSelected: {
-                                    taskMap['priority'] = tabIndex
-                                    editView.loadColor()
+                                    taskModel.setDataValue(row, 'priority', tabIndex)
+                                    editView.setTaskColor()
                                 }
 
                                 Component.onCompleted: {
                                     //this is where the first tab in the view is initialized
                                     //TODO: instead of this being a constant, I should make this a persistent value
-                                    if(index === taskMap['priority'])
+                                    if(index === priority)
                                     {
                                         radioGroup.selected = priorityRadioButton
                                         selected(index)
@@ -183,20 +231,20 @@ Item
                                 radioGroup: difficultyGroup
                                 buttonIndex: index
 
-                                height: Constants.editViewRowHeight
+                                Layout.preferredHeight: Constants.editViewRowHeight
                                 Layout.minimumWidth: 10
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.fillWidth: true
 
                                 onSelected: {
-                                    taskMap['difficulty'] = tabIndex
-                                    editView.loadColor()
+                                    taskModel.setDataValue(row, 'difficulty', tabIndex)
+                                    editView.setTaskColor()
                                 }
 
                                 Component.onCompleted: {
                                     //this is where the first tab in the view is initialized
                                     //TODO: instead of this being a constant, I should make this a persistent value
-                                    if(index === taskMap['difficulty'])
+                                    if(index === difficulty)
                                     {
                                         radioGroup.selected = difficultyRadioButton
                                         selected(index)
@@ -230,24 +278,23 @@ Item
 
                         TaskLabel
                         {
-                            Layout.minimumWidth: 10
                             height: Constants.editViewRowHeight
-                            text: taskMap['repeat']
+                            Layout.maximumHeight: Constants.editViewRowHeight
+                            text: repeat
                             font.pixelSize: Constants.menuFontSize - 2
-                            onTextChanged: taskMap['repeat'] = parseInt(text)
+                            onTriggerSetData: taskModel.setDataValue(row, 'repeat', parseInt(text))
                             validator: IntValidator {
                                 bottom: 1
                                 top: 999
                             }
                             placeholderText: '1'
                             onAcceptableInputChanged: {
-                                if(!acceptableInput) taskMap['repeat'] = 1 //if the text box is empty set the taskMap to 1
+                                if(!acceptableInput) repeat = 1 //if the text box is empty set the taskMap to 1
                                 if(text != '' && !acceptableInput) //if the text box is empty and also contains non-numeric characters, change the text field to 1
                                 {
                                     text = '1'
                                     //TODO: take out log msg
-                                    console.log("weird event in the edit view repeat text field:\n
-                                                 ... a value other than a number was entered")
+                                    console.log("weird event in the edit view repeat text field:\n    a value other than a number was entered")
                                 }
                             }
 
@@ -262,24 +309,24 @@ Item
             function loadTaskElements()
             {
                 //determine which dynamic task elements to load
-                if(taskMap.hasOwnProperty('priority'))
+                if(taskModel.parameterNames().indexOf('priority') > -1)
                 {
-                    loadColor()
+                    setTaskColor()
                 }
-                if(taskMap.hasOwnProperty('repeat'))
+                if(taskModel.parameterNames().indexOf('repeat') > -1)
                 {
                     repeatLabel.visible = true
                     repeatLoader.sourceComponent = repeatComponent
                 }
-                if(checklistMap !== undefined)
+                if(hasChecklist)
                 {
-                    checklistRepeater.visible = true
+                    checklistScrollView.visible = true
                 }
             }
 
-            function loadColor()
+            function setTaskColor()
             {
-                editView.border.color = Constants.taskColors[taskMap['priority']][taskMap['difficulty']]
+                editView.border.color = Constants.taskColors[priority][difficulty]
             }
 
             Component.onCompleted: loadTaskElements()
@@ -293,27 +340,7 @@ Item
         }
         else
         {
-            checklistMap = undefined
             editViewLoader.sourceComponent = undefined
-        }
-    }
-
-    function populateMaps(tabelMap)
-    {
-        for(var tabel in tabelMap)
-        {
-            if(tabelMap.hasOwnProperty(tabel) && tabel.search('Task') > -1)
-            {
-                taskMap = tabelMap[tabel]
-            }
-            if(tabelMap.hasOwnProperty(tabel) && tabel.search('Checklist') > -1)
-            {
-                checklistMap = tabelMap[tabel]
-                for(var k in checklistMap)
-                {
-                    console.log(tabel, "data", taskRow, k, checklistMap[k])
-                }
-            }
         }
     }
 }

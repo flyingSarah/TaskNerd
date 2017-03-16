@@ -50,20 +50,9 @@ Item
                     setViewMode(Constants.viewModes[0])
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
                 }
-                onEditViewCancelClicked: {
-                    setViewMode(Constants.viewModes[1])
-                    hideEditView()
-                }
             }
 
             // ---------------------------------------------------------------- Task Type Tabs
-
-
-            TaskEditView
-            {
-                id: editView
-                visible: false
-            }
 
             TaskTabInfo
             {
@@ -88,15 +77,13 @@ Item
 
                     TaskListView
                     {
+                        anchors.fill: parent
                         visible: false
                         tabTabelName: modelData
                         tabIndex: index
                         onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
                         onUpdateArchiveCount: tabBar.numOfItemsToArchive = archiveCount
-                        onEditRow: {
-                            setViewMode(Constants.viewModes[2])
-                            showEditView(row, tabelMap)
-                        }
+                        onEnterEditMode: setViewMode(Constants.viewModes[2])
                     }
 
                     Component.onCompleted: {
@@ -134,12 +121,10 @@ Item
                     taskViewRepeater.itemAt(currentTabIndex).archiveTasks()
                     setViewMode(Constants.viewModes[0])
                 }
-                onSaveButtonClicked: {
-                    taskViewRepeater.itemAt(currentTabIndex).saveTasks(editView.taskRow, editView.taskMap, editView.checklistMap)
+                onDoneButtonClicked: {
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
                     taskViewRepeater.itemAt(currentTabIndex).editMode(true)
                     setViewMode(Constants.viewModes[1])
-                    hideEditView()
                 }
             }
         }
@@ -159,19 +144,5 @@ Item
     {
         taskToolBar.state = viewMode
         tabBar.state = viewMode
-    }
-
-    function showEditView(row, tabelMap)
-    {
-        editView.taskRow = row
-        editView.populateMaps(tabelMap)
-        taskView.visible = false
-        editView.visible = true
-    }
-
-    function hideEditView()
-    {
-        editView.visible = false
-        taskView.visible = true
     }
 }

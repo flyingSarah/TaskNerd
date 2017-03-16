@@ -8,10 +8,8 @@ import com.swhitley.models 1.0
 
 import "Constants.js" as Constants
 
-ScrollView
+Item
 {
-    id: scrollView
-
     property string tabTabelName
     property string tabIndex
 
@@ -20,125 +18,150 @@ ScrollView
 
     signal updateDeleteCount(int deleteCount)
     signal updateArchiveCount(int archiveCount)
-    signal editRow(int row, var tabelMap)
+    signal enterEditMode()
 
-    //property bool isRepeating: taskTabInfo.canRepeat()[tabIndex];
-    //property bool hasChecklist: taskTabInfo.hasChecklist()[tabIndex];
-
-    Layout.fillWidth: true
-    Layout.fillHeight: true
-
-    frameVisible: true
-    highlightOnFocus: true
-
-    // ---------------------------------------------------------------- Scroll Bar
-    style: ScrollViewStyle {
-        transientScrollBars: true
-        handle: Item {
-            //scroll bar handle size & appearance
-            implicitWidth: Constants.scrollBarWidth
-            implicitHeight: Constants.scrollBarHeight
-            Rectangle {
-                color: Constants.scrollBarColor
-                border.color: Constants.scrollBarBC
-                border.width: Constants.scrollBarBW
-                anchors.fill: parent
-                anchors.margins: Constants.scrollBarMargin
-            }
-        }
-        scrollBarBackground: Item {
-            implicitWidth: Constants.scrollBarWidth
-            implicitHeight: Constants.scrollBarHeight
-        }
-    }
-
-    //TODO: set scroll bar positions and have them appear at the correct positions when loaded
-    // .... from the main view (when the app starts they can all start from the top position
-    flickableItem.onContentHeightChanged: {
-        //console.log("flickable item content height changed", taskRepeater.finCount, taskRepeater.count)
-        if(taskRepeater.finCount == taskRepeater.count)
-        {
-            //flickableItem.contentY = 300
-        }
-        taskRepeater.finCount++
-    }
-
-    flickableItem.onContentYChanged: {
-        //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
-    }
-
-    ColumnLayout
+    TaskModel
     {
-        id: taskList
-        anchors.top: parent.top
-        width: scrollView.width - 2
-        Layout.fillWidth: true
-        spacing: 0
+        id: taskModel
+    }
 
-        // ---------------------------------------------------------------- List of Tasks
-        Repeater
+    Repeater
+    {
+        id: editViewRepeater
+
+        anchors.fill: parent
+
+        model: taskModel
+
+        TaskEditView
         {
-            id: taskRepeater
+            id: editView
 
-            property int finCount: 0
+            width: editViewRepeater.width
+            height: editViewRepeater.height
 
-            width: parent.width
-            model: TaskModel {
+            row: index
+            visible: false
 
-                id: taskModel
+            hasChecklist: tabTabelName.search('checklist')+1 ? true : false
+        }
+    }
+
+    ScrollView
+    {
+        id: scrollView
+
+        anchors.fill: parent
+
+        frameVisible: true
+        highlightOnFocus: true
+
+        // ---------------------------------------------------------------- Scroll Bar
+        style: ScrollViewStyle {
+            transientScrollBars: true
+            handle: Item {
+                //scroll bar handle size & appearance
+                implicitWidth: Constants.scrollBarWidth
+                implicitHeight: Constants.scrollBarHeight
+                Rectangle {
+                    color: Constants.scrollBarColor
+                    border.color: Constants.scrollBarBC
+                    border.width: Constants.scrollBarBW
+                    anchors.fill: parent
+                    anchors.margins: Constants.scrollBarMargin
+                }
             }
+            scrollBarBackground: Item {
+                implicitWidth: Constants.scrollBarWidth
+                implicitHeight: Constants.scrollBarHeight
+            }
+        }
 
-            RowLayout
+        //TODO: set scroll bar positions and have them appear at the correct positions when loaded
+        // .... from the main view (when the app starts they can all start from the top position
+        flickableItem.onContentHeightChanged: {
+            /*console.log("flickable item content height changed", taskRepeater.finCount, taskRepeater.count)
+            if(taskRepeater.finCount == taskRepeater.count)
             {
-                TaskRow
-                {
-                    id: taskRow
-                }
+                flickableItem.contentY = 300
+            }
+            taskRepeater.finCount++*/
+        }
 
-                EditModeRow
+        flickableItem.onContentYChanged: {
+            //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
+        }
+
+        ColumnLayout
+        {
+            anchors.top: parent.top
+            width: scrollView.width - 2
+            spacing: 0
+
+            // ---------------------------------------------------------------- List of Tasks
+
+            Repeater
+            {
+                id: taskRepeater
+
+                property int finCount: 0
+
+                width: parent.width
+                model: taskModel
+
+                RowLayout
                 {
-                    id: editModeRow
-                    visible: false
-                    onDeleteThisRow: {
-                        doDelete ? rowsToDelete.push(index) : rowsToDelete.splice(rowsToDelete.lastIndexOf(index), 1)
-                        updateDeleteCount(rowsToDelete.length)
+                    TaskRow
+                    {
+                        id: taskRow
                     }
-                    onArchiveThisRow: {
-                        doArchive ? rowsToArchive.push(index) : rowsToArchive.splice(rowsToArchive.lastIndexOf(index), 1)
-                        updateArchiveCount(rowsToArchive.length)
+
+                    EditModeRow
+                    {
+                        id: editModeRow
+                        visible: false
+                        onDeleteThisRow: {
+                            doDelete ? rowsToDelete.push(index) : rowsToDelete.splice(rowsToDelete.lastIndexOf(index), 1)
+                            updateDeleteCount(rowsToDelete.length)
+                        }
+                        onArchiveThisRow: {
+                            doArchive ? rowsToArchive.push(index) : rowsToArchive.splice(rowsToArchive.lastIndexOf(index), 1)
+                            updateArchiveCount(rowsToArchive.length)
+                        }
+                        onEditThisRow: {
+                            enterEditMode()
+                            scrollView.visible = false
+                            editViewRepeater.itemAt(index).visible = true
+                        }
                     }
-                    onEditThisRow: {
-                        //TODO: get map of tasks so they can be sent to the edit view
-                        tabTabelName.search('checklist')+1 ? editRow(index, taskModel.getDataMap(index, 'count'))
-                                                           : editRow(index, taskModel.getDataMap(index, ''))
+
+                    Item
+                    {
+                        width: Constants.taskRowRightSpacing
+                    }
+
+                    function editMode(enabled)
+                    {
+                        editModeRow.visible = enabled
+                        taskRow.enabled = !enabled
+                    }
+
+                    function refreshTask()
+                    {
+                        editModeRow.reset()
                     }
                 }
 
-                Item
-                {
-                    width: Constants.taskRowRightSpacing
-                }
-
-                function editMode(enabled)
-                {
-                    editModeRow.visible = enabled
-                    taskRow.enabled = !enabled
-                }
-
-                function refreshTask()
-                {
-                    //taskRow.refreshTask()
-                    editModeRow.reset()
+                Component.onCompleted: {
+                    //set up the model(s) - task, param, and map models all need to be referenced
+                    var didSetupModel = false
+                    tabTabelName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTabelName, 'checklistChecklistParams', 'checklistCount', 'count')
+                                                       : didSetupModel = taskModel.setupModel(tabTabelName)
+                    refreshTasks()
                 }
             }
 
-            Component.onCompleted: {
-                //set up the model(s) - task, param, and map models all need to be referenced
-                var didSetupModel = false
-                tabTabelName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTabelName, 'checklistChecklistParams', 'checklistCount', 'count')
-                                                   : didSetupModel = taskModel.setupModel(tabTabelName)
-                refreshTasks()
-            }
+            onVisibleChanged: scrollView.frameVisible = visible
         }
     }
 
@@ -151,10 +174,12 @@ ScrollView
         updateDeleteCount(0)
         updateArchiveCount(0)
 
-        /*for(var i = 0; i < taskRepeater.count; i++)
+        for(var i = 0; i < editViewRepeater.count; i++)
         {
-            taskRepeater.itemAt(i).refreshTask()
-        }*/
+            editViewRepeater.itemAt(i).visible = false
+        }
+        scrollView.visible = true
+
         editMode(false)
     }
 
@@ -204,24 +229,6 @@ ScrollView
 
         refreshTasks()
     }
-
-    function saveTasks(row, taskMap, checklistMap)
-    {
-        for(var k in taskMap)
-        {
-            if(taskMap.hasOwnProperty(k))
-            {
-                //console.log("  ", k, taskMap[k])
-                taskModel.setDataValue(row, k, taskMap[k])
-            }
-        }
-
-        for(k in checklistMap)
-        {
-            if(checklistMap.hasOwnProperty(k))
-            {
-                console.log("save checklist tasks", k, checklistMap[k])
-            }
-        }
-    }
 }
+
+

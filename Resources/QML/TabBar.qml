@@ -16,7 +16,7 @@ Item
 
     signal deleteButtonClicked()
     signal archiveButtonClicked()
-    signal saveButtonClicked()
+    signal doneButtonClicked()
 
     Layout.fillWidth: true
     height: Constants.buttonHeight
@@ -54,7 +54,7 @@ Item
             PropertyChanges
             {
                 target: tabBarLoader
-                sourceComponent: saveButton
+                sourceComponent: doneButton
                 anchors.fill: bottomRow
             }
         }
@@ -147,17 +147,17 @@ Item
         }
     }
 
-    // ---------------------------------------------------------------- Save Button for Edit View
+    // ---------------------------------------------------------------- Done Button for Edit View
 
     Component
     {
-        id: saveButton
+        id: doneButton
 
         ToolBarButton
         {
-            buttonText: 'Save'
+            buttonText: 'Done'
             bgColor: Constants.menuColor
-            onButtonClick: saveButtonClicked()
+            onButtonClick: doneButtonClicked()
         }
     }
 

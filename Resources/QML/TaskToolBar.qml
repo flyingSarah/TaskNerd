@@ -8,6 +8,8 @@ import "Constants.js" as Constants
 
 Item
 {
+    id: mainItem
+
     //regular tool bar signals
     signal editButtonClicked()
     signal addButtonClicked()
@@ -15,7 +17,6 @@ Item
 
     //edit mode signals
     signal editModeCancelClicked()
-    signal editViewCancelClicked()
 
     height: Constants.buttonHeight
 
@@ -50,8 +51,8 @@ Item
             name: Constants.viewModes[2]
             PropertyChanges
             {
-                target: toolBarLoader
-                sourceComponent: editViewCancelButton
+                target: mainItem
+                visible: false
             }
         }
     ]
@@ -100,21 +101,6 @@ Item
             bgColor: Constants.menuColor
             onButtonClick: {
                 editModeCancelClicked()
-            }
-        }
-    }
-
-    // ---------------------------------------------------------------- Cancel Button for Edit View
-    Component
-    {
-        id: editViewCancelButton
-
-        ToolBarButton
-        {
-            buttonText: 'cancel'
-            bgColor: Constants.menuColor
-            onButtonClick: {
-                editViewCancelClicked()
             }
         }
     }
