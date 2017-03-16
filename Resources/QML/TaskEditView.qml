@@ -282,22 +282,20 @@ Item
                             Layout.maximumHeight: Constants.editViewRowHeight
                             text: repeat
                             font.pixelSize: Constants.menuFontSize - 2
-                            onTriggerSetData: taskModel.setDataValue(row, 'repeat', parseInt(text))
+                            onTriggerSetData: {
+                                var newText = text
+                                if(!acceptableInput) newText = '1'
+                                if(text != '' && !acceptableInput)
+                                {
+                                    newText = '1'
+                                }
+                                taskModel.setDataValue(row, 'repeat', parseInt(newText))
+                            }
                             validator: IntValidator {
                                 bottom: 1
                                 top: 999
                             }
                             placeholderText: '1'
-                            onAcceptableInputChanged: {
-                                if(!acceptableInput) repeat = 1 //if the text box is empty set the taskMap to 1
-                                if(text != '' && !acceptableInput) //if the text box is empty and also contains non-numeric characters, change the text field to 1
-                                {
-                                    text = '1'
-                                    //TODO: take out log msg
-                                    console.log("weird event in the edit view repeat text field:\n    a value other than a number was entered")
-                                }
-                            }
-
                             //TODO: I need to add some more conveniences to this number box
                             //... there should be able to inc up and down using mouse or keyboard
                             //... perhaps there's a better way to deal with an empty box as well, etc...

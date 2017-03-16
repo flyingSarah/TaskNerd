@@ -101,6 +101,11 @@ Item
         {
             checkBox.visible = true
         }
+
+        if(taskModel.parameterNames().indexOf('repeat') > -1)
+        {
+            repeatLoader.sourceComponent = repeatComponent
+        }
     }
 
     function setTaskColor()
