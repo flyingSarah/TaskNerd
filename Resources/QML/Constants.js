@@ -58,7 +58,7 @@ var taskLabelBgColor    = 'white'; //background color of task label
 var taskLabelTextColor  = 'gray';
 
 var editModeButtonWidth = 30
-var editModeButtonHeight= taskRowHeight-4
+var editModeButtonHeight= taskRowHeight-2
 var editModeSpacing     = 2
 var editModeBorderWidth = 0
 

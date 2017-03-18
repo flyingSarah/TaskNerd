@@ -10,7 +10,7 @@ import "Constants.js" as Constants
 
 Item
 {
-    property string tabTabelName
+    property string tabTableName
     property string tabIndex
 
     property var rowsToDelete: []
@@ -43,7 +43,7 @@ Item
             row: index
             visible: false
 
-            hasChecklist: tabTabelName.search('checklist')+1 ? true : false
+            hasChecklist: tabTableName.search('checklist')+1 ? true : false
         }
     }
 
@@ -114,6 +114,8 @@ Item
                     TaskRow
                     {
                         id: taskRow
+                        Layout.fillWidth: true
+                        Layout.minimumHeight: Constants.taskRowHeight
                     }
 
                     EditModeRow
@@ -155,8 +157,8 @@ Item
                 Component.onCompleted: {
                     //set up the model(s) - task, param, and map models all need to be referenced
                     var didSetupModel = false
-                    tabTabelName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTabelName, 'checklistChecklistParams', 'checklistCount', 'count')
-                                                       : didSetupModel = taskModel.setupModel(tabTabelName)
+                    tabTableName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTableName, 'checklistChecklistParams', 'checklistCount', 'count')
+                                                       : didSetupModel = taskModel.setupModel(tabTableName)
                     refreshTasks()
                 }
             }
@@ -185,15 +187,15 @@ Item
 
     function addTask()
     {
-        taskModel.insertNewRecord(taskModel.count, taskTabInfo.taskDefaultMaps()[tabIndex])
+        taskModel.insertNewRecord(taskTabInfo.taskDefaultMaps()[tabIndex])
         taskModel.select()
         refreshTasks()
 
         //when adding a task adjust the scroll area so you can see the added task at the bottom
-        var pos = flickableItem.contentHeight - flickableItem.height
+        var pos = scrollView.flickableItem.contentHeight - scrollView.flickableItem.height
         if(pos > 0)
         {
-            flickableItem.contentY = pos
+            scrollView.flickableItem.contentY = pos
         }
     }
 

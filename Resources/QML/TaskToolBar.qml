@@ -70,18 +70,24 @@ Item
             // ---------------------------------------------------------------- Tool Buttons
             ToolBarButton
             {
+                Layout.preferredHeight: Constants.buttonHeight
+                Layout.preferredWidth: Constants.buttonHeight
                 buttonText: "e"
                 onButtonClick: editButtonClicked()
             }
 
             ToolBarButton
             {
+                Layout.preferredHeight: Constants.buttonHeight
+                Layout.preferredWidth: Constants.buttonHeight
                 buttonText: "+"
                 onButtonClick: addButtonClicked()
             }
 
             ToolBarButton
             {
+                Layout.preferredHeight: Constants.buttonHeight
+                Layout.preferredWidth: Constants.buttonHeight
                 buttonText: "..."
                 isMomentary: false
                 onButtonClick: menuButtonClicked(isChecked)
@@ -97,6 +103,8 @@ Item
 
         ToolBarButton
         {
+            Layout.preferredHeight: Constants.buttonHeight
+            Layout.preferredWidth: Constants.buttonHeight
             buttonText: 'cancel'
             bgColor: Constants.menuColor
             onButtonClick: {

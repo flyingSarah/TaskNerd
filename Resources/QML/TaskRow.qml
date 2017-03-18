@@ -9,8 +9,8 @@ Item
 {
     id: taskItem
 
-    Layout.minimumHeight: Constants.taskRowHeight
-    Layout.fillWidth: true
+    //Layout.minimumHeight: Constants.taskRowHeight
+    //Layout.fillWidth: true
 
     //--------------------------------------------------------------- Main Task Row
 

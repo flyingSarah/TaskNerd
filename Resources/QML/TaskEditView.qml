@@ -9,6 +9,7 @@ Item
 {
     property int row
     property bool hasChecklist
+    property var checklistData
 
     Loader
     {
@@ -66,18 +67,34 @@ Item
 
                 // ---------------------------------------------------------------- Checklist
 
-                Text
+                RowLayout
                 {
                     id: checklistTitle
-                    text: "Checklist (click '+' to add items)"
-                    font.family: Constants.appFont
-                    font.pixelSize: Constants.menuFontSize
-                    color: Constants.taskCheckBoxCC
+
                     Layout.fillWidth: true
-                    visible: false
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
                     Layout.preferredHeight: Constants.editViewRowHeight
+
+                    visible: false
+
+                    Text
+                    {
+                        text: "Checklist (click '+' to add items)"
+                        font.family: Constants.appFont
+                        font.pixelSize: Constants.menuFontSize
+                        color: Constants.taskCheckBoxCC
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        Layout.preferredHeight: Constants.editViewRowHeight
+                    }
+
+                    ToolBarButton
+                    {
+                        buttonText: "+"
+                        Layout.preferredHeight: Constants.editViewRowHeight
+                        Layout.preferredWidth: Constants.editViewRowHeight
+                        onButtonClick: addChecklistItem()
+                    }
                 }
 
                 ScrollView
@@ -116,21 +133,52 @@ Item
                         anchors.top: parent.top
                         Layout.fillWidth: true
                         spacing: 2
+                        onVisibleChanged: checklistTitle.visible = visible
+
+                        Item{Layout.preferredHeight: parent.spacing/2}
 
                         Repeater
                         {
                             id: checklistRepeater
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignCenter
-                            model: 20//checklistMap
-                            Rectangle
+                            model: checklistData
+
+                            RowLayout
                             {
-                                color: 'pink';
-                                Layout.preferredHeight: Constants.editViewRowHeight;
+                                id: checklistRow
+
+                                spacing: Constants.taskRowSpacing
+
                                 Layout.preferredWidth: checklistScrollView.width - checklistColumn.spacing
+
+                                Item{Layout.preferredWidth: checklistColumn.spacing/2}
+
+                                //--------------------------------------------------------------- Checklist Check Box
+
+                                TaskCheckBox
+                                {
+                                    id: checkBox
+                                    checked: modelData['isChecked']
+                                    height: Constants.editViewRowHeight
+                                    width: Constants.editViewRowHeight
+                                    //onCheckedChanged: taskModel.setDataValue(index, 'isChecked', checked)
+
+                                }
+
+                                //--------------------------------------------------------------- Checklist Task Label
+                                TaskLabel
+                                {
+                                    text: modelData['label']
+                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: Constants.editViewRowHeight
+                                    font.pixelSize: Constants.menuFontSize - 2
+                                    //onTriggerSetData: taskModel.setDataValue(index, 'label', text)
+                                }
+
+                                Item{Layout.preferredWidth: Constants.taskRowRightSpacing}
                             }
                         }
-                        onVisibleChanged: checklistTitle.visible = visible
                     }
                 }
 
@@ -186,8 +234,6 @@ Item
                                 }
 
                                 Component.onCompleted: {
-                                    //this is where the first tab in the view is initialized
-                                    //TODO: instead of this being a constant, I should make this a persistent value
                                     if(index === priority)
                                     {
                                         radioGroup.selected = priorityRadioButton
@@ -242,8 +288,6 @@ Item
                                 }
 
                                 Component.onCompleted: {
-                                    //this is where the first tab in the view is initialized
-                                    //TODO: instead of this being a constant, I should make this a persistent value
                                     if(index === difficulty)
                                     {
                                         radioGroup.selected = difficultyRadioButton
@@ -318,7 +362,24 @@ Item
                 }
                 if(hasChecklist)
                 {
+                    populateChecklist()
                     checklistScrollView.visible = true
+                }
+            }
+
+            function populateChecklist()
+            {
+                checklistData = taskModel.getRelatedData(row, 'count')
+                checklistRepeater.model = checklistData
+            }
+
+            function addChecklistItem()
+            {
+                var success = taskModel.insertNewRelatedRecord(row, 'count', taskTabInfo.parameterDefaultMaps()[0])
+
+                if(success)
+                {
+                    populateChecklist()
                 }
             }
 

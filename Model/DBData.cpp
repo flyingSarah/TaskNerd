@@ -96,6 +96,7 @@ QVariantMap DBData::checklistTaskDefaults()
 QVariantMap DBData::checklistParamDefaults()
 {
     QVariantMap defaultMap;
+    defaultMap.insert("taskId", 0);
     defaultMap.insert("isChecked", 0);
     defaultMap.insert("label", "");
     defaultMap.insert("count", 0);

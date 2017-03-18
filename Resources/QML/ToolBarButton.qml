@@ -14,8 +14,8 @@ Rectangle
 
     signal buttonClick(bool isChecked) //momentary buttons can ignore the isChecked parameter when using this signal
 
-    Layout.minimumWidth: Constants.buttonHeight
-    height: Constants.buttonHeight
+    //Layout.preferredWidth: Constants.buttonHeight
+    //Layout.preferredHeight: Constants.buttonHeight
 
     color: bgColor
     border.color: Constants.taskItemBorderColor

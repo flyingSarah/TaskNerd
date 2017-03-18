@@ -69,17 +69,14 @@ Item
                 Repeater
                 {
                     id: taskViewRepeater
-
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
                     model: taskTabInfo.taskTableNames()
 
                     TaskListView
                     {
-                        anchors.fill: parent
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
                         visible: false
-                        tabTabelName: modelData
+                        tabTableName: modelData
                         tabIndex: index
                         onUpdateDeleteCount: tabBar.numOfItemsToDelete = deleteCount
                         onUpdateArchiveCount: tabBar.numOfItemsToArchive = archiveCount

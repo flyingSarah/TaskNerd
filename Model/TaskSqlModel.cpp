@@ -31,7 +31,7 @@ QVariantList TaskSqlModel::parameterNames()
     return names;
 }
 
-bool TaskSqlModel::setupModel(const QString &table, QString relatedTabelName, QString replaceColumn, QString displayColumn)
+bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QString replaceColumn, QString displayColumn)
 {
     QSqlError err;
 
@@ -43,17 +43,17 @@ bool TaskSqlModel::setupModel(const QString &table, QString relatedTabelName, QS
         return false;
     }
 
-    if(!relatedTabelName.isEmpty())
+    if(!relatedTableName.isEmpty())
     {
         int field = this->fieldIndex(replaceColumn);
-        this->setRelation(field, QSqlRelation(relatedTabelName, this->headerData(0, Qt::Horizontal).toString(), displayColumn));
+        this->setRelation(field, QSqlRelation(relatedTableName, this->headerData(0, Qt::Horizontal).toString(), displayColumn));
         err = this->lastError();
         if(err.type() != QSqlError::NoError)
         {
             qCritical() << err.text();
             return false;
         }
-        qDebug() << "relational table was created" << relatedTabelName << replaceColumn << displayColumn << field;
+        //qDebug() << "relational table was created" << relatedTableName << replaceColumn << displayColumn << field;
     }
 
     this->applyRoles();
@@ -72,15 +72,15 @@ bool TaskSqlModel::setDataValue(int row, QString roleName, const QVariant &value
 {
     int role = roleNames().key(roleName.toUtf8()) - Qt::UserRole - 1;
     QModelIndex ind = this->index(row, role);
-    bool success = QSqlTableModel::setData(ind, value);//this->setData(ind, value);
-    //qDebug() << "set data value:" << this->tableName() << row << roleName << value << success << this->lastError();
+    bool success = QSqlTableModel::setData(ind, value);
     return success;
 }
 
-bool TaskSqlModel::insertNewRecord(int row, QVariantMap defaultTaskMap)
+bool TaskSqlModel::insertNewRecord(QVariantMap defaultTaskMap)
 {
-    QSqlRecord newRecord = recordFromMap(row, defaultTaskMap);
-    bool success = QSqlRelationalTableModel::insertRecord(row, newRecord);
+    QSqlRecord record = this->record();
+    QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
+    bool success = QSqlRelationalTableModel::insertRecord(-1, newRecord);
     return success;
 }
 
@@ -89,9 +89,8 @@ bool TaskSqlModel::removeRows(int row, int count, const QModelIndex &parent)
     return QSqlRelationalTableModel::removeRows(row, count, parent);
 }
 
-QSqlRecord TaskSqlModel::recordFromMap(int row, QVariantMap dataMap)
+QSqlRecord TaskSqlModel::recordFromMap(QVariantMap dataMap, QSqlRecord record)
 {
-    QSqlRecord record = this->record(row);
     QMapIterator<QString, QVariant> i(dataMap);
 
     while(i.hasNext())
@@ -117,45 +116,58 @@ QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
     return QSqlRelationalTableModel::data(modelIndex);
 }
 
-QVariantMap TaskSqlModel::getDataMap(int index, QString relatedTabelColumn) const
+bool TaskSqlModel::insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskId)
 {
-    QVariantMap dataMap;
-    QVariantMap taskDataMap;
-
-    int field = this->fieldIndex(relatedTabelColumn);
+    bool success = false;
+    int field = this->fieldIndex(relatedTableColumn);
     QSqlTableModel *relatedModel = this->relationModel(field);
-
-    for(int i = 0; i < this->columnCount(); i++)
-    {
-        QModelIndex ind = this->index(index, i);
-        int role = Qt::UserRole + i + 1;
-        QString key = this->headerData(i, Qt::Horizontal).toString();
-        QVariant value = this->data(ind, role);
-
-        if(key == relatedTabelColumn && relatedModel != NULL)
-        {
-            value = relatedModel->rowCount();
-        }
-        taskDataMap.insert(key, value);
-    }
-    dataMap.insert(this->tableName(), taskDataMap);
 
     if(relatedModel != NULL)
     {
-        QVariantMap relationMap;
-        //dataMap.value(this->tableName()).toMap().insert(relatedTabelColumn, relatedModel->rowCount());
+        QSqlRecord record = relatedModel->record();
+        QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
+
+        QModelIndex ind = this->index(index, 0);
+        int role = Qt::UserRole + 1;
+        QVariant value = this->data(ind, role);
+
+        newRecord.setValue(relatedTaskId, value);
+        newRecord.setGenerated(relatedTaskId, true);
+
+        success = relatedModel->insertRecord(-1, newRecord);
+        if(success) success = relatedModel->select();
+    }
+    return success;
+}
+
+QVariantList TaskSqlModel::getRelatedData(int index, QString relatedTableColumn) const
+{
+    QVariantList relatedData;
+
+    int field = this->fieldIndex(relatedTableColumn);
+    QSqlTableModel *relatedModel = this->relationModel(field);
+
+    if(relatedModel != NULL)
+    {
         for(int i = 0; i < relatedModel->rowCount(); i++)
         {
-            for(int j = 0; j < relatedModel->columnCount(); j++)
-            {
-                QModelIndex ind = relatedModel->index(i,j);
+            QVariant id = this->data(this->index(index, 0), Qt::UserRole + 1);
+            QVariant taskId = relatedModel->data(relatedModel->index(i, 1));
 
-                //qDebug() << "relation model" << i << j << relatedModel->data(ind,j);
+            if(taskId == id)
+            {
+                QVariantMap row;
+
+                for(int j = 0; j < relatedModel->columnCount(); j++)
+                {
+                    QModelIndex ind = relatedModel->index(i,j);
+                    QString role = relatedModel->headerData(j, Qt::Horizontal).toString();
+                    row.insert(role, relatedModel->data(ind));
+                }
+                relatedData.append(row);
             }
         }
-        dataMap.insert(relatedModel->tableName(), relationMap);
     }
-    //qDebug() << "dataMap for:" << index << "\n  " << dataMap;
 
-    return dataMap;
+    return relatedData;
 }
