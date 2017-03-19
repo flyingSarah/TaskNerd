@@ -11,6 +11,8 @@ Item
     property bool hasChecklist
     property var checklistData
 
+    signal getChecklistData()
+
     Loader
     {
         id: editViewLoader
@@ -162,7 +164,11 @@ Item
                                     checked: modelData['isChecked']
                                     height: Constants.editViewRowHeight
                                     width: Constants.editViewRowHeight
-                                    //onCheckedChanged: taskModel.setDataValue(index, 'isChecked', checked)
+                                    onCheckedChanged: {
+                                        checklistData[index]['isChecked'] = checked
+                                        taskModel.setRelatedDataValue(row, 'count', index, 'isChecked', checked)
+                                        editView.populateChecklist()
+                                    }
 
                                 }
 
@@ -173,7 +179,21 @@ Item
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: Constants.editViewRowHeight
                                     font.pixelSize: Constants.menuFontSize - 2
-                                    //onTriggerSetData: taskModel.setDataValue(index, 'label', text)
+                                    onTriggerSetData: {
+                                        checklistData[index]['label'] = text
+                                        taskModel.setRelatedDataValue(row, 'count', index, 'label', text)
+                                    }
+                                }
+
+                                //--------------------------------------------------------------- Checklist Task Delete Button
+                                ToolBarButton
+                                {
+                                    Layout.preferredHeight: Constants.editViewRowHeight
+                                    Layout.preferredWidth: Constants.editViewRowHeight
+                                    buttonText: 'x'
+                                    onButtonClick: deleteChecklistItem(index) //console.log("delete checklist row", index)
+                                    bgColor: 'transparent'
+                                    border.width: 0
                                 }
 
                                 Item{Layout.preferredWidth: Constants.taskRowRightSpacing}
@@ -362,14 +382,13 @@ Item
                 }
                 if(hasChecklist)
                 {
-                    populateChecklist()
                     checklistScrollView.visible = true
                 }
             }
 
             function populateChecklist()
             {
-                checklistData = taskModel.getRelatedData(row, 'count')
+                getChecklistData()
                 checklistRepeater.model = checklistData
             }
 
@@ -381,6 +400,12 @@ Item
                 {
                     populateChecklist()
                 }
+            }
+
+            function deleteChecklistItem(checklistRow)
+            {
+                taskModel.removeRelatedRows(row, 'count', checklistRow, 1)
+                populateChecklist()
             }
 
             function setTaskColor()

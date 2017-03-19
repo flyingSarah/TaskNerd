@@ -133,18 +133,18 @@ Item
             {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Constants.buttonHeight
-                buttonText: 'Delete ' + numOfItemsToDelete + ' Tasks'
+                buttonText: 'Archive ' + numOfItemsToArchive + ' Tasks'
                 bgColor: Constants.menuColor
-                onButtonClick: deleteButtonClicked()
+                onButtonClick: archiveButtonClicked()
             }
 
             ToolBarButton
             {
                 Layout.fillWidth: true
                 Layout.preferredHeight: Constants.buttonHeight
-                buttonText: 'Archive ' + numOfItemsToArchive + ' Tasks'
+                buttonText: 'Delete ' + numOfItemsToDelete + ' Tasks'
                 bgColor: Constants.menuColor
-                onButtonClick: archiveButtonClicked()
+                onButtonClick: deleteButtonClicked()
             }
         }
     }

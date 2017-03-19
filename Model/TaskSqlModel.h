@@ -16,14 +16,16 @@ class TaskSqlModel : public QSqlRelationalTableModel
 public:
     TaskSqlModel(QObject *parent = 0);
 
-    Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE bool setupModel(const QString &table, QString relatedTableName = QString(), QString replaceColumn = QString(), QString displayColumn = QString());
-    Q_INVOKABLE bool setDataValue(int row, QString roleName, const QVariant &value);
+    Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE bool insertNewRecord(QVariantMap defaultTaskMap);
+    Q_INVOKABLE bool setDataValue(int row, QString roleName, const QVariant &value);
     Q_INVOKABLE bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
-    Q_INVOKABLE QVariantList getRelatedData(int index, QString relatedTableColumn) const;
+    Q_INVOKABLE QVariantList relatedData(int index, QString relatedTableColumn) const;
     Q_INVOKABLE bool insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskIdKey = "taskId");
+    Q_INVOKABLE bool setRelatedDataValue(int index, QString relatedTableColumn, int row, QString roleName, const QVariant &value);
+    Q_INVOKABLE bool removeRelatedRows(int index, QString relatedTableColumn, int row, int count, const QModelIndex &parent = QModelIndex());
 
     Q_INVOKABLE QVariantList parameterNames();
 

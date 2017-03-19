@@ -44,10 +44,6 @@ QSqlError TaskNerd::initDb()
     if(err.type() == QSqlError::NoError)
     {
         err = initTables(tables, DBData::parameterTableNames(), DBData::parameterCreateStrings, DBData::parameterDefaultMaps());
-        /*if(err.type() == QSqlError::NoError)
-        {
-            err = initTables(tables, DBData::mapTableNames(), DBData::mapCreateStrings, QVariantList());
-        }*/
     }
 
     return err;

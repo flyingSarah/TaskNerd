@@ -41,7 +41,6 @@ Item
             visible: false
             onVisibleChanged: if(visible) checked = isChecked
             onCheckedChanged: taskModel.setDataValue(index, 'isChecked', checked)
-
         }
 
         //--------------------------------------------------------------- Task Label
@@ -60,9 +59,11 @@ Item
 
             TaskLabel
             {
+                id: labelLabel
                 text: label
-                onVisibleChanged: if(visible) text = label
                 onTriggerSetData: taskModel.setDataValue(index, 'label', text)
+                Component.onCompleted: text = label
+                onVisibleChanged: if(visible) text = label
             }
         }
 

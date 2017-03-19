@@ -31,6 +31,8 @@ QVariantList TaskSqlModel::parameterNames()
     return names;
 }
 
+// ------------------------------------------------------------------------------------ Invokables for Table
+
 bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QString replaceColumn, QString displayColumn)
 {
     QSqlError err;
@@ -53,6 +55,7 @@ bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QS
             qCritical() << err.text();
             return false;
         }
+        this->relationModel(field)->setEditStrategy(QSqlTableModel::OnFieldChange);
         //qDebug() << "relational table was created" << relatedTableName << replaceColumn << displayColumn << field;
     }
 
@@ -68,41 +71,6 @@ bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QS
     return true;
 }
 
-bool TaskSqlModel::setDataValue(int row, QString roleName, const QVariant &value)
-{
-    int role = roleNames().key(roleName.toUtf8()) - Qt::UserRole - 1;
-    QModelIndex ind = this->index(row, role);
-    bool success = QSqlTableModel::setData(ind, value);
-    return success;
-}
-
-bool TaskSqlModel::insertNewRecord(QVariantMap defaultTaskMap)
-{
-    QSqlRecord record = this->record();
-    QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
-    bool success = QSqlRelationalTableModel::insertRecord(-1, newRecord);
-    return success;
-}
-
-bool TaskSqlModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    return QSqlRelationalTableModel::removeRows(row, count, parent);
-}
-
-QSqlRecord TaskSqlModel::recordFromMap(QVariantMap dataMap, QSqlRecord record)
-{
-    QMapIterator<QString, QVariant> i(dataMap);
-
-    while(i.hasNext())
-    {
-        i.next();
-        record.setValue(i.key(), i.value());
-        record.setGenerated(i.key(), true);
-    }
-
-    return record;
-}
-
 QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
 {
     if(role < Qt::UserRole)
@@ -116,31 +84,32 @@ QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
     return QSqlRelationalTableModel::data(modelIndex);
 }
 
-bool TaskSqlModel::insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskId)
+bool TaskSqlModel::insertNewRecord(QVariantMap defaultTaskMap)
 {
-    bool success = false;
-    int field = this->fieldIndex(relatedTableColumn);
-    QSqlTableModel *relatedModel = this->relationModel(field);
-
-    if(relatedModel != NULL)
-    {
-        QSqlRecord record = relatedModel->record();
-        QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
-
-        QModelIndex ind = this->index(index, 0);
-        int role = Qt::UserRole + 1;
-        QVariant value = this->data(ind, role);
-
-        newRecord.setValue(relatedTaskId, value);
-        newRecord.setGenerated(relatedTaskId, true);
-
-        success = relatedModel->insertRecord(-1, newRecord);
-        if(success) success = relatedModel->select();
-    }
+    QSqlRecord record = this->record();
+    QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
+    bool success = QSqlRelationalTableModel::insertRecord(-1, newRecord);
     return success;
 }
 
-QVariantList TaskSqlModel::getRelatedData(int index, QString relatedTableColumn) const
+bool TaskSqlModel::setDataValue(int row, QString roleName, const QVariant &value)
+{
+    int role = roleNames().key(roleName.toUtf8()) - Qt::UserRole - 1;
+    QModelIndex ind = this->index(row, role);
+    bool success = QSqlTableModel::setData(ind, value);
+    return success;
+}
+
+bool TaskSqlModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    //TODO: when deleting rows for items with related tables, I need to clean out any of the
+    //  ... related rows whose taskId matches the id of the row that's being deleted
+    return QSqlRelationalTableModel::removeRows(row, count, parent);
+}
+
+// ------------------------------------------------------------------------------------ Invokables for Relational Table
+
+QVariantList TaskSqlModel::relatedData(int index, QString relatedTableColumn) const
 {
     QVariantList relatedData;
 
@@ -170,4 +139,110 @@ QVariantList TaskSqlModel::getRelatedData(int index, QString relatedTableColumn)
     }
 
     return relatedData;
+}
+
+bool TaskSqlModel::insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskId)
+{
+    bool success = false;
+    int field = this->fieldIndex(relatedTableColumn);
+    QSqlTableModel *relatedModel = this->relationModel(field);
+
+    if(relatedModel != NULL)
+    {
+        QSqlRecord record = relatedModel->record();
+        QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
+
+        QModelIndex ind = this->index(index, 0);
+        int role = Qt::UserRole + 1;
+        QVariant value = this->data(ind, role);
+
+        newRecord.setValue(relatedTaskId, value);
+        newRecord.setGenerated(relatedTaskId, true);
+
+        success = relatedModel->insertRecord(-1, newRecord);
+        if(success) success = relatedModel->select();
+    }
+    return success;
+}
+
+bool TaskSqlModel::setRelatedDataValue(int index, QString relatedTableColumn, int row, QString roleName, const QVariant &value)
+{
+    bool success = false;
+    int field = this->fieldIndex(relatedTableColumn);
+    QSqlTableModel *relatedModel = this->relationModel(field);
+
+    int countRows = 0;
+
+    if(relatedModel != NULL)
+    {
+        for(int i = 0; i < relatedModel->rowCount(); i++)
+        {
+            QVariant id = this->data(this->index(index, 0), Qt::UserRole + 1);
+            QVariant taskId = relatedModel->data(relatedModel->index(i, 1));
+
+            if(taskId == id)
+            {
+                if(countRows == row)
+                {
+                    for(int j = 0; j < relatedModel->columnCount(); j++)
+                    {
+                        QString role = relatedModel->headerData(j, Qt::Horizontal).toString();
+                        if(roleName == role)
+                        {
+                            QModelIndex ind = relatedModel->index(i, j);
+                            success = relatedModel->setData(ind, value);
+                            //qDebug() << "set related model data" << ind.row() << ind.column() << value << success;
+                        }
+                    }
+                }
+                countRows++;
+            }
+        }
+    }
+    return success;
+}
+
+bool TaskSqlModel::removeRelatedRows(int index, QString relatedTableColumn, int row, int count, const QModelIndex &parent)
+{
+    bool success = false;
+    int field = this->fieldIndex(relatedTableColumn);
+    QSqlTableModel *relatedModel = this->relationModel(field);
+
+    int countRows = 0;
+
+    if(relatedModel != NULL)
+    {
+        for(int i = 0; i < relatedModel->rowCount(); i++)
+        {
+            QVariant id = this->data(this->index(index, 0), Qt::UserRole + 1);
+            QVariant taskId = relatedModel->data(relatedModel->index(i, 1));
+
+            if(taskId == id)
+            {
+                if(countRows == row)
+                {
+                    success = relatedModel->removeRows(i, count, parent);
+                }
+                countRows++;
+            }
+        }
+    }
+
+    return success;
+}
+
+// ------------------------------------------------------------------------------------ Private Functions
+
+QSqlRecord TaskSqlModel::recordFromMap(QVariantMap dataMap, QSqlRecord record)
+{
+    QMapIterator<QString, QVariant> i(dataMap);
+
+    while(i.hasNext())
+    {
+        i.next();
+        record.setValue(i.key(), i.value());
+        record.setGenerated(i.key(), true);
+    }
+
+    return record;
 }

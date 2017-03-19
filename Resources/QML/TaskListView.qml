@@ -44,6 +44,8 @@ Item
             visible: false
 
             hasChecklist: tabTableName.search('checklist')+1 ? true : false
+            checklistData: taskModel.relatedData(index, 'count')
+            onGetChecklistData: checklistData = taskModel.relatedData(index, 'count')
         }
     }
 
@@ -159,7 +161,7 @@ Item
                     var didSetupModel = false
                     tabTableName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTableName, 'checklistChecklistParams', 'checklistCount', 'count')
                                                        : didSetupModel = taskModel.setupModel(tabTableName)
-                    refreshTasks()
+                    //refreshTasks()
                 }
             }
 
@@ -179,6 +181,7 @@ Item
         for(var i = 0; i < editViewRepeater.count; i++)
         {
             editViewRepeater.itemAt(i).visible = false
+            taskRepeater.itemAt(i).refreshTask()
         }
         scrollView.visible = true
 
@@ -230,6 +233,17 @@ Item
         }
 
         refreshTasks()
+    }
+
+    function findChecklistProgress(checklistData)
+    {
+        var progress = []
+        for(var row in checklistData)
+        {
+            progress.push(checklistData[row]['isChecked'])
+        }
+
+        return progress
     }
 }
 
