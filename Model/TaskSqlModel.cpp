@@ -103,9 +103,30 @@ bool TaskSqlModel::setDataValue(int row, QString roleName, const QVariant &value
 
 bool TaskSqlModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    //TODO: when deleting rows for items with related tables, I need to clean out any of the
-    //  ... related rows whose taskId matches the id of the row that's being deleted
-    return QSqlRelationalTableModel::removeRows(row, count, parent);
+    bool success = false;
+
+    success = QSqlRelationalTableModel::removeRows(row, count, parent);
+
+    for(int i = 0; i < this->columnCount(); i++)
+    {
+        QSqlTableModel *relatedModel = this->relationModel(i);
+
+        if(relatedModel != NULL && relatedModel != 0)
+        {
+            for(int j = 0; j < relatedModel->rowCount(); j++)
+            {
+                QVariant id = this->data(this->index(row, 0), 0);
+                QVariant taskId = relatedModel->data(relatedModel->index(j, 1));
+
+                if(taskId == id)
+                {
+                    success = relatedModel->removeRows(j, 1, parent);
+                }
+            }
+        }
+    }
+
+    return success;
 }
 
 // ------------------------------------------------------------------------------------ Invokables for Relational Table
