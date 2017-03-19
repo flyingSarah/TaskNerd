@@ -9,8 +9,7 @@ Item
 {
     id: taskItem
 
-    //Layout.minimumHeight: Constants.taskRowHeight
-    //Layout.fillWidth: true
+    property var checklistProgress: []
 
     //--------------------------------------------------------------- Main Task Row
 
@@ -59,8 +58,8 @@ Item
 
             TaskLabel
             {
-                id: labelLabel
                 text: label
+                progress: checklistProgress
                 onTriggerSetData: taskModel.setDataValue(index, 'label', text)
                 Component.onCompleted: text = label
                 onVisibleChanged: if(visible) text = label
@@ -107,10 +106,39 @@ Item
         {
             repeatLoader.sourceComponent = repeatComponent
         }
+
+        if(taskModel.parameterNames().indexOf('count') > -1)
+        {
+            //console.log("load row with checklists", checklistCount)
+        }
     }
 
     function setTaskColor()
     {
         taskColor.color = Constants.taskColors[priority][difficulty]
+    }
+
+    function updateChecklistProgress(progressIndex, progressValue)
+    {
+        checklistProgress[progressIndex] = progressValue
+        reloadLabel()
+    }
+
+    function addIndexToChecklistProgress()
+    {
+        checklistProgress.push(false)
+        reloadLabel()
+    }
+
+    function deleteIndexFromChecklistProgress(index)
+    {
+        checklistProgress.splice(index, 1)
+        reloadLabel()
+    }
+
+    function reloadLabel()
+    {
+        labelLoader.sourceComponent = undefined
+        labelLoader.sourceComponent = labelComponent
     }
 }

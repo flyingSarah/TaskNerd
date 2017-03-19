@@ -43,9 +43,11 @@ Item
             row: index
             visible: false
 
-            hasChecklist: tabTableName.search('checklist')+1 ? true : false
             checklistData: taskModel.relatedData(index, 'count')
             onGetChecklistData: checklistData = taskModel.relatedData(index, 'count')
+            onChecklistCheckChanged: taskRepeater.itemAt(index).updateChecklistProgress(progressIndex, progressValue)
+            onAddIndexToChecklistProgress: taskRepeater.itemAt(index).addIndexToChecklistProgress()
+            onDeleteIndexFromChecklistProgress: taskRepeater.itemAt(index).deleteIndexFromChecklistProgress(progressIndex)
         }
     }
 
@@ -118,6 +120,7 @@ Item
                         id: taskRow
                         Layout.fillWidth: true
                         Layout.minimumHeight: Constants.taskRowHeight
+                        checklistProgress: findChecklistProgress(taskModel.relatedData(index, 'count'))
                     }
 
                     EditModeRow
@@ -153,6 +156,19 @@ Item
                     function refreshTask()
                     {
                         editModeRow.reset()
+                    }
+
+                    function updateChecklistProgress(progressIndex, progressValue)
+                    {
+                        taskRow.updateChecklistProgress(progressIndex, progressValue)
+                    }
+                    function addIndexToChecklistProgress()
+                    {
+                        taskRow.addIndexToChecklistProgress()
+                    }
+                    function deleteIndexFromChecklistProgress(ind)
+                    {
+                        taskRow.deleteIndexFromChecklistProgress(ind)
                     }
                 }
 

@@ -8,10 +8,12 @@ import "Constants.js" as Constants
 Item
 {
     property int row
-    property bool hasChecklist
     property var checklistData
 
     signal getChecklistData()
+    signal checklistCheckChanged(int progressIndex, bool progressValue)
+    signal addIndexToChecklistProgress()
+    signal deleteIndexFromChecklistProgress(int progressIndex)
 
     Loader
     {
@@ -166,8 +168,8 @@ Item
                                     width: Constants.editViewRowHeight
                                     onCheckedChanged: {
                                         checklistData[index]['isChecked'] = checked
+                                        checklistCheckChanged(index, checked)
                                         taskModel.setRelatedDataValue(row, 'count', index, 'isChecked', checked)
-                                        editView.populateChecklist()
                                     }
 
                                 }
@@ -380,7 +382,7 @@ Item
                     repeatLabel.visible = true
                     repeatLoader.sourceComponent = repeatComponent
                 }
-                if(hasChecklist)
+                if(taskModel.parameterNames().indexOf('count') > -1)
                 {
                     checklistScrollView.visible = true
                 }
@@ -394,7 +396,8 @@ Item
 
             function addChecklistItem()
             {
-                var success = taskModel.insertNewRelatedRecord(row, 'count', taskTabInfo.parameterDefaultMaps()[0])
+                addIndexToChecklistProgress()
+                var success = taskModel.insertNewRelatedRecord(row, 'checklistCount', 'count', taskTabInfo.parameterDefaultMaps()[0], checklistData.length)
 
                 if(success)
                 {
@@ -404,7 +407,8 @@ Item
 
             function deleteChecklistItem(checklistRow)
             {
-                taskModel.removeRelatedRows(row, 'count', checklistRow, 1)
+                deleteIndexFromChecklistProgress(checklistRow)
+                taskModel.removeRelatedRow(row, 'checklistCount', 'count', checklistRow, checklistData.length)
                 populateChecklist()
             }
 

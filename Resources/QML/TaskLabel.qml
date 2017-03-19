@@ -11,6 +11,8 @@ TextField
 {
     id: textBox
 
+    property var progress: []
+
     signal triggerSetData()
 
     style: TextFieldStyle {
@@ -21,9 +23,11 @@ TextField
 
             //TODO: get the stuff below working with task data to show a progress bar
             //... I've already got everything working visually, I just need data to play with
-            /*Row
+            Row
             {
-                property real modelCount: 17
+                id: progressRow
+
+                property real modelCount: textBox.progress.length
 
                 anchors.fill: parent
                 anchors.margins: 3
@@ -31,15 +35,15 @@ TextField
 
                 Repeater
                 {
-                    model: [1,0,0,1,1,1,0,1,1,0,1,1,0,0,0,0,1]
+                    model: textBox.progress
                     Rectangle
                     {
-                        color: Qt.rgba(0.3,0.3,0.3,0.3*modelData+0.2)
-                        width: (parent.width - (parent.spacing*parent.modelCount)) / parent.modelCount
-                        height: parent.height
+                        color: Qt.rgba(0.8,0.8,0.8,0.3*modelData+0.1)
+                        width: (progressRow.width - (progressRow.spacing*progressRow.modelCount)) / progressRow.modelCount
+                        height: progressRow.height
                     }
                 }
-            }*/
+            }
         }
     }
 

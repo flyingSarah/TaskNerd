@@ -23,9 +23,9 @@ public:
     Q_INVOKABLE bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
     Q_INVOKABLE QVariantList relatedData(int index, QString relatedTableColumn) const;
-    Q_INVOKABLE bool insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskIdKey = "taskId");
+    Q_INVOKABLE bool insertNewRelatedRecord(int index, QString tableColumn, QString relatedTableColumn, QVariantMap defaultTaskMap, int relatedRowCount, QString relatedTaskIdKey = "taskId");
     Q_INVOKABLE bool setRelatedDataValue(int index, QString relatedTableColumn, int row, QString roleName, const QVariant &value);
-    Q_INVOKABLE bool removeRelatedRows(int index, QString relatedTableColumn, int row, int count, const QModelIndex &parent = QModelIndex());
+    Q_INVOKABLE bool removeRelatedRow(int index, QString tableColumn, QString relatedTableColumn, int row, int relatedRowCount, const QModelIndex &parent = QModelIndex());
 
     Q_INVOKABLE QVariantList parameterNames();
 

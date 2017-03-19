@@ -97,6 +97,7 @@ bool TaskSqlModel::setDataValue(int row, QString roleName, const QVariant &value
     int role = roleNames().key(roleName.toUtf8()) - Qt::UserRole - 1;
     QModelIndex ind = this->index(row, role);
     bool success = QSqlTableModel::setData(ind, value);
+    //qDebug() << "setDataValue" << success << this->lastError();
     return success;
 }
 
@@ -141,7 +142,7 @@ QVariantList TaskSqlModel::relatedData(int index, QString relatedTableColumn) co
     return relatedData;
 }
 
-bool TaskSqlModel::insertNewRelatedRecord(int index, QString relatedTableColumn, QVariantMap defaultTaskMap, QString relatedTaskId)
+bool TaskSqlModel::insertNewRelatedRecord(int index, QString tableColumn, QString relatedTableColumn, QVariantMap defaultTaskMap, int relatedRowCount, QString relatedTaskId)
 {
     bool success = false;
     int field = this->fieldIndex(relatedTableColumn);
@@ -158,9 +159,12 @@ bool TaskSqlModel::insertNewRelatedRecord(int index, QString relatedTableColumn,
 
         newRecord.setValue(relatedTaskId, value);
         newRecord.setGenerated(relatedTaskId, true);
+        newRecord.setValue(relatedTableColumn, relatedRowCount+1);
+        newRecord.setGenerated(relatedTableColumn, true);
 
         success = relatedModel->insertRecord(-1, newRecord);
         if(success) success = relatedModel->select();
+        if(success) this->setDataValue(index, tableColumn, relatedRowCount+1);
     }
     return success;
 }
@@ -202,7 +206,7 @@ bool TaskSqlModel::setRelatedDataValue(int index, QString relatedTableColumn, in
     return success;
 }
 
-bool TaskSqlModel::removeRelatedRows(int index, QString relatedTableColumn, int row, int count, const QModelIndex &parent)
+bool TaskSqlModel::removeRelatedRow(int index, QString tableColumn, QString relatedTableColumn, int row, int relatedRowCount, const QModelIndex &parent)
 {
     bool success = false;
     int field = this->fieldIndex(relatedTableColumn);
@@ -221,11 +225,12 @@ bool TaskSqlModel::removeRelatedRows(int index, QString relatedTableColumn, int 
             {
                 if(countRows == row)
                 {
-                    success = relatedModel->removeRows(i, count, parent);
+                    success = relatedModel->removeRows(i, 1, parent);
                 }
                 countRows++;
             }
         }
+        if(success) this->setDataValue(index, tableColumn, relatedRowCount-1);
     }
 
     return success;
