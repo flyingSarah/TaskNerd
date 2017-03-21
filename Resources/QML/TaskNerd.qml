@@ -4,6 +4,7 @@ import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.1
 import QtQuick.Dialogs 1.2
+import Qt.labs.settings 1.0
 
 import com.swhitley.models 1.0
 
@@ -120,8 +121,8 @@ Item
                 }
                 onDoneButtonClicked: {
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
-                    //taskViewRepeater.itemAt(currentTabIndex).editMode(true)
-                    setViewMode(Constants.viewModes[0])
+                    taskViewRepeater.itemAt(currentTabIndex).editMode(true)
+                    setViewMode(Constants.viewModes[1])
                 }
             }
         }

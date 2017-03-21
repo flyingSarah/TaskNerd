@@ -55,6 +55,8 @@ Item
     {
         id: scrollView
 
+        property int scrollPos
+
         anchors.fill: parent
 
         frameVisible: true
@@ -81,20 +83,8 @@ Item
             }
         }
 
-        //TODO: set scroll bar positions and have them appear at the correct positions when loaded
-        // .... from the main view (when the app starts they can all start from the top position
-        flickableItem.onContentHeightChanged: {
-            /*console.log("flickable item content height changed", taskRepeater.finCount, taskRepeater.count)
-            if(taskRepeater.finCount == taskRepeater.count)
-            {
-                flickableItem.contentY = 300
-            }
-            taskRepeater.finCount++*/
-        }
-
-        flickableItem.onContentYChanged: {
-            //console.log("flickable item content y changed", flickableItem.contentY, flickableItem.contentHeight)
-        }
+        flickableItem.onContentHeightChanged: flickableItem.contentY = scrollPos
+        onVisibleChanged: if(!visible) scrollPos = flickableItem.contentY
 
         ColumnLayout
         {
@@ -204,6 +194,7 @@ Item
         scrollView.visible = true
 
         editMode(false)
+        taskRepeater.finCount = 0
     }
 
     function addTask()

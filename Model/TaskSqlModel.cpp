@@ -19,9 +19,9 @@ void TaskSqlModel::applyRoles()
     }
 }
 
-QVariantList TaskSqlModel::parameterNames()
+QStringList TaskSqlModel::parameterNames()
 {
-    QVariantList names;
+    QStringList names;
 
     for(int i = 0; i < this->columnCount(); i++)
     {
@@ -33,7 +33,7 @@ QVariantList TaskSqlModel::parameterNames()
 
 // ------------------------------------------------------------------------------------ Invokables for Table
 
-bool TaskSqlModel::setupModel(const QString &table, const QStringList sortColumns, QString relatedTableName, QString replaceColumn, QString displayColumn)
+bool TaskSqlModel::setupModel(const QString &table, const QStringList sortColumns, const QString relatedTableName, const QString replaceColumn, const QString displayColumn)
 {
     QSqlError err;
 
@@ -97,6 +97,7 @@ bool TaskSqlModel::insertNewRecord(QVariantMap defaultTaskMap)
 {
     QSqlRecord record = this->record();
     QSqlRecord newRecord = recordFromMap(defaultTaskMap, record);
+
     bool success = QSqlRelationalTableModel::insertRecord(-1, newRecord);
     return success;
 }
@@ -284,6 +285,11 @@ QSqlRecord TaskSqlModel::recordFromMap(QVariantMap dataMap, QSqlRecord record)
 
 void TaskSqlModel::sortByMultipleColumns(const QStringList columnNames)
 {
+    if(columnNames.isEmpty())
+    {
+       return;
+    }
+
     QSqlQuery query;
     QString sortString = QString("%1 ORDER BY ").arg(this->query().executedQuery());
 
