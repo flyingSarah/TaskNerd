@@ -21,6 +21,9 @@ private:
     QSqlError initDb();
     QSqlError initTables(const QStringList &tables, const QVariantList &tableNames, const QVariantList &createStrings, const QVariantList &defaultMaps);
 
+    bool findNewColumnData(const QString tableName, QStringList &keepColumns, QVariantMap &addColumnsDefaultMap);
+    QSqlError deleteOldColumns(QSqlQuery &query, const QString tableName, const QStringList keepColumns);
+    QSqlError addNewColumns(QSqlQuery &query, const QString tableName, const QVariantMap defaultMap);
 
 private slots:
 

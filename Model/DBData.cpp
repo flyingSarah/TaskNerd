@@ -7,8 +7,8 @@ DBData::DBData(QObject *parent) :
 
 // ----------------------------------------------------------------- Create Database Strings
 
-QString DBData::baseTaskCreateString = "label VARCHAR DEFAULT '', priority INTEGER DEFAULT 2, difficulty INTEGER DEFAULT 1";
-QString DBData::repeatTaskCreateString = "isChecked INTEGER DEFAULT 0, " + DBData::baseTaskCreateString + ", repeat INTEGER DEFAULT 1";
+QString DBData::baseTaskCreateString = "label VARCHAR DEFAULT '', priority INTEGER DEFAULT 4, difficulty INTEGER DEFAULT 2";
+QString DBData::repeatTaskCreateString = DBData::baseTaskCreateString + ", goal INTEGER DEFAULT 1, counter INTEGER DEFAULT 0";
 QString DBData::nonRepeatTaskCreateString = "isChecked INTEGER DEFAULT 0, " + DBData::baseTaskCreateString + ", dueDate DATE DEFAULT null";
 QString DBData::checklistTaskCreateString = DBData::baseTaskCreateString + ", dueDate INTEGER DEFAULT null, checklistCount INTEGER DEFAULT 0";
 
@@ -62,16 +62,16 @@ QVariantMap DBData::baseTaskDefaults()
 {
     QVariantMap defaultMap;
     defaultMap.insert("label", "");
-    defaultMap.insert("priority", 2);
-    defaultMap.insert("difficulty", 1);
+    defaultMap.insert("priority", 4);
+    defaultMap.insert("difficulty", 2);
     return defaultMap;
 }
 
 QVariantMap DBData::repeatTaskDefaults()
 {
     QVariantMap defaultMap = baseTaskDefaults();
-    defaultMap.insert("isChecked", 0);
-    defaultMap.insert("repeat", 1);
+    defaultMap.insert("goal", 1);
+    defaultMap.insert("counter", 0);
     return defaultMap;
 }
 

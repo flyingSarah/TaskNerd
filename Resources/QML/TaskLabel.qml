@@ -38,7 +38,7 @@ TextField
                     model: textBox.progress
                     Rectangle
                     {
-                        color: Qt.rgba(0.8,0.8,0.8,0.3*modelData+0.1)
+                        color: Qt.rgba(0.8,0.8,0.8,0.3*modelData+0.2)
                         width: (progressRow.width - (progressRow.spacing*progressRow.modelCount)) / progressRow.modelCount
                         height: progressRow.height
                     }

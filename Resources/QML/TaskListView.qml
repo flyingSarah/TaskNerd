@@ -45,7 +45,7 @@ Item
 
             checklistData: taskModel.relatedData(index, 'count')
             onGetChecklistData: checklistData = taskModel.relatedData(index, 'count')
-            onChecklistCheckChanged: taskRepeater.itemAt(index).updateChecklistProgress(progressIndex, progressValue)
+            onUpdateChecklistProgress: taskRepeater.itemAt(index).updateChecklistProgress(progressIndex, progressValue)
             onAddIndexToChecklistProgress: taskRepeater.itemAt(index).addIndexToChecklistProgress()
             onDeleteIndexFromChecklistProgress: taskRepeater.itemAt(index).deleteIndexFromChecklistProgress(progressIndex)
         }
@@ -156,6 +156,7 @@ Item
                     function refreshTask()
                     {
                         editModeRow.reset()
+                        taskRow.initTaskRowElements()
                     }
 
                     function updateChecklistProgress(progressIndex, progressValue)
@@ -174,10 +175,10 @@ Item
 
                 Component.onCompleted: {
                     //set up the model(s) - task, param, and map models all need to be referenced
-                    var didSetupModel = false
-                    tabTableName.search('checklist')+1 ? didSetupModel = taskModel.setupModel(tabTableName, 'checklistChecklistParams', 'checklistCount', 'count')
-                                                       : didSetupModel = taskModel.setupModel(tabTableName)
-                    //refreshTasks()
+                    var sortList = ["priority", "difficulty"]
+                    tabTableName.search('checklist') > -1 ? taskModel.setupModel(tabTableName, sortList, 'checklistChecklistParams', 'checklistCount', 'count')
+                                                          : taskModel.setupModel(tabTableName, sortList)
+                    refreshTasks()
                 }
             }
 
@@ -189,6 +190,7 @@ Item
 
     function refreshTasks()
     {
+        taskModel.select()
         rowsToDelete = []
         rowsToArchive = []
         updateDeleteCount(0)
@@ -207,7 +209,6 @@ Item
     function addTask()
     {
         taskModel.insertNewRecord(taskTabInfo.taskDefaultMaps()[tabIndex])
-        taskModel.select()
         refreshTasks()
 
         //when adding a task adjust the scroll area so you can see the added task at the bottom
@@ -235,7 +236,6 @@ Item
             taskModel.removeRows(rowsToDelete[row], 1)
         }
 
-        taskModel.select()
         refreshTasks()
     }
 
@@ -261,6 +261,8 @@ Item
 
         return progress
     }
+
+    onVisibleChanged: if(visible) refreshTasks()
 }
 
 

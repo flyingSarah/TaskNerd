@@ -27,9 +27,9 @@ Item
 
             width: Constants.taskColorWidth
             height: Constants.taskColorHeight
-
             color: Constants.windowBgColor
-            onVisibleChanged: if(visible) setTaskColor()
+            visible: false
+            onVisibleChanged: if(visible && index > -1) setTaskColor()
         }
 
         //--------------------------------------------------------------- Check Box
@@ -38,8 +38,19 @@ Item
         {
             id: checkBox
             visible: false
-            onVisibleChanged: if(visible) checked = isChecked
+            onVisibleChanged: if(visible && index > -1) checked = isChecked
             onCheckedChanged: taskModel.setDataValue(index, 'isChecked', checked)
+        }
+
+        ToolBarButton
+        {
+            //TODO: though this is a momentary switch, it should appear as though it's been checked
+            //      ... for a couple of seconds. then it should go back to its 'unchecked' state
+            id: counterBox
+            visible: false
+            Layout.preferredHeight: Constants.buttonHeight
+            Layout.preferredWidth: Constants.buttonHeight
+            onButtonClick: taskModel.setDataValue(index, 'counter', counter+1)//console.log("counter button clicked")
         }
 
         //--------------------------------------------------------------- Task Label
@@ -62,24 +73,24 @@ Item
                 progress: checklistProgress
                 onTriggerSetData: taskModel.setDataValue(index, 'label', text)
                 Component.onCompleted: text = label
-                onVisibleChanged: if(visible) text = label
+                onVisibleChanged: if(visible && index > -1) text = label
             }
         }
 
         //--------------------------------------------------------------- Repeat Indicator
         Loader
         {
-            id: repeatLoader
+            id: goalLoader
         }
 
         Component
         {
-            id: repeatComponent
+            id: goalComponent
 
             Text
             {
-                text: '0/'+repeat //TODO: replace the '0' with repeatCount
-                onVisibleChanged: if(visible) text = '0/'+repeat
+                text: counter+'/'+goal
+                onVisibleChanged: if(visible && index > -1) text = counter+'/'+goal
                 font.family: Constants.appFont
                 font.pixelSize: 8
                 color: Constants.taskCheckBoxCC
@@ -89,12 +100,13 @@ Item
         }
     }
 
-    Component.onCompleted: {
+    function initTaskRowElements()
+    {
         labelLoader.sourceComponent = labelComponent
 
         if(taskModel.parameterNames().indexOf('priority') > -1)
         {
-            setTaskColor()
+            taskColor.visible = true
         }
 
         if(taskModel.parameterNames().indexOf('isChecked') > -1)
@@ -102,9 +114,10 @@ Item
             checkBox.visible = true
         }
 
-        if(taskModel.parameterNames().indexOf('repeat') > -1)
+        if(taskModel.parameterNames().indexOf('goal') > -1)
         {
-            repeatLoader.sourceComponent = repeatComponent
+            goalLoader.sourceComponent = goalComponent
+            counterBox.visible = true
         }
 
         if(taskModel.parameterNames().indexOf('count') > -1)

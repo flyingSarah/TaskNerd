@@ -120,8 +120,8 @@ Item
                 }
                 onDoneButtonClicked: {
                     taskViewRepeater.itemAt(currentTabIndex).refreshTasks()
-                    taskViewRepeater.itemAt(currentTabIndex).editMode(true)
-                    setViewMode(Constants.viewModes[1])
+                    //taskViewRepeater.itemAt(currentTabIndex).editMode(true)
+                    setViewMode(Constants.viewModes[0])
                 }
             }
         }

@@ -16,7 +16,8 @@ class TaskSqlModel : public QSqlRelationalTableModel
 public:
     TaskSqlModel(QObject *parent = 0);
 
-    Q_INVOKABLE bool setupModel(const QString &table, QString relatedTableName = QString(), QString replaceColumn = QString(), QString displayColumn = QString());
+    Q_INVOKABLE bool setupModel(const QString &table, const QStringList sortColumns, QString relatedTableName = QString(), QString replaceColumn = QString(), QString displayColumn = QString());
+    Q_INVOKABLE bool select();
     Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const;
     Q_INVOKABLE bool insertNewRecord(QVariantMap defaultTaskMap);
     Q_INVOKABLE bool setDataValue(int row, QString roleName, const QVariant &value);
@@ -40,7 +41,10 @@ private:
     int count;
     QHash<int, QByteArray> roles;
 
+    QStringList m_sortColumns;
+
     QSqlRecord recordFromMap(QVariantMap dataMap, QSqlRecord record);
+    void sortByMultipleColumns(const QStringList columnNames);
 };
 
 #endif // TASKSQLMODEL_H

@@ -33,7 +33,7 @@ QVariantList TaskSqlModel::parameterNames()
 
 // ------------------------------------------------------------------------------------ Invokables for Table
 
-bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QString replaceColumn, QString displayColumn)
+bool TaskSqlModel::setupModel(const QString &table, const QStringList sortColumns, QString relatedTableName, QString replaceColumn, QString displayColumn)
 {
     QSqlError err;
 
@@ -60,8 +60,8 @@ bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QS
     }
 
     this->applyRoles();
+    m_sortColumns = sortColumns;
 
-    this->select();
     err = this->lastError();
     if(err.type() != QSqlError::NoError)
     {
@@ -69,6 +69,15 @@ bool TaskSqlModel::setupModel(const QString &table, QString relatedTableName, QS
         return false;
     }
     return true;
+}
+
+bool TaskSqlModel::select()
+{
+    bool success = false;
+    success = QSqlRelationalTableModel::select();
+
+    this->sortByMultipleColumns(m_sortColumns);
+    return success;
 }
 
 QVariant TaskSqlModel::data(const QModelIndex &index, int role) const
@@ -271,4 +280,20 @@ QSqlRecord TaskSqlModel::recordFromMap(QVariantMap dataMap, QSqlRecord record)
     }
 
     return record;
+}
+
+void TaskSqlModel::sortByMultipleColumns(const QStringList columnNames)
+{
+    QSqlQuery query;
+    QString sortString = QString("%1 ORDER BY ").arg(this->query().executedQuery());
+
+    for(int i = 0; i < columnNames.count(); i++)
+    {
+        sortString.append(QString("%1, ").arg(columnNames.at(i)).toUtf8());
+    }
+
+    sortString.remove(sortString.count()-2, 2);
+
+    query = QSqlQuery(sortString);
+    this->setQuery(query);
 }

@@ -11,7 +11,7 @@ Item
     property var checklistData
 
     signal getChecklistData()
-    signal checklistCheckChanged(int progressIndex, bool progressValue)
+    signal updateChecklistProgress(int progressIndex, bool progressValue)
     signal addIndexToChecklistProgress()
     signal deleteIndexFromChecklistProgress(int progressIndex)
 
@@ -40,12 +40,10 @@ Item
                 anchors.margins: Constants.windowMargins
                 spacing: 5
 
-                GridLayout
+                RowLayout
                 {
                     Layout.fillWidth: true
-                    columnSpacing: parent.spacing
-                    rowSpacing: parent.spacing
-                    columns: 2
+                    spacing: parent.spacing
 
                     // ---------------------------------------------------------------- Task Title
 
@@ -101,107 +99,9 @@ Item
                     }
                 }
 
-                ScrollView
+                ChecklistView
                 {
                     id: checklistScrollView
-                    visible: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    frameVisible: true
-                    highlightOnFocus: true
-
-                    // ---------------------------------------------------------------- Scroll Bar
-                    style: ScrollViewStyle {
-                        transientScrollBars: true
-                        handle: Item {
-                            //scroll bar handle size & appearance
-                            implicitWidth: Constants.scrollBarWidth
-                            implicitHeight: Constants.scrollBarHeight
-                            Rectangle {
-                                color: Constants.scrollBarColor
-                                border.color: Constants.scrollBarBC
-                                border.width: Constants.scrollBarBW
-                                anchors.fill: parent
-                                anchors.margins: Constants.scrollBarMargin
-                            }
-                        }
-                        scrollBarBackground: Item {
-                            implicitWidth: Constants.scrollBarWidth
-                            implicitHeight: Constants.scrollBarHeight
-                        }
-                    }
-
-                    ColumnLayout
-                    {
-                        id: checklistColumn
-                        anchors.top: parent.top
-                        Layout.fillWidth: true
-                        spacing: 2
-                        onVisibleChanged: checklistTitle.visible = visible
-
-                        Item{Layout.preferredHeight: parent.spacing/2}
-
-                        Repeater
-                        {
-                            id: checklistRepeater
-                            Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignCenter
-                            model: checklistData
-
-                            RowLayout
-                            {
-                                id: checklistRow
-
-                                spacing: Constants.taskRowSpacing
-
-                                Layout.preferredWidth: checklistScrollView.width - checklistColumn.spacing
-
-                                Item{Layout.preferredWidth: checklistColumn.spacing/2}
-
-                                //--------------------------------------------------------------- Checklist Check Box
-
-                                TaskCheckBox
-                                {
-                                    id: checkBox
-                                    checked: modelData['isChecked']
-                                    height: Constants.editViewRowHeight
-                                    width: Constants.editViewRowHeight
-                                    onCheckedChanged: {
-                                        checklistData[index]['isChecked'] = checked
-                                        checklistCheckChanged(index, checked)
-                                        taskModel.setRelatedDataValue(row, 'count', index, 'isChecked', checked)
-                                    }
-
-                                }
-
-                                //--------------------------------------------------------------- Checklist Task Label
-                                TaskLabel
-                                {
-                                    text: modelData['label']
-                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: Constants.editViewRowHeight
-                                    font.pixelSize: Constants.menuFontSize - 2
-                                    onTriggerSetData: {
-                                        checklistData[index]['label'] = text
-                                        taskModel.setRelatedDataValue(row, 'count', index, 'label', text)
-                                    }
-                                }
-
-                                //--------------------------------------------------------------- Checklist Task Delete Button
-                                ToolBarButton
-                                {
-                                    Layout.preferredHeight: Constants.editViewRowHeight
-                                    Layout.preferredWidth: Constants.editViewRowHeight
-                                    buttonText: 'x'
-                                    onButtonClick: deleteChecklistItem(index) //console.log("delete checklist row", index)
-                                    bgColor: 'transparent'
-                                    border.width: 0
-                                }
-
-                                Item{Layout.preferredWidth: Constants.taskRowRightSpacing}
-                            }
-                        }
-                    }
                 }
 
                 GridLayout
@@ -324,8 +224,8 @@ Item
 
                     Text
                     {
-                        id: repeatLabel
-                        text: 'Repeat:'
+                        id: goalLabel
+                        text: 'Goal:'
                         font.family: Constants.appFont
                         font.pixelSize: Constants.menuFontSize - 2
                         color: Constants.taskCheckBoxCC
@@ -335,18 +235,18 @@ Item
 
                     Loader
                     {
-                        id: repeatLoader
+                        id: goalLoader
                     }
 
                     Component
                     {
-                        id: repeatComponent
+                        id: goalComponent
 
                         TaskLabel
                         {
                             height: Constants.editViewRowHeight
                             Layout.maximumHeight: Constants.editViewRowHeight
-                            text: repeat
+                            text: goal
                             font.pixelSize: Constants.menuFontSize - 2
                             onTriggerSetData: {
                                 var newText = text
@@ -355,7 +255,7 @@ Item
                                 {
                                     newText = '1'
                                 }
-                                taskModel.setDataValue(row, 'repeat', parseInt(newText))
+                                taskModel.setDataValue(row, 'goal', parseInt(newText))
                             }
                             validator: IntValidator {
                                 bottom: 1
@@ -370,6 +270,8 @@ Item
                 }
             }
 
+            // ---------------------------------------------------------------- Helper Functions
+
             function loadTaskElements()
             {
                 //determine which dynamic task elements to load
@@ -377,10 +279,10 @@ Item
                 {
                     setTaskColor()
                 }
-                if(taskModel.parameterNames().indexOf('repeat') > -1)
+                if(taskModel.parameterNames().indexOf('goal') > -1)
                 {
-                    repeatLabel.visible = true
-                    repeatLoader.sourceComponent = repeatComponent
+                    goalLabel.visible = true
+                    goalLoader.sourceComponent = goalComponent
                 }
                 if(taskModel.parameterNames().indexOf('count') > -1)
                 {
@@ -391,7 +293,6 @@ Item
             function populateChecklist()
             {
                 getChecklistData()
-                checklistRepeater.model = checklistData
             }
 
             function addChecklistItem()
@@ -402,6 +303,13 @@ Item
                 if(success)
                 {
                     populateChecklist()
+                }
+
+                //when adding a task adjust the scroll area so you can see the added task at the bottom
+                var pos = checklistScrollView.flickableItem.contentHeight - checklistScrollView.flickableItem.height
+                if(pos > 0)
+                {
+                    checklistScrollView.flickableItem.contentY = pos
                 }
             }
 
