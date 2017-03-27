@@ -9,7 +9,7 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     initAppSettings(settings);
 
     window->setGeometry(settings.value("app_x").toInt(), settings.value("app_y").toInt(), settings.value("app_w").toInt(), settings.value("app_h").toInt());
-    window->setMinimumSize(QSize(440, 250));
+    window->setMinimumSize(QSize(315, 250));
     window->setResizeMode(QQuickView::SizeRootObjectToView);
 
     QSqlError err = initDb();
@@ -64,7 +64,7 @@ void TaskNerd::initAppSettings(QSettings &settings)
     }
     if(!settings.contains("app_w"))
     {
-        settings.setValue("app_w", 440);
+        settings.setValue("app_w", 315);
     }
     if(!settings.contains("app_h"))
     {

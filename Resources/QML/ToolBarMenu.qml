@@ -23,9 +23,11 @@ Column
             ToolBarButton
             {
                 width: parent.width
-                fontSize: Constants.menuFontSize
+                fontSize: Constants.appMiniFontSize
                 buttonText: modelData
-                border.color: Constants.windowBgColor
+                bgColor: Constants.selectColor
+                cColor: Constants.windowBgColor
+                border.width: 0
                 height: Constants.taskRowHeight
             }
         }

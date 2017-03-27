@@ -13,9 +13,9 @@ Rectangle
 	
 	signal selected(int tabIndex)
 			
-    border.color: Constants.tabButtonBC
-    border.width: Constants.tabButtonBW
-    color: radioGroup.selected === radioButton ? Constants.tabButtonSC : Constants.tabButtonUC
+    border.color: Constants.borderColor
+    border.width: Constants.borderWidth
+    color: radioGroup.selected === radioButton ? Constants.selectColor : Constants.unselectColor
 			
 	Text
 	{
@@ -23,7 +23,7 @@ Rectangle
 		text: radioButton.text
         font.family: Constants.appFont
         font.pixelSize: fontSize
-        color: radioGroup.selected === radioButton ? Constants.tabButtonSTC : Constants.tabButtonUTC
+        color: radioGroup.selected === radioButton ? Constants.unselectColor : Constants.buttonTextColor
 		anchors.centerIn: parent
 	}
 	

@@ -16,12 +16,9 @@ TextField
     signal triggerSetData()
 
     style: TextFieldStyle {
-        placeholderTextColor: Constants.taskItemBorderColor
+        placeholderTextColor: Constants.selectColor
         background: Rectangle {
-            color: Constants.taskLabelBgColor
-            border.color: Constants.taskItemBorderColor
-            border.width: Constants.taskItemBorderWidth
-
+            color: Constants.windowBgColor
             //TODO: get the stuff below working with task data to show a progress bar
             //... I've already got everything working visually, I just need data to play with
             Row
@@ -39,12 +36,13 @@ TextField
                     model: textBox.progress
                     Rectangle
                     {
-                        color: Qt.rgba(0.3,0.3,0.3,0.6*modelData)//Qt.rgba(0.4-0.4*modelData,0.2,0.3,1)//Qt.rgba(0.65,0.2,0.42,0.8 - 0.8*modelData)
+                        color: Qt.rgba(1,1,1,0.07*modelData)//Qt.rgba(0.4-0.4*modelData,0.2,0.3,1)//Qt.rgba(0.65,0.2,0.42,0.8 - 0.8*modelData)
                         width: (progressRow.width - (progressRow.spacing*progressRow.modelCount)) / progressRow.modelCount
                         height: progressRow.height
                     }
                 }
             }
+            Rectangle{width:parent.width; height: 1; y: parent.height+1; color: '#1affffff'}
         }
     }
 

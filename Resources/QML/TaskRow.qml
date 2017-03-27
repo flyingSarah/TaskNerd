@@ -21,13 +21,16 @@ Item
 
         //--------------------------------------------------------------- Priority / Difficulty Indicator
 
-        Rectangle
+        Text
         {
             id: taskColor
 
-            width: Constants.taskColorWidth
-            height: Constants.taskColorHeight
-            color: Constants.windowBgColor
+            Layout.preferredWidth: Constants.shapeWidth
+            Layout.preferredHeight: Constants.shapeHeight
+            font.family: 'Wingdings'
+            font.pixelSize: Constants.appMiniFontSize-3
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             visible: false
             onVisibleChanged: if(visible && index > -1) setTaskColor()
         }
@@ -50,7 +53,7 @@ Item
             visible: false
             Layout.preferredHeight: Constants.buttonHeight
             Layout.preferredWidth: Constants.buttonHeight
-            cColor: Constants.taskCheckBoxCC
+            cColor: Constants.selectColor
             onButtonClick: taskModel.setDataValue(index, 'counter', counter+1)
         }
 
@@ -60,7 +63,7 @@ Item
             id: labelLoader
 
             Layout.fillWidth: true
-            Layout.minimumWidth: 50
+            Layout.preferredWidth: 50
             Layout.preferredHeight: Constants.buttonHeight
         }
 
@@ -93,7 +96,7 @@ Item
                 text: counter+'/'+goal
                 onVisibleChanged: if(visible && index > -1) text = counter+'/'+goal
                 font.family: Constants.appFont
-                font.pixelSize: Constants.menuFontSize - 1
+                font.pixelSize: Constants.appMiniFontSize
                 color: Constants.taskLabelTextColor
                 Layout.preferredHeight: Constants.buttonHeight
                 horizontalAlignment: Text.AlignHCenter
@@ -129,7 +132,9 @@ Item
 
     function setTaskColor()
     {
-        taskColor.color = Constants.taskColors[priority][difficulty]
+        taskColor.color = Constants.priorities[priority]
+        taskColor.text = Constants.difficulties[difficulty]
+        checkBox.textColor = Constants.priorities[priority]
     }
 
     function updateChecklistProgress(progressIndex, progressValue)

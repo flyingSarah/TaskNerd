@@ -97,9 +97,10 @@ Item
                         text: modelData
                         radioGroup: tabBarGroup
                         buttonIndex: index
+                        fontSize: Constants.appMiniFontSize
 
                         height: Constants.buttonHeight
-                        Layout.minimumWidth: 70
+                        Layout.minimumWidth: 57
                         Layout.alignment: Qt.AlignCenter
                         Layout.fillWidth: true
 

@@ -7,10 +7,9 @@ import "Constants.js" as Constants
 
 ScrollView
 {
-    visible: false
     Layout.fillWidth: true
     Layout.fillHeight: true
-    frameVisible: true
+    visible: false
     highlightOnFocus: true
 
     // ---------------------------------------------------------------- Scroll Bar
@@ -22,8 +21,8 @@ ScrollView
             implicitHeight: Constants.scrollBarHeight
             Rectangle {
                 color: Constants.scrollBarColor
-                border.color: Constants.scrollBarBC
-                border.width: Constants.scrollBarBW
+                border.color: Constants.borderColor
+                border.width: Constants.borderWidth
                 anchors.fill: parent
                 anchors.margins: Constants.scrollBarMargin
             }
@@ -32,6 +31,7 @@ ScrollView
             implicitWidth: Constants.scrollBarWidth
             implicitHeight: Constants.scrollBarHeight
         }
+
     }
 
     ColumnLayout
@@ -83,7 +83,7 @@ ScrollView
                     text: modelData['label']
                     Layout.fillWidth: true
                     Layout.preferredHeight: Constants.editViewRowHeight
-                    font.pixelSize: Constants.menuFontSize - 2
+                    font.pixelSize: Constants.appMiniFontSize
                     onTriggerSetData: {
                         checklistData[index]['label'] = text
                         taskModel.setRelatedDataValue(row, 'count', index, 'label', text)
@@ -101,7 +101,7 @@ ScrollView
                     border.width: 0
                 }
 
-                Item{Layout.preferredWidth: Constants.taskRowRightSpacing}
+                Item {Layout.preferredWidth: Constants.taskRowRightMargin}
             }
         }
     }

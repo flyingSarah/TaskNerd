@@ -31,8 +31,8 @@ Item
             anchors.fill: parent
 
             color: Constants.windowBgColor
-            border.width: Constants.taskItemBorderWidth
-            border.color: Constants.taskItemBorderColor
+            border.width: Constants.borderWidth
+            border.color: Constants.borderColor
 
             ColumnLayout
             {
@@ -51,9 +51,9 @@ Item
                     {
                         text: 'Title:'
                         font.family: Constants.appFont
-                        font.pixelSize: Constants.menuFontSize - 2
-                        color: Constants.taskCheckBoxCC
-                        Layout.preferredWidth: 40
+                        font.pixelSize: Constants.appMiniFontSize
+                        color: Constants.taskLabelTextColor
+                        Layout.preferredWidth: 50
                     }
 
                     TaskLabel
@@ -62,7 +62,7 @@ Item
                         Layout.minimumWidth: 50
                         Layout.preferredHeight: Constants.editViewRowHeight
                         text: label
-                        font.pixelSize: Constants.menuFontSize - 2
+                        font.pixelSize: Constants.appMiniFontSize
                         onTriggerSetData: taskModel.setDataValue(row, 'label', text)
                     }
                 }
@@ -82,8 +82,8 @@ Item
                     {
                         text: "Checklist (click '+' to add items)"
                         font.family: Constants.appFont
-                        font.pixelSize: Constants.menuFontSize
-                        color: Constants.taskCheckBoxCC
+                        font.pixelSize: Constants.appMiniFontSize
+                        color: Constants.taskLabelTextColor
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -118,9 +118,9 @@ Item
                     {
                         text: 'Priority:'
                         font.family: Constants.appFont
-                        font.pixelSize: Constants.menuFontSize - 2
-                        color: Constants.taskCheckBoxCC
-                        Layout.preferredWidth: 40
+                        font.pixelSize: Constants.appMiniFontSize
+                        color: Constants.taskLabelTextColor
+                        Layout.preferredWidth: 50
                     }
 
                     RowLayout
@@ -141,12 +141,12 @@ Item
                             {
                                 id: priorityRadioButton
                                 text: modelData
-                                fontSize: Constants.menuFontSize - 2
+                                fontSize: Constants.appMiniFontSize
                                 radioGroup: priorityGroup
                                 buttonIndex: index
 
                                 Layout.preferredHeight: Constants.editViewRowHeight
-                                Layout.minimumWidth: 10
+                                Layout.minimumWidth: 40
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.fillWidth: true
 
@@ -172,9 +172,9 @@ Item
                     {
                         text: 'Difficulty:'
                         font.family: Constants.appFont
-                        font.pixelSize: Constants.menuFontSize - 2
-                        color: Constants.taskCheckBoxCC
-                        Layout.preferredWidth: 40
+                        font.pixelSize: Constants.appMiniFontSize
+                        color: Constants.taskLabelTextColor
+                        Layout.preferredWidth: 50
                     }
 
                     RowLayout
@@ -195,12 +195,12 @@ Item
                             {
                                 id: difficultyRadioButton
                                 text: modelData
-                                fontSize: Constants.menuFontSize - 2
+                                fontSize: Constants.appMiniFontSize
                                 radioGroup: difficultyGroup
                                 buttonIndex: index
 
                                 Layout.preferredHeight: Constants.editViewRowHeight
-                                Layout.minimumWidth: 10
+                                Layout.minimumWidth: 40
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.fillWidth: true
 
@@ -227,10 +227,10 @@ Item
                         id: goalLabel
                         text: 'Goal:'
                         font.family: Constants.appFont
-                        font.pixelSize: Constants.menuFontSize - 2
-                        color: Constants.taskCheckBoxCC
+                        font.pixelSize: Constants.appMiniFontSize
+                        color: Constants.taskLabelTextColor
                         visible: false
-                        Layout.preferredWidth: 40
+                        Layout.preferredWidth: 50
                     }
 
                     Loader
@@ -247,7 +247,7 @@ Item
                             height: Constants.editViewRowHeight
                             Layout.maximumHeight: Constants.editViewRowHeight
                             text: goal
-                            font.pixelSize: Constants.menuFontSize - 2
+                            font.pixelSize: Constants.appMiniFontSize
                             onTriggerSetData: {
                                 var newText = text
                                 if(!acceptableInput) newText = '1'
@@ -322,7 +322,7 @@ Item
 
             function setTaskColor()
             {
-                editView.border.color = Constants.taskColors[priority][difficulty]
+                editView.border.color = Constants.priorities[priority]
             }
 
             Component.onCompleted: loadTaskElements()

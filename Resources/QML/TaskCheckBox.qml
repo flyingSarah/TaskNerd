@@ -12,13 +12,14 @@ Rectangle
     id: checkBox
 
     property bool checked
+    property string textColor: Constants.taskLabelTextColor
 
     width: Constants.buttonHeight
     height: Constants.buttonHeight
 
-    border.color: Constants.taskItemBorderColor
-    border.width: Constants.taskItemBorderWidth
-    color: checked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
+    border.color: Constants.borderColor
+    border.width: Constants.borderWidth
+    color: Constants.windowBgColor
 
     Text
     {
@@ -27,8 +28,8 @@ Rectangle
         verticalAlignment: Text.AlignVCenter
         text: checked ? '√' : ''
         font.family: 'Marker Felt'
-        font.pixelSize: Constants.appFontSize+10
-        color: Constants.windowBgColor
+        font.pixelSize: Constants.appFontSize+6
+        color: textColor
     }
 
     MouseArea

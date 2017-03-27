@@ -8,19 +8,16 @@ Rectangle
     //TODO: should aslo allow icon images instead of characters
     property string buttonText
 
-    property string bgColor: Constants.toolBarButtonC
-    property string cColor: Constants.taskLabelTextColor
+    property string bgColor: Constants.windowBgColor
+    property string cColor: Constants.selectColor
     property int fontSize: Constants.appFontSize
     property bool isMomentary: true
 
     signal buttonClick(bool isChecked) //momentary buttons can ignore the isChecked parameter when using this signal
 
-    //Layout.preferredWidth: Constants.buttonHeight
-    //Layout.preferredHeight: Constants.buttonHeight
-
     color: bgColor
-    border.color: Constants.tabButtonBC
-    border.width: Constants.taskItemBorderWidth
+    border.color: Constants.borderColor
+    border.width: Constants.borderWidth
 
     Text
     {
@@ -32,7 +29,7 @@ Rectangle
 
         font.family: Constants.appFont
         font.pixelSize: fontSize
-        color: Constants.taskLabelTextColor
+        color: Constants.buttonTextColor
     }
 
     MouseArea
@@ -57,7 +54,7 @@ Rectangle
             else
             {
                 parent.color = bgColor
-                toolBarText.color = cColor
+                toolBarText.color = Constants.buttonTextColor
             }
         }
     }

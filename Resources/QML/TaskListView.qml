@@ -59,7 +59,7 @@ Item
 
         anchors.fill: parent
 
-        frameVisible: true
+        //frameVisible: true
         highlightOnFocus: true
 
         // ---------------------------------------------------------------- Scroll Bar
@@ -71,8 +71,8 @@ Item
                 implicitHeight: Constants.scrollBarHeight
                 Rectangle {
                     color: Constants.scrollBarColor
-                    border.color: Constants.scrollBarBC
-                    border.width: Constants.scrollBarBW
+                    border.color: Constants.borderColor
+                    border.width: Constants.borderWidth
                     anchors.fill: parent
                     anchors.margins: Constants.scrollBarMargin
                 }
@@ -109,7 +109,7 @@ Item
                     {
                         id: taskRow
                         Layout.fillWidth: true
-                        Layout.minimumHeight: Constants.taskRowHeight
+                        Layout.preferredHeight: Constants.taskRowHeight
                         checklistProgress: findChecklistProgress(taskModel.relatedData(index, 'count'))
                     }
 
@@ -132,10 +132,7 @@ Item
                         }
                     }
 
-                    Item
-                    {
-                        width: Constants.taskRowRightSpacing
-                    }
+                    Item {Layout.preferredWidth: Constants.taskRowRightMargin}
 
                     function editMode(enabled)
                     {
@@ -172,7 +169,7 @@ Item
                 }
             }
 
-            onVisibleChanged: scrollView.frameVisible = visible
+            //onVisibleChanged: scrollView.frameVisible = visible
         }
     }
 
@@ -254,6 +251,7 @@ Item
     }
 
     onVisibleChanged: if(visible) refreshTasks()
+    Component.onCompleted: console.log("task list view completed", tabTableName)
 }
 
 
