@@ -9,9 +9,9 @@ var scrollBarHeight = 26;
 var scrollBarBW     = 1; //border width of scroll bar
 var scrollBarMargin = 2;
 
-var windowBgColor   = 'white';    //mainwindow bg color
+var windowBgColor   = '#151515';    //mainwindow bg color
 var scrollBarColor  = 'transparent';
-var scrollBarBC     = 'gray'; //border color of scroll bar
+var scrollBarBC     = '#555555'; //border color of scroll bar
 
 var appFont         = 'Futura Medium';
 var appFontSize     = 14;
@@ -32,10 +32,10 @@ var menuItems       = ['archive view'];
 var tabBarSpacing   = 5; //spacing between buttons in the tab bar
 var tabButtonBW     = 1; //border width of tab Buttons
 
-var tabButtonSC     = 'gray'; //selected color of tab bar buttons
+var tabButtonSC     = '#cccccc'; //selected color of tab bar buttons
 var tabButtonUC     = 'transparent'; //unselected color of tab bar buttons
-var tabButtonBC     = 'gray'; //border color of tab buttons
-var tabButtonSTC    = 'lightgray'; //selected text color of tab buttons
+var tabButtonBC     = scrollBarBC; //border color of tab buttons
+var tabButtonSTC    = '#2a2a2a'; //selected text color of tab buttons
 var tabButtonUTC    = 'gray'; //unselected text color of tab buttons
 
 var tabInitIndex    = 0; //initial index of the task views that are shown on open
@@ -51,16 +51,16 @@ var taskItemBorderWidth = 1; //for any item in the task row
 var taskLabelLeftMargin = 5;
 var taskLabelMaxChars   = 75;
 
-var taskItemBorderColor = 'gray'; //for any item in the task row
-var taskCheckBoxCC      = 'gray'; //checked color of task checkbox
-var taskCheckBoxUC      = 'white'; //unchecked color of task checkbox
-var taskLabelBgColor    = 'white'; //background color of task label
-var taskLabelTextColor  = 'gray';
+var taskItemBorderColor = scrollBarBC; //for any item in the task row
+var taskCheckBoxCC      = '#555555'; //checked color of task checkbox
+var taskCheckBoxUC      = 'transparent'; //unchecked color of task checkbox
+var taskLabelBgColor    = 'transparent'; //background color of task label
+var taskLabelTextColor  = '#cccccc';
 
 var editModeButtonWidth = 30
 var editModeButtonHeight= taskRowHeight-2
 var editModeSpacing     = 2
-var editModeBorderWidth = 0
+var editModeBorderWidth = 1
 
 // ------------------------------------------------------------------ Edit View
 
@@ -69,11 +69,13 @@ var editViewRowHeight   = 18
 // ------------------------------------------------------------------ Task Parameters
 
 //task colors - outer list is priority, inner list is difficulty
-var taskColors = [['#ffb8c0', '#ff7286', '#ff001e'],
-                  ['#ffd1ad', '#ffaf72', '#ff8426'],
-                  ['#fff99e', '#fff771', '#fff029'],
-                  ["#b2f0b4", '#5ce061', '#22b026'],
-                  ['#9ebdff', '#5792ff', '#004bea']]
+
+var taskColors = [['#ffffb8c0', '#eeff7286', '#ddff254e'],
+                  ['#ffffc19d', '#eeff9f62', '#ffff8426'],
+                  ['#fffff99e', '#eefff771', '#eefff029'],
+                  ["#ff82ff84", '#ff5ce061', '#ee22b026'],
+                  ['#ff8eadff', '#ff5792ff', '#ee004bea']]
+
 
 var priorityOptions     = ['Highest', 'High', 'Medium', 'Low', 'Lowest']
 var difficultyOptions   = ['Easy', 'Medium', 'Hard']

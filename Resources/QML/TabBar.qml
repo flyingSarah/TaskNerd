@@ -134,7 +134,6 @@ Item
                 Layout.fillWidth: true
                 Layout.preferredHeight: Constants.buttonHeight
                 buttonText: 'Archive ' + numOfItemsToArchive + ' Tasks'
-                bgColor: Constants.menuColor
                 onButtonClick: archiveButtonClicked()
             }
 
@@ -143,7 +142,6 @@ Item
                 Layout.fillWidth: true
                 Layout.preferredHeight: Constants.buttonHeight
                 buttonText: 'Delete ' + numOfItemsToDelete + ' Tasks'
-                bgColor: Constants.menuColor
                 onButtonClick: deleteButtonClicked()
             }
         }
@@ -160,7 +158,6 @@ Item
             buttonText: 'Done'
             Layout.fillWidth: true
             Layout.preferredHeight: Constants.buttonHeight
-            bgColor: Constants.menuColor
             onButtonClick: doneButtonClicked()
         }
     }

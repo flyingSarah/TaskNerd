@@ -23,7 +23,6 @@ Column
             ToolBarButton
             {
                 width: parent.width
-                bgColor: Constants.menuColor
                 fontSize: Constants.menuFontSize
                 buttonText: modelData
                 border.color: Constants.windowBgColor

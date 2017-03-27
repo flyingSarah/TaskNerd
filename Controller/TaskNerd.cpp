@@ -141,7 +141,7 @@ QSqlError TaskNerd::initTables(const QStringList &tables, const QVariantList &ta
 }
 
 // this function populates a list of columns to preserve during the column update
-QStringList TaskNerd::findColumnsToKeep(const QStringList tableParameters, const QVariantMap defaultMap)
+QStringList TaskNerd::findColumnsToKeep(const QStringList &tableParameters, const QVariantMap &defaultMap)
 {
     QStringList newColumns = defaultMap.keys();
     newColumns.prepend("id"); // id is never listed in default maps
@@ -149,7 +149,7 @@ QStringList TaskNerd::findColumnsToKeep(const QStringList tableParameters, const
     return intersection.toList();
 }
 
-QSqlError TaskNerd::updateColumns(QSqlQuery &query, const QString tableName, const QString &createString, const QStringList keepColumns)
+QSqlError TaskNerd::updateColumns(QSqlQuery &query, const QString &tableName, const QString &createString, const QStringList &keepColumns)
 {
     QString selectColumnStr;
 

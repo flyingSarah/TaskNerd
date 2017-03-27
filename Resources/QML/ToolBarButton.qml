@@ -9,6 +9,7 @@ Rectangle
     property string buttonText
 
     property string bgColor: Constants.toolBarButtonC
+    property string cColor: Constants.taskLabelTextColor
     property int fontSize: Constants.appFontSize
     property bool isMomentary: true
 
@@ -18,7 +19,7 @@ Rectangle
     //Layout.preferredHeight: Constants.buttonHeight
 
     color: bgColor
-    border.color: Constants.taskItemBorderColor
+    border.color: Constants.tabButtonBC
     border.width: Constants.taskItemBorderWidth
 
     Text
@@ -50,13 +51,13 @@ Rectangle
         onCheckedChanged: {
             if(checked)
             {
-                parent.color = Constants.taskLabelTextColor
+                parent.color = cColor
                 toolBarText.color = bgColor
             }
             else
             {
                 parent.color = bgColor
-                toolBarText.color = Constants.taskLabelTextColor
+                toolBarText.color = cColor
             }
         }
     }

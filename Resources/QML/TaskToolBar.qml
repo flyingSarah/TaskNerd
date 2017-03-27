@@ -106,7 +106,6 @@ Item
             Layout.preferredHeight: Constants.buttonHeight
             Layout.preferredWidth: Constants.buttonHeight
             buttonText: 'cancel'
-            bgColor: Constants.menuColor
             onButtonClick: {
                 editModeCancelClicked()
             }

@@ -20,6 +20,17 @@ Rectangle
     border.width: Constants.taskItemBorderWidth
     color: checked ? Constants.taskCheckBoxCC : Constants.taskCheckBoxUC
 
+    Text
+    {
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: checked ? '√' : ''
+        font.family: 'Marker Felt'
+        font.pixelSize: Constants.appFontSize+10
+        color: Constants.windowBgColor
+    }
+
     MouseArea
     {
         anchors.fill: parent

@@ -16,6 +16,7 @@ TextField
     signal triggerSetData()
 
     style: TextFieldStyle {
+        placeholderTextColor: Constants.taskItemBorderColor
         background: Rectangle {
             color: Constants.taskLabelBgColor
             border.color: Constants.taskItemBorderColor
@@ -38,7 +39,7 @@ TextField
                     model: textBox.progress
                     Rectangle
                     {
-                        color: Qt.rgba(0.8,0.8,0.8,0.3*modelData+0.2)
+                        color: Qt.rgba(0.3,0.3,0.3,0.6*modelData)//Qt.rgba(0.4-0.4*modelData,0.2,0.3,1)//Qt.rgba(0.65,0.2,0.42,0.8 - 0.8*modelData)
                         width: (progressRow.width - (progressRow.spacing*progressRow.modelCount)) / progressRow.modelCount
                         height: progressRow.height
                     }
@@ -49,7 +50,7 @@ TextField
 
     font.family: Constants.appFont
     font.pixelSize: Constants.appFontSize
-    textColor: Constants.taskCheckBoxCC
+    textColor: Constants.taskLabelTextColor
 
     maximumLength: Constants.taskLabelMaxChars
     placeholderText: 'new task...'

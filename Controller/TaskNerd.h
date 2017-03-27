@@ -25,8 +25,8 @@ private:
     QSqlError initDb();
     QSqlError initTables(const QStringList &tables, const QVariantList &tableNames, const QVariantList &createStrings, const QVariantList &defaultMaps);
 
-    QStringList findColumnsToKeep(const QStringList tableParameters, const QVariantMap defaultMap);
-    QSqlError updateColumns(QSqlQuery &query, const QString tableName, const QString &createString, const QStringList keepColumns);
+    QStringList findColumnsToKeep(const QStringList &tableParameters, const QVariantMap &defaultMap);
+    QSqlError updateColumns(QSqlQuery &query, const QString &tableName, const QString &createString, const QStringList &keepColumns);
 
     void initAppSettings(QSettings &settings);
 

@@ -50,7 +50,8 @@ Item
             visible: false
             Layout.preferredHeight: Constants.buttonHeight
             Layout.preferredWidth: Constants.buttonHeight
-            onButtonClick: taskModel.setDataValue(index, 'counter', counter+1)//console.log("counter button clicked")
+            cColor: Constants.taskCheckBoxCC
+            onButtonClick: taskModel.setDataValue(index, 'counter', counter+1)
         }
 
         //--------------------------------------------------------------- Task Label
@@ -92,8 +93,8 @@ Item
                 text: counter+'/'+goal
                 onVisibleChanged: if(visible && index > -1) text = counter+'/'+goal
                 font.family: Constants.appFont
-                font.pixelSize: 8
-                color: Constants.taskCheckBoxCC
+                font.pixelSize: Constants.menuFontSize - 1
+                color: Constants.taskLabelTextColor
                 Layout.preferredHeight: Constants.buttonHeight
                 horizontalAlignment: Text.AlignHCenter
             }

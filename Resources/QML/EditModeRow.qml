@@ -24,7 +24,6 @@ Item
             id: archiveButton
             width: Constants.editModeButtonWidth
             height: Constants.editModeButtonHeight
-            bgColor: Constants.menuColor
             buttonText: 'a'
             border.width: Constants.editModeBorderWidth
             isMomentary: false
@@ -35,7 +34,6 @@ Item
         {
             width: Constants.editModeButtonWidth
             height: Constants.editModeButtonHeight
-            bgColor: Constants.menuColor
             buttonText: 'e'
             border.width: Constants.editModeBorderWidth
             onButtonClick: editThisRow()
@@ -46,7 +44,6 @@ Item
             id: deleteButton
             width: Constants.editModeButtonWidth
             height: Constants.editModeButtonHeight
-            bgColor: Constants.menuColor
             buttonText: 'x'
             border.width: Constants.editModeBorderWidth
             isMomentary: false

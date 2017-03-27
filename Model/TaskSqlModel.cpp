@@ -19,6 +19,8 @@ void TaskSqlModel::applyRoles()
     }
 }
 
+// ------------------------------------------------------------------------------------ Invokables for Table
+
 QStringList TaskSqlModel::parameterNames()
 {
     QStringList names;
@@ -30,8 +32,6 @@ QStringList TaskSqlModel::parameterNames()
     }
     return names;
 }
-
-// ------------------------------------------------------------------------------------ Invokables for Table
 
 bool TaskSqlModel::setupModel(const QString &table, const QStringList sortColumns, const QString relatedTableName, const QString replaceColumn, const QString displayColumn)
 {
