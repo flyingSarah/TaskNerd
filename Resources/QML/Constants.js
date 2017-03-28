@@ -9,7 +9,7 @@ var scrollBarHeight = 26;
 var scrollBarBW     = 1; //border width of scroll bar
 var scrollBarMargin = 2;
 
-var windowBgColor   = '#17101b';    //mainwindow bg color
+var windowBgColor   = '#1c1025';    //mainwindow bg color
 var borderColor     = '#453550'
 var borderWidth     = 1
 var scrollBarColor  = 'transparent';

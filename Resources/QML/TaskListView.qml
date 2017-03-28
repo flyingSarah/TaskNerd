@@ -100,7 +100,7 @@ Item
 
                 property int finCount: 0
 
-                width: parent.width
+                Layout.fillWidth: true
                 model: taskModel
 
                 RowLayout
@@ -251,7 +251,6 @@ Item
     }
 
     onVisibleChanged: if(visible) refreshTasks()
-    Component.onCompleted: console.log("task list view completed", tabTableName)
 }
 
 
