@@ -1,5 +1,5 @@
 # TaskNerd
-TaskNerd is a productivity application that allows you to set up tasks using some basic categorizations: daily, weekly, and monthly repeating tasks; off tasks; and checklists.
+TaskNerd is a productivity application that allows you to set up tasks using basic categorizations: daily, weekly, and monthly repeating tasks; one off tasks; and checklists.
 
 ### What problem does this application solve?
 I really love trying out all of the different productivity apps I find people talking about on the internet. It's actually ridiculous how much time I've spent transferring my system over to new apps to test them out - honestly, this mostly just ends up distracting me from actually being productive. After playing around with different systems over the years, I have managed to identify a couple of favorites that seem to help me get things done (looking at you [Habitica], and you [Trello]!) The problem is, I just can't seem to get away from making quick to-do lists in plain text documents. It's just so quick to use a plain text document for tasks that represent an agenda for one single day.. I don't have to navigate a UI or be tempted to set up a bunch of other parameters (priority, due date, tags, etc.).
