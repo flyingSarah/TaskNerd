@@ -101,7 +101,7 @@ ScrollView
                     border.width: 0
                 }
 
-                Item {Layout.preferredWidth: Constants.taskRowRightMargin}
+                Item {Layout.preferredWidth: Constants.taskRowMargin}
             }
         }
     }

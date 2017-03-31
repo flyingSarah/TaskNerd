@@ -19,6 +19,8 @@ Item
 
         width: parent.width
 
+        Item{Layout.preferredWidth: Constants.taskRowMargin}
+
         //--------------------------------------------------------------- Priority / Difficulty Indicator
 
         Text

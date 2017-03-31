@@ -27,7 +27,7 @@ Rectangle
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         text: checked ? '√' : ''
-        font.family: 'Marker Felt'
+        font.family: 'Skia'//'Marker Felt'
         font.pixelSize: Constants.appFontSize+6
         color: textColor
     }

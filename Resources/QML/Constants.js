@@ -38,7 +38,7 @@ var tabInitIndex    = 0; //initial index of the task views that are shown on ope
 
 var taskRowHeight       = 29;
 var taskRowSpacing      = 3;
-var taskRowRightMargin  = 4;
+var taskRowMargin  = 4;
 var shapeWidth          = 7; //shape is the element on the left that indicates priority and difficulty
 var shapeHeight         = taskRowHeight-1;
 var taskLabelMaxChars   = 75;
