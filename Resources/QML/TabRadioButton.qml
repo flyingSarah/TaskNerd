@@ -10,12 +10,14 @@ Rectangle
 	property int buttonIndex: -1
     property RadioGroup radioGroup
     property int fontSize: Constants.appFontSize
+
+    property string selectColor: Constants.selectColor
 	
 	signal selected(int tabIndex)
 			
     border.color: Constants.borderColor
     border.width: Constants.borderWidth
-    color: radioGroup.selected === radioButton ? Constants.selectColor : Constants.unselectColor
+    color: radioGroup.selected === radioButton ? selectColor : Constants.unselectColor
 			
 	Text
 	{

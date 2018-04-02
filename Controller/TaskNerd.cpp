@@ -1,6 +1,6 @@
 #include "Controller/TaskNerd.h"
 
-TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
+TaskNerd::TaskNerd(QQmlApplicationEngine *engine, QObject *parent) : QObject(parent)
 {
     QCoreApplication::setOrganizationName("SarahWhitley");
     QCoreApplication::setOrganizationDomain("swhitley.com");
@@ -8,9 +8,14 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     QSettings settings;
     initAppSettings(settings);
 
-    window->setGeometry(settings.value("app_x").toInt(), settings.value("app_y").toInt(), settings.value("app_w").toInt(), settings.value("app_h").toInt());
-    window->setMinimumSize(QSize(315, 250));
-    window->setResizeMode(QQuickView::SizeRootObjectToView);
+    resourcesPath = QCoreApplication::applicationDirPath();
+#if defined(QT_DEBUG)
+    resourcesPath = "Resources/";
+#elif defined(Q_OS_IOS)
+    resourcesPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation).append("/Documents/");
+#else
+    resourcesPath.append("/../Resources/");
+#endif
 
     QSqlError err = initDb();
     if(err.type() != QSqlError::NoError)
@@ -22,14 +27,13 @@ TaskNerd::TaskNerd(QQuickView *window, QObject *parent) : QObject(parent)
     qmlRegisterType<TaskSqlModel>("com.swhitley.models", 1, 0, "TaskModel");
     qmlRegisterType<DBData>("com.swhitley.models", 1, 0, "TaskTabInfo");
 
-    //set and show the qml window
-    window->setSource(QUrl("Resources/QML/TaskNerd.qml"));
-    window->show();
+    engine->load(QUrl(QStringLiteral("qrc:/Resources/QML/TaskNerd.qml")));
 
-    //QObject *object = window->rootObject();
-    //connect(object, SIGNAL(taskCheckedChanged(QString,int,bool)), this, SLOT(slot_receiveData(QString,int,bool)));
+    QQuickWindow *rootObject = static_cast<QQuickWindow *>(engine->rootObjects().first());
+    rootObject->setGeometry(settings.value("app_x").toInt(), settings.value("app_y").toInt(), settings.value("app_w").toInt(), settings.value("app_h").toInt());
+    //rootObject->setResizeMode(QQuickView::SizeRootObjectToView);
+    rootObject->installEventFilter(this);
 
-    window->installEventFilter(this);
 }
 
 bool TaskNerd::eventFilter(QObject *obj, QEvent *event)
@@ -75,11 +79,13 @@ void TaskNerd::initAppSettings(QSettings &settings)
 QSqlError TaskNerd::initDb()
 {
     QSqlDatabase taskDb = QSqlDatabase::addDatabase("QSQLITE");
-    taskDb.setDatabaseName("Resources/TaskDatabase.sqlite");
+    QString dbName = resourcesPath;
+    dbName.append("TaskDatabase.sqlite");
+    taskDb.setDatabaseName(dbName);
 
     if(!taskDb.open())
     {
-        qDebug() << "Database: connection error";
+        qDebug() << "Database: connection error\nResource path:" << resourcesPath;
         return taskDb.lastError();
     }
 

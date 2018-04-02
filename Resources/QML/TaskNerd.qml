@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Window 2.2
 import QtQuick.Controls 1.1
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.1
@@ -10,15 +11,14 @@ import com.swhitley.models 1.0
 
 import "Constants.js" as Constants
 
-Item
+ApplicationWindow
 {
-    id: item
-
     property int currentTabIndex
 
-    Layout.fillHeight: true
-    Layout.fillWidth: true
-    anchors.fill: parent
+    visible: true
+
+    minimumWidth: 315
+    minimumHeight: 250
 
     // ---------------------------------------------------------------- UI Stuff
 

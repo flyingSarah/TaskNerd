@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/QML/ChecklistView.qml</file>
+        <file>Resources/QML/Constants.js</file>
+        <file>Resources/QML/EditModeRow.qml</file>
+        <file>Resources/QML/RadioGroup.qml</file>
+        <file>Resources/QML/TabBar.qml</file>
+        <file>Resources/QML/TabRadioButton.qml</file>
+        <file>Resources/QML/TaskCheckBox.qml</file>
+        <file>Resources/QML/TaskEditView.qml</file>
+        <file>Resources/QML/TaskLabel.qml</file>
+        <file>Resources/QML/TaskListView.qml</file>
+        <file>Resources/QML/TaskNerd.qml</file>
+        <file>Resources/QML/TaskRow.qml</file>
+        <file>Resources/QML/TaskToolBar.qml</file>
+        <file>Resources/QML/ToolBarButton.qml</file>
+        <file>Resources/QML/ToolBarMenu.qml</file>
+	<file>Resources/TaskDatabase.sqlite</file>
+    </qresource>
+</RCC>

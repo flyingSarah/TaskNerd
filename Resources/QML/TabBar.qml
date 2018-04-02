@@ -94,6 +94,10 @@ Item
                     TabRadioButton
                     {
                         id: radioButton
+
+                        selectColor: Constants.tabSelectColor
+                        border.color: Constants.tabSelectColor
+
                         text: modelData
                         radioGroup: tabBarGroup
                         buttonIndex: index

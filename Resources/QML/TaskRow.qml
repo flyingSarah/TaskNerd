@@ -96,7 +96,9 @@ Item
             Text
             {
                 text: counter+'/'+goal
-                onVisibleChanged: if(visible && index > -1) text = counter+'/'+goal
+                onVisibleChanged: {
+                    if(visible && index > -1) text = counter+'/'+goal
+                }
                 font.family: Constants.appFont
                 font.pixelSize: Constants.appMiniFontSize
                 color: Constants.taskLabelTextColor

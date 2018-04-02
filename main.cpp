@@ -1,19 +1,19 @@
 #include <QGuiApplication>
-
-#include <qqmlengine.h>
-#include <qqmlcontext.h>
-#include <qqml.h>
-#include <QtQuick/qquickitem.h>
-#include <QtQuick/qquickview.h>
+#include <QQmlApplicationEngine>
 
 #include "Controller/TaskNerd.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication a(argc, argv);
+    QGuiApplication app(argc, argv);
 
-    QQuickView *window = new QQuickView();
-    new TaskNerd(window);
+    QQmlApplicationEngine engine;
+    new TaskNerd(&engine);
 
-    return a.exec();
+    if(engine.rootObjects().isEmpty())
+    {
+        return -1;
+    }
+
+    return app.exec();
 }

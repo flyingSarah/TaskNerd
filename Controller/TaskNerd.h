@@ -2,11 +2,12 @@
 #define TASKNERD_H
 
 #include <QObject>
-#include <QQuickView>
-#include <QQmlEngine>
+#include <QCoreApplication>
+#include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <QtQuick/qquickitem.h>
+#include <QQuickWindow>
 #include <QSettings>
+#include <QStandardPaths>
 
 #include "Model/TaskSqlModel.h"
 #include "Model/DBData.h"
@@ -16,12 +17,14 @@ class TaskNerd : public QObject
     Q_OBJECT
 
 public:
-    TaskNerd(QQuickView *window, QObject *parent = 0);
+    TaskNerd(QQmlApplicationEngine *engine, QObject *parent = 0);
 
 protected:
     bool eventFilter(QObject *, QEvent *);
 
 private:
+    QString resourcesPath;
+
     QSqlError initDb();
     QSqlError initTables(const QStringList &tables, const QVariantList &tableNames, const QVariantList &createStrings, const QVariantList &defaultMaps);
 

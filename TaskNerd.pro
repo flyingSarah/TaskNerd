@@ -5,14 +5,16 @@
 #-------------------------------------------------
 
 QT       += core gui quick qml sql
+CONFIG   += c++11
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+DEFINES += QT_DEPRECATED_WARNINGS
 
 TARGET = TaskNerd
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
+SOURCES += \
+    main.cpp \
     Controller/TaskNerd.cpp \
     Model/TaskSqlModel.cpp \
     Model/DBData.cpp
@@ -22,19 +24,10 @@ HEADERS  += \
     Model/TaskSqlModel.h \
     Model/DBData.h
 
-OTHER_FILES += \
-    Resources/QML/TaskNerd.qml \
-    Resources/QML/TabRadioButton.qml \
-    Resources/QML/RadioGroup.qml \
-    Resources/QML/TabBar.qml \
-    Resources/QML/TaskRow.qml \
-    Resources/QML/TaskListView.qml \
-    Resources/QML/Constants.js \
-    Resources/QML/ToolBarButton.qml \
-    Resources/QML/TaskCheckBox.qml \
-    Resources/QML/TaskLabel.qml \
-    Resources/QML/ToolBarMenu.qml \
-    Resources/QML/TaskToolBar.qml \
-    Resources/QML/EditModeRow.qml \
-    Resources/QML/TaskEditView.qml \
-    Resources/QML/ChecklistView.qml
+RESOURCES += \
+    qml.qrc
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
